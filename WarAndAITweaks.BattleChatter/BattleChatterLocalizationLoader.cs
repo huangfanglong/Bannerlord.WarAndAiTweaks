@@ -108,7 +108,7 @@ public static class BattleChatterLocalizationLoader
 			}
 			else
 			{
-				Debug.Print("[BattleChatter] No localization files found! Using fallback text.", 0, (DebugColor)12, 17592186044416uL);
+				Debug.Print("[BattleChatter] No localization files found! Using fallback text.", 0, (Debug.DebugColor)12, 17592186044416uL);
 			}
 		}
 		catch (Exception ex)
@@ -202,7 +202,7 @@ public static class BattleChatterLocalizationLoader
 			XmlNodeList xmlNodeList = xmlDocument.SelectNodes("//string");
 			if (xmlNodeList == null || xmlNodeList.Count == 0)
 			{
-				Debug.Print("[BattleChatter] No string nodes found in " + filePath, 0, (DebugColor)12, 17592186044416uL);
+				Debug.Print("[BattleChatter] No string nodes found in " + filePath, 0, (Debug.DebugColor)12, 17592186044416uL);
 				return;
 			}
 			int num = 0;
@@ -227,7 +227,7 @@ public static class BattleChatterLocalizationLoader
 					_chatterLines[key].Add(value2);
 				}
 			}
-			Debug.Print($"[BattleChatter] Loaded {num} lines from {filePath}", 0, (DebugColor)12, 17592186044416uL);
+			Debug.Print($"[BattleChatter] Loaded {num} lines from {filePath}", 0, (Debug.DebugColor)12, 17592186044416uL);
 		}
 		catch (Exception ex)
 		{
@@ -299,8 +299,9 @@ public static class BattleChatterLocalizationLoader
 	{
 		if (!_hasLoggedError)
 		{
-			Debug.Print("[BattleChatter] " + message, 0, (DebugColor)12, 17592186044416uL);
+			Debug.Print("[BattleChatter] " + message, 0, (Debug.DebugColor)12, 17592186044416uL);
 			_hasLoggedError = true;
 		}
 	}
 }
+

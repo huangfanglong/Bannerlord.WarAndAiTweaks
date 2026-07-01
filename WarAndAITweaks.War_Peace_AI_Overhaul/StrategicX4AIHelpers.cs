@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -18,8 +18,8 @@ internal class StrategicX4AIHelpers
 	{
 		Kingdom i = k;
 		float num = 0f;
-		num += i.TotalStrength;
-		return num + ((IEnumerable<Kingdom>)Strategic4XDiplomacyBehavior.MajorKingdoms).Where((Kingdom x) => x != i && FactionManager.IsAlliedWithFaction((IFaction)(object)x, (IFaction)(object)i)).Sum((Kingdom p) => p.TotalStrength);
+		num += i.CurrentTotalStrength;
+		return num + ((IEnumerable<Kingdom>)Strategic4XDiplomacyBehavior.MajorKingdoms).Where((Kingdom x) => x != i && !FactionManager.IsAtWarAgainstFaction((IFaction)(object)x, (IFaction)(object)i)).Sum((Kingdom p) => p.CurrentTotalStrength);
 	}
 
 	public static HashSet<Kingdom> GetNeighbors(Kingdom kingdom)
@@ -51,7 +51,7 @@ internal class StrategicX4AIHelpers
 				}
 				foreach (Settlement item3 in list2)
 				{
-					float distance = Campaign.Current.Models.MapDistanceModel.GetDistance(item, item3);
+					float distance = item.GetPosition2D.Distance(item3.GetPosition2D);
 					if (distance < num)
 					{
 						num = distance;
@@ -96,7 +96,7 @@ internal class StrategicX4AIHelpers
 		{
 			foreach (Settlement item2 in list2)
 			{
-				float distance = Campaign.Current.Models.MapDistanceModel.GetDistance(item, item2);
+				float distance = item.GetPosition2D.Distance(item2.GetPosition2D);
 				if (distance <= reasonableDistanceForBesiegingTown)
 				{
 					return true;
@@ -219,3 +219,4 @@ internal class StrategicX4AIHelpers
 		return typeof(KingdomDecisionProposalBehavior).GetField("_kingdomDecisionsList", BindingFlags.Instance | BindingFlags.NonPublic)?.GetValue(val) as List<KingdomDecision>;
 	}
 }
+

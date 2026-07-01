@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -427,7 +427,7 @@ internal class DiplomacyPlugin
 		_ = CampaignTime.Now;
 		_ = _lastAgreementsCacheUpdate;
 		CampaignTime now = CampaignTime.Now;
-		if (((CampaignTime)(ref now)).ToDays - ((CampaignTime)(ref _lastAgreementsCacheUpdate)).ToDays < (double)AGREEMENTS_CACHE_DAYS)
+		if (now.ToDays - _lastAgreementsCacheUpdate.ToDays < (double)AGREEMENTS_CACHE_DAYS)
 		{
 			return _cachedAgreements;
 		}
@@ -810,3 +810,5 @@ internal class DiplomacyPlugin
 		};
 	}
 }
+
+

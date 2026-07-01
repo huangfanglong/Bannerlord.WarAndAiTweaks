@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Linq;
 using Bannerlord.UIExtenderEx;
 using ClanRespawn;
@@ -34,7 +34,6 @@ public class SubModule : MBSubModuleBase
 	{
 		//IL_000d: Unknown result type (might be due to invalid IL or missing references)
 		//IL_0013: Expected O, but got Unknown
-		((MBSubModuleBase)this).OnSubModuleLoad();
 		UIExtender val = new UIExtender("WarAndAiTweaks.DiplomacyUI");
 		val.Register(typeof(SubModule).Assembly);
 		val.Enable();
@@ -61,7 +60,6 @@ public class SubModule : MBSubModuleBase
 		//IL_0015: Expected O, but got Unknown
 		//IL_0042: Unknown result type (might be due to invalid IL or missing references)
 		//IL_0048: Expected O, but got Unknown
-		((MBSubModuleBase)this).OnGameStart(game, gameStarter);
 		Harmony val = new Harmony("mod.octavius.bannerlord");
 		val.PatchAll(typeof(SubModule).Assembly);
 		if (game.GameType is Campaign)
@@ -156,3 +154,4 @@ public class SubModule : MBSubModuleBase
 		}
 	}
 }
+

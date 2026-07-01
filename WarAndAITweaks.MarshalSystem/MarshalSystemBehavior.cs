@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using MCM.Abstractions.Base.Global;
@@ -81,7 +81,7 @@ public class MarshalSystemBehavior : CampaignBehaviorBase
 		if (_lastMarshalProcess.TryGetValue(kingdom, out var value))
 		{
 			CampaignTime now = CampaignTime.Now;
-			if (((CampaignTime)(ref now)).ToDays - ((CampaignTime)(ref value)).ToDays < 5.0)
+			if (now.ToDays - value.ToDays < 5.0)
 			{
 				return;
 			}
@@ -111,9 +111,9 @@ public class MarshalSystemBehavior : CampaignBehaviorBase
 		if (currentMarshal != null)
 		{
 			CampaignTime val = CampaignTime.Now;
-			double toDays = ((CampaignTime)(ref val)).ToDays;
+			double toDays = val.ToDays;
 			val = marshalData.AppointmentEndDate;
-			if (toDays >= ((CampaignTime)(ref val)).ToDays)
+			if (toDays >= val.ToDays)
 			{
 				StartMarshalElection(kingdom);
 				return;
@@ -242,3 +242,5 @@ public class MarshalSystemBehavior : CampaignBehaviorBase
 		return Campaign.Current.GetCampaignBehavior<MarshalSystemBehavior>()?._kingdomMarshals.Values.Any((MarshalData m) => m.CurrentMarshal == hero2) ?? false;
 	}
 }
+
+

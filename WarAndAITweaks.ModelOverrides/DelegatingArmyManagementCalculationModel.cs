@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,9 +25,6 @@ internal sealed class DelegatingArmyManagementCalculationModel : ArmyManagementC
 	{
 		get
 		{
-			//IL_0042: Unknown result type (might be due to invalid IL or missing references)
-			//IL_0048: Expected O, but got Unknown
-			//IL_0095: Unknown result type (might be due to invalid IL or missing references)
 			if (_cachedInner != null)
 			{
 				return _cachedInner;
@@ -46,7 +43,7 @@ internal sealed class DelegatingArmyManagementCalculationModel : ArmyManagementC
 			MBReadOnlyList<GameModel> val = (MBReadOnlyList<GameModel>)obj;
 			if (val == null)
 			{
-				return (ArmyManagementCalculationModel)new DefaultArmyManagementCalculationModel();
+				return new DefaultArmyManagementCalculationModel();
 			}
 			ArmyManagementCalculationModel val2 = null;
 			foreach (ArmyManagementCalculationModel item in ((IEnumerable)val).OfType<ArmyManagementCalculationModel>())
@@ -57,16 +54,31 @@ internal sealed class DelegatingArmyManagementCalculationModel : ArmyManagementC
 				}
 				val2 = item;
 			}
-			_cachedInner = (ArmyManagementCalculationModel)(((object)val2) ?? ((object)new DefaultArmyManagementCalculationModel()));
+			_cachedInner = val2 ?? new DefaultArmyManagementCalculationModel();
 			return _cachedInner;
 		}
 	}
+
+	public override float AIMobilePartySizeRatioToCallToArmy => Inner.AIMobilePartySizeRatioToCallToArmy;
+
+	public override float PlayerMobilePartySizeRatioToCallToArmy => Inner.PlayerMobilePartySizeRatioToCallToArmy;
+
+	public override float MinimumNeededFoodInDaysToCallToArmy => Inner.MinimumNeededFoodInDaysToCallToArmy;
+
+	public override float MaximumDistanceToCallToArmy => Inner.MaximumDistanceToCallToArmy;
 
 	public override int InfluenceValuePerGold => Inner.InfluenceValuePerGold;
 
 	public override int AverageCallToArmyCost => Inner.AverageCallToArmyCost;
 
 	public override int CohesionThresholdForDispersion => Inner.CohesionThresholdForDispersion;
+
+	public override float MaximumWaitTime => Inner.MaximumWaitTime;
+
+	public override bool CanPlayerCreateArmy(out TextObject disabledReason)
+	{
+		return Inner.CanPlayerCreateArmy(out disabledReason);
+	}
 
 	public override int CalculateTotalInfluenceCost(Army army, float percentage)
 	{
@@ -76,11 +88,6 @@ internal sealed class DelegatingArmyManagementCalculationModel : ArmyManagementC
 	public override int GetCohesionBoostInfluenceCost(Army army, int percentageToBoost = 100)
 	{
 		return Inner.GetCohesionBoostInfluenceCost(army, percentageToBoost);
-	}
-
-	public override int GetCohesionBoostGoldCost(Army army, float percentageToBoost = 100f)
-	{
-		return Inner.GetCohesionBoostGoldCost(army, percentageToBoost);
 	}
 
 	public override float GetPartySizeScore(MobileParty party)
@@ -93,14 +100,9 @@ internal sealed class DelegatingArmyManagementCalculationModel : ArmyManagementC
 		return Inner.GetPartyRelation(hero);
 	}
 
-	public override int GetPartyStrength(PartyBase party)
+	public override bool CheckPartyEligibility(MobileParty party, out TextObject explanation)
 	{
-		return Inner.GetPartyStrength(party);
-	}
-
-	public override bool CheckPartyEligibility(MobileParty party)
-	{
-		return Inner.CheckPartyEligibility(party);
+		return Inner.CheckPartyEligibility(party, out explanation);
 	}
 
 	public override int CalculateNewCohesion(Army army, PartyBase newParty, int calculatedCohesion, int sign)
@@ -111,6 +113,37 @@ internal sealed class DelegatingArmyManagementCalculationModel : ArmyManagementC
 	public override float DailyBeingAtArmyInfluenceAward(MobileParty party)
 	{
 		return Inner.DailyBeingAtArmyInfluenceAward(party);
+	}
+
+	public override bool CanLordCreateArmy(MobileParty leaderParty, out MBList<MobileParty> possibleArmyMembers)
+	{
+		bool enableEnhanced = GlobalSettings<WarAndAiTweaksSettings>.Instance.EnableEnhancedMilitary;
+		bool preventClanParties = GlobalSettings<WarAndAiTweaksSettings>.Instance.PreventClanPartiesFromBeingCalled;
+		if (!enableEnhanced && !preventClanParties)
+		{
+			return Inner.CanLordCreateArmy(leaderParty, out possibleArmyMembers);
+		}
+
+		bool innerCanCreate = Inner.CanLordCreateArmy(leaderParty, out possibleArmyMembers);
+		List<MobileParty> candidates = enableEnhanced
+			? MilitaryAIHelpers.GetCallMobilePartiesForArmy(leaderParty)
+			: (((IEnumerable<MobileParty>)possibleArmyMembers) ?? Enumerable.Empty<MobileParty>()).ToList();
+
+		if (preventClanParties && Hero.MainHero?.Clan != null)
+		{
+			candidates.RemoveAll((MobileParty item) => item?.LeaderHero != null && item.LeaderHero != Hero.MainHero && item.LeaderHero.Clan == Hero.MainHero.Clan);
+		}
+
+		possibleArmyMembers = new MBList<MobileParty>();
+		foreach (MobileParty candidate in candidates)
+		{
+			if (candidate != null)
+			{
+				possibleArmyMembers.Add(candidate);
+			}
+		}
+
+		return enableEnhanced ? possibleArmyMembers.Count > 0 : innerCanCreate && possibleArmyMembers.Count > 0;
 	}
 
 	public override int CalculatePartyInfluenceCost(MobileParty leaderParty, MobileParty targetParty)
@@ -154,11 +187,6 @@ internal sealed class DelegatingArmyManagementCalculationModel : ArmyManagementC
 
 	public override ExplainedNumber CalculateDailyCohesionChange(Army army, bool includeDescriptions = false)
 	{
-		//IL_0009: Unknown result type (might be due to invalid IL or missing references)
-		//IL_000e: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0100: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0101: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0105: Unknown result type (might be due to invalid IL or missing references)
 		ExplainedNumber result = Inner.CalculateDailyCohesionChange(army, includeDescriptions);
 		if (GlobalSettings<WarAndAiTweaksSettings>.Instance.EnableMarshalSystem)
 		{
@@ -196,45 +224,25 @@ internal sealed class DelegatingArmyManagementCalculationModel : ArmyManagementC
 				if (marshal == obj)
 				{
 					float marshalBonus = MarshalHelper.GetMarshalBonus(marshal);
-					float resultNumber = ((ExplainedNumber)(ref result)).ResultNumber;
+					float resultNumber = result.ResultNumber;
 					if (resultNumber < 0f)
 					{
 						float num = 0.5f + marshalBonus;
 						float num2 = resultNumber * num;
 						float num3 = num2 - resultNumber;
-						((ExplainedNumber)(ref result)).Add(num3, LanguageTranslater.L.T("Marshal_penalty_reduction_leadership_bonus", "Marshal penalty reduction + leadership bonus"), (TextObject)null);
+						result.Add(num3, LanguageTranslater.L.T("Marshal_penalty_reduction_leadership_bonus", "Marshal penalty reduction + leadership bonus"), (TextObject)null);
 					}
 					else
 					{
 						float num4 = 1f + marshalBonus;
 						float num5 = resultNumber * num4;
 						float num6 = num5 - resultNumber;
-						((ExplainedNumber)(ref result)).Add(num6, LanguageTranslater.L.T("Marshal_leadership_bonus", "Marshal leadership bonus"), (TextObject)null);
+						result.Add(num6, LanguageTranslater.L.T("Marshal_leadership_bonus", "Marshal leadership bonus"), (TextObject)null);
 					}
 				}
 			}
 		}
 		return result;
-	}
-
-	public override List<MobileParty> GetMobilePartiesToCallToArmy(MobileParty leaderParty)
-	{
-		if (!GlobalSettings<WarAndAiTweaksSettings>.Instance.EnableEnhancedMilitary && !GlobalSettings<WarAndAiTweaksSettings>.Instance.PreventClanPartiesFromBeingCalled)
-		{
-			return Inner.GetMobilePartiesToCallToArmy(leaderParty);
-		}
-		List<MobileParty> callMobilePartiesForArmy = MilitaryAIHelpers.GetCallMobilePartiesForArmy(leaderParty);
-		if (GlobalSettings<WarAndAiTweaksSettings>.Instance.PreventClanPartiesFromBeingCalled)
-		{
-			foreach (MobileParty item in (List<MobileParty>)(object)Extensions.ToMBList<MobileParty>(callMobilePartiesForArmy))
-			{
-				if (item.LeaderHero != null && item.LeaderHero != Hero.MainHero && item.LeaderHero.Clan == Hero.MainHero.Clan)
-				{
-					callMobilePartiesForArmy.Remove(item);
-				}
-			}
-		}
-		return callMobilePartiesForArmy;
 	}
 
 	private int ApplyBandTogetherInfluenceDiscount(int baseCost, MobileParty leaderParty)

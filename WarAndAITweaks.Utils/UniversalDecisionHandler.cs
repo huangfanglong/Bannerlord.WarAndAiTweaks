@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Reflection;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.CampaignBehaviors;
@@ -50,7 +50,7 @@ internal class UniversalDecisionHandler
 				if (((KingdomDecision)val3).Kingdom == Hero.MainHero.MapFaction && val3.FactionToMakePeaceWith == proposerKingdom)
 				{
 					triggerTime = item.TriggerTime;
-					if (((CampaignTime)(ref triggerTime)).IsFuture)
+					if (triggerTime.IsFuture)
 					{
 						goto IL_014a;
 					}
@@ -60,7 +60,7 @@ internal class UniversalDecisionHandler
 					continue;
 				}
 				triggerTime = item.TriggerTime;
-				if (!((CampaignTime)(ref triggerTime)).IsFuture)
+				if (!triggerTime.IsFuture)
 				{
 					continue;
 				}
@@ -120,7 +120,7 @@ internal class UniversalDecisionHandler
 			if (item2 is MarshalDecision marshalDecision && decision is MarshalDecision marshalDecision2 && marshalDecision.Kingdom == marshalDecision2.Kingdom)
 			{
 				triggerTime = item2.TriggerTime;
-				if (((CampaignTime)(ref triggerTime)).IsFuture)
+				if (triggerTime.IsFuture)
 				{
 					flag2 = true;
 					break;
@@ -137,3 +137,5 @@ internal class UniversalDecisionHandler
 		return true;
 	}
 }
+
+

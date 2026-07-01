@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -71,7 +71,7 @@ internal class MarshalDecision : KingdomDecision
 		public override ImageIdentifier GetDecisionImageIdentifier()
 		{
 			//IL_001b: Unknown result type (might be due to invalid IL or missing references)
-			return (Candidate == null) ? ((ImageIdentifier)null) : new ImageIdentifier(CharacterCode.CreateFrom((BasicCharacterObject)(object)Candidate.CharacterObject));
+			return (Candidate == null) ? ((ImageIdentifier)null) : new CharacterImageIdentifier(CharacterCode.CreateFrom((BasicCharacterObject)(object)Candidate.CharacterObject));
 		}
 	}
 
@@ -345,7 +345,7 @@ internal class MarshalDecision : KingdomDecision
 		float num2 = ((Candidates.Count > 0) ? Candidates.Max(delegate(Hero c)
 		{
 			Clan clan3 = c.Clan;
-			return (clan3 != null) ? clan3.TotalStrength : 0f;
+			return (clan3 != null) ? clan3.CurrentTotalStrength : 0f;
 		}) : 1f);
 		float num3 = ((Candidates.Count > 0) ? Candidates.Max(delegate(Hero c)
 		{
@@ -399,7 +399,7 @@ internal class MarshalDecision : KingdomDecision
 		float item4 = maxCandidateStats.maxInfluence;
 		float item5 = maxCandidateStats.maxWealth;
 		float num = N(MarshalHelper.CalculateTrueSkill(candidate), item);
-		float num2 = N(candidate.Clan.TotalStrength, item2);
+		float num2 = N(candidate.Clan.CurrentTotalStrength, item2);
 		float num3 = N(candidate.Clan.Tier, item3);
 		float num4 = N(candidate.Clan.Influence, item4);
 		float num5 = N(candidate.Gold, item5);
@@ -531,3 +531,4 @@ internal class MarshalDecision : KingdomDecision
 		return val;
 	}
 }
+

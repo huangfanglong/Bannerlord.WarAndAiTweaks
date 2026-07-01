@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using Helpers;
@@ -25,10 +25,10 @@ public class ClanRespawnBehavior : CampaignBehaviorBase
 		CampaignEvents.OnGameEarlyLoadedEvent.AddNonSerializedListener((object)this, (Action<CampaignGameStarter>)OnGameLoaded);
 		CampaignEvents.OnNewGameCreatedEvent.AddNonSerializedListener((object)this, (Action<CampaignGameStarter>)OnGameLoaded);
 		CampaignEvents.BeforeHeroKilledEvent.AddNonSerializedListener((object)this, (Action<Hero, Hero, KillCharacterActionDetail, bool>)onHerokilled);
-		CampaignEvents.HeroPrisonerReleased.AddNonSerializedListener((object)this, (Action<Hero, PartyBase, IFaction, EndCaptivityDetail>)onFugitive);
+		CampaignEvents.HeroPrisonerReleased.AddNonSerializedListener((object)this, (Action<Hero, PartyBase, IFaction, EndCaptivityDetail, bool>)onFugitive);
 	}
 
-	private void onFugitive(Hero prisonerBeingReleased, PartyBase partyBase, IFaction faction, EndCaptivityDetail detail)
+	private void onFugitive(Hero prisonerBeingReleased, PartyBase partyBase, IFaction faction, EndCaptivityDetail detail, bool isReleasedFromParty)
 	{
 		//IL_0025: Unknown result type (might be due to invalid IL or missing references)
 		//IL_0028: Invalid comparison between Unknown and I4
@@ -49,7 +49,7 @@ public class ClanRespawnBehavior : CampaignBehaviorBase
 				RemoveParty(prisonerBeingReleased2);
 				return;
 			}
-			if (respawnablePartyObject.isLord && prisonerBeingReleased2.Clan.CommanderLimit > ((List<WarPartyComponent>)(object)prisonerBeingReleased2.Clan.WarPartyComponents).Count)
+			if (respawnablePartyObject.isLord && prisonerBeingReleased2.Clan != null && ((List<WarPartyComponent>)(object)prisonerBeingReleased2.Clan.WarPartyComponents).Count < 4)
 			{
 				SpawnLordPartyAtPosition(prisonerBeingReleased2);
 				return;
@@ -128,7 +128,6 @@ public class ClanRespawnBehavior : CampaignBehaviorBase
 		//IL_0076: Expected O, but got Unknown
 		if (!hero.IsActive && hero.IsAlive)
 		{
-			hero.ChangeState((CharacterStates)1);
 			GiveGoldAction.ApplyBetweenCharacters((Hero)null, hero, 500, true);
 			MobilePartyHelper.SpawnLordParty(hero, SettlementHelper.GetBestSettlementToSpawnAround(hero));
 			TextObject val = LanguageTranslater.L.T("party_rallied", "{HERO} has rallied once more, forming a new party after their defeat and recovery.");
@@ -144,9 +143,8 @@ public class ClanRespawnBehavior : CampaignBehaviorBase
 		//IL_0084: Expected O, but got Unknown
 		if (!hero.IsActive && hero.IsAlive)
 		{
-			hero.ChangeState((CharacterStates)1);
 			GiveGoldAction.ApplyBetweenCharacters(Hero.MainHero, hero, 15000, true);
-			CaravanPartyComponent.CreateCaravanParty(Hero.MainHero, SettlementHelper.GetBestSettlementToSpawnAround(hero), false, hero, (ItemRoster)null, 30, false);
+			CaravanPartyComponent.CreateCaravanParty(Hero.MainHero, SettlementHelper.GetBestSettlementToSpawnAround(hero), null, false, hero, null, false);
 			TextObject val = LanguageTranslater.L.T("caravan_rallied", "{HERO} has rallied once more, forming a new caravan after their defeat and recovery.");
 			val.SetTextVariable("HERO", ((object)hero.Name).ToString());
 			InformationManager.DisplayMessage(new InformationMessage(((object)val).ToString(), Colors.Cyan));
@@ -164,3 +162,4 @@ public class ClanRespawnBehavior : CampaignBehaviorBase
 		Parties.RemoveAll((RespawnablePartyObject x) => x.partyHero == hero2);
 	}
 }
+

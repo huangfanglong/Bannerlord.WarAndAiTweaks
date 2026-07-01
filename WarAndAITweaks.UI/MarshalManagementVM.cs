@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.Election;
@@ -226,7 +226,7 @@ public class MarshalManagementVM : ViewModel
 					Clan clan3 = marshal.Clan;
 					if (((clan3 != null) ? clan3.Banner : null) != null)
 					{
-						CurrentMarshalBanner = new ImageIdentifierVM(new ImageIdentifier(marshal.Clan.Banner));
+						CurrentMarshalBanner = new BannerImageIdentifierVM(marshal.Clan.Banner);
 					}
 					else
 					{
@@ -408,3 +408,5 @@ public class MarshalManagementVM : ViewModel
 		((ViewModel)this).OnFinalize();
 	}
 }
+
+

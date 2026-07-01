@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -281,7 +281,7 @@ public class FeastManagementVM : ViewModel
 		{
 			int todayWeFeastCooldown = GlobalSettings<WarAndAiTweaksSettings>.Instance.TodayWeFeastCooldown;
 			CampaignTime now = CampaignTime.Now;
-			int num = (int)Math.Floor(((CampaignTime)(ref now)).ToDays - ((CampaignTime)(ref value)).ToDays);
+			int num = (int)Math.Floor(now.ToDays - value.ToDays);
 			int num2 = todayWeFeastCooldown - num;
 			return (num2 > 0) ? num2 : 0;
 		}
@@ -336,3 +336,5 @@ public class FeastManagementVM : ViewModel
 		}
 	}
 }
+
+

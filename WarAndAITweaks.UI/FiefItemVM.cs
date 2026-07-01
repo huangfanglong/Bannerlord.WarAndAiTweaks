@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.Settlements;
@@ -128,7 +128,7 @@ public class FiefItemVM : ViewModel
 		{
 			if (_clan.Banner != null)
 			{
-				ClanBanner = new ImageIdentifierVM(new ImageIdentifier(_clan.Banner));
+				ClanBanner = new BannerImageIdentifierVM(_clan.Banner);
 			}
 			else
 			{
@@ -170,3 +170,5 @@ public class FiefItemVM : ViewModel
 		return _clan;
 	}
 }
+
+

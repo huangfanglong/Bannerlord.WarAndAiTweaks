@@ -1,4 +1,4 @@
-using TaleWorlds.CampaignSystem;
+﻿using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.Party;
 using TaleWorlds.Core;
 using TaleWorlds.Library;
@@ -208,7 +208,7 @@ public class AiLordItemVM : ViewModel
 			Clan clan2 = _hero.Clan;
 			if (((clan2 != null) ? clan2.Banner : null) != null)
 			{
-				ClanBanner = new ImageIdentifierVM(new ImageIdentifier(_hero.Clan.Banner));
+				ClanBanner = new BannerImageIdentifierVM(_hero.Clan.Banner);
 			}
 			else
 			{
@@ -288,3 +288,5 @@ public class AiLordItemVM : ViewModel
 		return _hero;
 	}
 }
+
+

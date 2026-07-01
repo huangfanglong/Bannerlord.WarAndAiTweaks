@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using FeastSystem;
@@ -125,16 +125,24 @@ public class Strategic4XDiplomacyBehavior : CampaignBehaviorBase
 		{
 			updateKingdomTargetsCache(item2);
 		}
-		ReasonableDistanceForBesiegingTown = (127f + 2.27f * Campaign.AverageDistanceBetweenTwoFortifications) / 2f;
+		ReasonableDistanceForBesiegingTown = (127f + 2.27f * 56f) / 2f;
 		if (GlobalSettings<WarAndAiTweaksSettings>.Instance.EnableBaseGameTributes)
 		{
 			return;
 		}
 		foreach (Kingdom item3 in (List<Kingdom>)(object)Kingdom.All)
 		{
-			foreach (StanceLink stance in item3.Stances)
+			foreach (Kingdom otherKingdom in (List<Kingdom>)(object)Kingdom.All)
 			{
-				stance.SetDailyTributePaid(item3.MapFaction, 0);
+				if (otherKingdom == item3)
+				{
+					continue;
+				}
+				StanceLink stanceWith = item3.GetStanceWith((IFaction)(object)otherKingdom);
+				if (stanceWith != null)
+				{
+					stanceWith.SetDailyTributePaid(item3.MapFaction, 0, 0);
+				}
 			}
 		}
 	}
@@ -215,7 +223,7 @@ public class Strategic4XDiplomacyBehavior : CampaignBehaviorBase
 		if (_lastDiplomaticAction.TryGetValue(kingdom, out var value))
 		{
 			CampaignTime now = CampaignTime.Now;
-			if (((CampaignTime)(ref now)).ToDays - ((CampaignTime)(ref value)).ToDays < 7.0)
+			if (now.ToDays - value.ToDays < 7.0)
 			{
 				return;
 			}
@@ -386,7 +394,7 @@ public class Strategic4XDiplomacyBehavior : CampaignBehaviorBase
 		}
 		if (DiplomacySettingsCache.IsDiplomacyModLoaded)
 		{
-			return Extensions.ToMBList<Kingdom>(source.Where((Kingdom x) => (!((double)targetStrengths[x] * 0.8 >= (double)inputStrength) || ((IEnumerable<Kingdom>)MajorKingdoms).Any((Kingdom other) => other != x && x.IsAtWarWith((IFaction)(object)other))) && (!kingdomAgreements.Contains(x) || !FactionManager.IsAlliedWithFaction((IFaction)(object)x, (IFaction)(object)kingdom2)) && (!DiplomacySettingsCache.NoWarBetweenFriends.GetValueOrDefault() || kingdom2.Leader == null || x.Leader == null || !kingdom2.Leader.IsFriend(x.Leader)) && (!DiplomacySettingsCache.NoWarOnGoodRelations.GetValueOrDefault() || !DiplomacySettingsCache.NoWarOnGoodRelationsThreshold.HasValue || kingdom2.Leader == null || x.Leader == null || kingdom2.Leader.GetRelation(x.Leader) < DiplomacySettingsCache.NoWarOnGoodRelationsThreshold.Value) && (!DiplomacySettingsCache.NoWarWhenMarriedLeaderClans.GetValueOrDefault() || kingdom2.RulingClan == null || x.RulingClan == null || !DiplomacyPlugin.HasMarriedClanLeaderRelation(kingdom2.RulingClan, x.RulingClan))));
+			return Extensions.ToMBList<Kingdom>(source.Where((Kingdom x) => (!((double)targetStrengths[x] * 0.8 >= (double)inputStrength) || ((IEnumerable<Kingdom>)MajorKingdoms).Any((Kingdom other) => other != x && x.IsAtWarWith((IFaction)(object)other))) && (!kingdomAgreements.Contains(x) || FactionManager.IsAtWarAgainstFaction((IFaction)(object)x, (IFaction)(object)kingdom2)) && (!DiplomacySettingsCache.NoWarBetweenFriends.GetValueOrDefault() || kingdom2.Leader == null || x.Leader == null || !kingdom2.Leader.IsFriend(x.Leader)) && (!DiplomacySettingsCache.NoWarOnGoodRelations.GetValueOrDefault() || !DiplomacySettingsCache.NoWarOnGoodRelationsThreshold.HasValue || kingdom2.Leader == null || x.Leader == null || kingdom2.Leader.GetRelation(x.Leader) < DiplomacySettingsCache.NoWarOnGoodRelationsThreshold.Value) && (!DiplomacySettingsCache.NoWarWhenMarriedLeaderClans.GetValueOrDefault() || kingdom2.RulingClan == null || x.RulingClan == null || !DiplomacyPlugin.HasMarriedClanLeaderRelation(kingdom2.RulingClan, x.RulingClan))));
 		}
 		return Extensions.ToMBList<Kingdom>(source.Where((Kingdom x) => !((double)targetStrengths[x] * 0.8 >= (double)inputStrength) || ((IEnumerable<Kingdom>)MajorKingdoms).Any((Kingdom other) => other != x && x.IsAtWarWith((IFaction)(object)other))));
 	}
@@ -469,8 +477,8 @@ public class Strategic4XDiplomacyBehavior : CampaignBehaviorBase
 				IsSnowballing = t.IsSnowballing
 			};
 		}));
-		int bestScore = ((IEnumerable<_003C_003Ef__AnonymousType1<Kingdom, int, float, int, int, int, bool>>)source).Max(x => x.Score);
-		var list2 = ((IEnumerable<_003C_003Ef__AnonymousType1<Kingdom, int, float, int, int, int, bool>>)source).Where(x => x.Score == bestScore).ToList();
+		int bestScore = source.Max(x => x.Score);
+		var list2 = source.Where(x => x.Score == bestScore).ToList();
 		if (list2.Count == 1)
 		{
 			return list2[0].Target;
@@ -523,12 +531,12 @@ public class Strategic4XDiplomacyBehavior : CampaignBehaviorBase
 		if (GlobalSettings<WarAndAiTweaksSettings>.Instance.EnableBaseGameTributes)
 		{
 			int valueForFaction = ((Barterable)new PeaceBarterable(val2.RulingClan.Leader, (IFaction)(object)val2, (IFaction)(object)val3, CampaignTime.Years(1f))).GetValueForFaction((IFaction)(object)val3);
-			int dailyTributeForValue = Campaign.Current.Models.DiplomacyModel.GetDailyTributeForValue(valueForFaction);
-			val4 = new MakePeaceKingdomDecision(val2.RulingClan, (IFaction)(object)val3, dailyTributeForValue, true);
+			int dailyTributePaid = 0;
+			val4 = new MakePeaceKingdomDecision(val2.RulingClan, (IFaction)(object)val3, dailyTributePaid, 0, true);
 		}
 		else
 		{
-			val4 = new MakePeaceKingdomDecision(val2.RulingClan, (IFaction)(object)val3, 0, true);
+			val4 = new MakePeaceKingdomDecision(val2.RulingClan, (IFaction)(object)val3, 0, 0, true);
 		}
 		if (val4 == null)
 		{
@@ -672,7 +680,18 @@ public class Strategic4XDiplomacyBehavior : CampaignBehaviorBase
 		float num6 = 0f;
 		float num7 = 0f;
 		float num8 = 0f;
-		List<StanceLink> list = k.Stances.Where((StanceLink x) => x.IsAtWar).ToList();
+		List<StanceLink> list = new List<StanceLink>();
+		foreach (Kingdom otherK in (List<Kingdom>)(object)Kingdom.All)
+		{
+			if (otherK != k)
+			{
+				StanceLink stanceWith = k.GetStanceWith((IFaction)(object)otherK);
+				if (stanceWith != null && stanceWith.IsAtWar)
+				{
+					list.Add(stanceWith);
+				}
+			}
+		}
 		foreach (StanceLink item in list)
 		{
 			IFaction faction = item.Faction2;
@@ -684,8 +703,8 @@ public class Strategic4XDiplomacyBehavior : CampaignBehaviorBase
 			}
 			if (val != null && val != k)
 			{
-				int count = DiplomacyHelper.GetRaidsInWar((IFaction)(object)val, item, (Func<Settlement, bool>)null).Count;
-				int count2 = DiplomacyHelper.GetSuccessfullSiegesInWarForFaction((IFaction)(object)val, item, (Func<Settlement, bool>)null).Count;
+				int count = 0;
+				int count2 = 0;
 				float num9 = item.GetCasualties((IFaction)(object)k);
 				int count3 = DiplomacyHelper.GetPrisonersOfWarTakenByFaction((IFaction)(object)val, (IFaction)(object)k).Count;
 				if (showWarFatigueDebug)
@@ -728,7 +747,7 @@ public class Strategic4XDiplomacyBehavior : CampaignBehaviorBase
 		if (_lastPlayerPeaceOffer.TryGetValue(aiKingdom2, out var value))
 		{
 			CampaignTime now = CampaignTime.Now;
-			if (((CampaignTime)(ref now)).ToDays - ((CampaignTime)(ref value)).ToDays < 20.0)
+			if (now.ToDays - value.ToDays < 20.0)
 			{
 				return;
 			}
@@ -750,12 +769,12 @@ public class Strategic4XDiplomacyBehavior : CampaignBehaviorBase
 			if (GlobalSettings<WarAndAiTweaksSettings>.Instance.EnableBaseGameTributes)
 			{
 				int valueForFaction = ((Barterable)new PeaceBarterable(aiKingdom2.RulingClan.Leader, (IFaction)(object)aiKingdom2, (IFaction)(object)playerKingdom2, CampaignTime.Years(1f))).GetValueForFaction((IFaction)(object)playerKingdom2);
-				int dailyTributeForValue = Campaign.Current.Models.DiplomacyModel.GetDailyTributeForValue(valueForFaction);
-				decision = new MakePeaceKingdomDecision(playerKingdom2.RulingClan, (IFaction)(object)aiKingdom2, dailyTributeForValue, true);
+				int dailyTributePaid = 0;
+				decision = new MakePeaceKingdomDecision(playerKingdom2.RulingClan, (IFaction)(object)aiKingdom2, dailyTributePaid, 0, true);
 			}
 			else
 			{
-				decision = new MakePeaceKingdomDecision(playerKingdom2.RulingClan, (IFaction)(object)aiKingdom2, 0, true);
+				decision = new MakePeaceKingdomDecision(playerKingdom2.RulingClan, (IFaction)(object)aiKingdom2, 0, 0, true);
 			}
 			UniversalDecisionHandler.HandleAddingDecision((KingdomDecision)(object)decision, aiKingdom2, playerKingdom2);
 			InformationManager.DisplayMessage(new InformationMessage(((object)LanguageTranslater.L.T("diplomacy_peace_proposal_sent", "Peace proposal between {PLAYER} and {AI} has been sent to your council.").SetTextVariable("PLAYER", playerKingdom2.Name).SetTextVariable("AI", aiKingdom2.Name)).ToString(), Colors.Green));
@@ -768,3 +787,5 @@ public class Strategic4XDiplomacyBehavior : CampaignBehaviorBase
 		}, "", 0f, (Action)null, (Func<ValueTuple<bool, string>>)null, (Func<ValueTuple<bool, string>>)null), true, false);
 	}
 }
+
+

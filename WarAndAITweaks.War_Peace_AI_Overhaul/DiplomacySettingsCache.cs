@@ -1,4 +1,4 @@
-using TaleWorlds.CampaignSystem;
+﻿using TaleWorlds.CampaignSystem;
 
 namespace WarAndAITweaks.War_Peace_AI_Overhaul;
 
@@ -53,7 +53,7 @@ public static class DiplomacySettingsCache
 		{
 			_ = _lastUpdate;
 			CampaignTime now = CampaignTime.Now;
-			if (!(((CampaignTime)(ref now)).ToDays - ((CampaignTime)(ref _lastUpdate)).ToDays > 5.0))
+			if (!(now.ToDays - _lastUpdate.ToDays > 5.0))
 			{
 				return;
 			}
@@ -66,3 +66,5 @@ public static class DiplomacySettingsCache
 		_isInitialized = true;
 	}
 }
+
+

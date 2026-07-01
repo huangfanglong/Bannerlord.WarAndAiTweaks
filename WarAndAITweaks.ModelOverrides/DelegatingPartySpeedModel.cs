@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Linq;
 using MCM.Abstractions.Base.Global;
 using TaleWorlds.CampaignSystem;
@@ -106,13 +106,14 @@ internal sealed class DelegatingPartySpeedModel : PartySpeedModel
 		{
 			if (flag)
 			{
-				((ExplainedNumber)(ref result)).Add(GlobalSettings<WarAndAiTweaksSettings>.Instance.SpeedBuffModifier, LanguageTranslater.L.T("near_friendly_infrastructure", "Near Friendly Infrastructure"), (TextObject)null);
+				result.Add(GlobalSettings<WarAndAiTweaksSettings>.Instance.SpeedBuffModifier, LanguageTranslater.L.T("near_friendly_infrastructure", "Near Friendly Infrastructure"), (TextObject)null);
 			}
 			else
 			{
-				((ExplainedNumber)(ref result)).Add(GlobalSettings<WarAndAiTweaksSettings>.Instance.SpeedDebuffModifier, LanguageTranslater.L.T("near_hostile_infrastructure", "Near Hostile Infrastructure"), (TextObject)null);
+				result.Add(GlobalSettings<WarAndAiTweaksSettings>.Instance.SpeedDebuffModifier, LanguageTranslater.L.T("near_hostile_infrastructure", "Near Hostile Infrastructure"), (TextObject)null);
 			}
 		}
 		return result;
 	}
 }
+

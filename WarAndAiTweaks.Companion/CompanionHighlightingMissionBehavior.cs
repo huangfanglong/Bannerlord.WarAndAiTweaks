@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using MCM.Abstractions.Base.Global;
@@ -217,7 +217,7 @@ public class CompanionHighlightingMissionBehavior : MissionView
 		{
 			CleanupUI();
 		}
-		_gauntletLayer = new GauntletLayer(110, "GauntletLayer", false);
+		_gauntletLayer = new GauntletLayer("GauntletLayer", 110);
 		_dataSource = new CompanionHighlighterVM();
 		_gauntletLayer.LoadMovie("CompanionMissionHUD", (ViewModel)(object)_dataSource);
 		((ScreenBase)((MissionView)this).MissionScreen).AddLayer((ScreenLayer)(object)_gauntletLayer);
@@ -379,7 +379,7 @@ public class CompanionHighlightingMissionBehavior : MissionView
 		float num3 = 0f;
 		MBWindowManager.WorldToScreen(_camera, eyeGlobalPosition, ref num, ref num2, ref num3);
 		Vec3 position = agent.Position;
-		float num4 = ((Vec3)(ref position)).Distance(Agent.Main.Position);
+		float num4 = position.Distance(Agent.Main.Position);
 		if (iconVM.Type == CompanionIconVM.IconType.EnemyLord)
 		{
 			int enemyLordIconDistanceThreshold = GlobalSettings<WarAndAiTweaksSettings>.Instance.EnemyLordIconDistanceThreshold;
@@ -527,3 +527,4 @@ public class CompanionHighlightingMissionBehavior : MissionView
 		_removedCompanions.Clear();
 	}
 }
+

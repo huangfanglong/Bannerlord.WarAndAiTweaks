@@ -72,7 +72,7 @@ internal class BattleChatter : MissionBehavior
 		}
 		catch (Exception ex)
 		{
-			Debug.Print("[BattleChatter] Failed to initialize: " + ex.Message, 0, (DebugColor)12, 17592186044416uL);
+			Debug.Print("[BattleChatter] Failed to initialize: " + ex.Message, 0, (Debug.DebugColor)12, 17592186044416uL);
 		}
 	}
 
@@ -187,10 +187,10 @@ internal class BattleChatter : MissionBehavior
 			}
 			Blow val3 = blow;
 			int num2;
-			if (!((Blow)(ref val3)).IsBlowCrit((int)affectorAgent.HealthLimit))
+			if (!val3.IsBlowCrit((int)affectorAgent.HealthLimit))
 			{
 				val3 = blow;
-				num2 = (((Blow)(ref val3)).IsHeadShot() ? 1 : 0);
+				num2 = val3.IsHeadShot() ? 1 : 0;
 			}
 			else
 			{
@@ -434,7 +434,7 @@ internal class BattleChatter : MissionBehavior
 				{
 					_nextGlobalFormationChatterTime = num + FormationChatterTimeCooldown;
 				}
-				MBInformationManager.AddQuickInformation(new TextObject(lineToSpeak, (Dictionary<string, object>)null), 0, agent.Character, "");
+				MBInformationManager.AddQuickInformation(new TextObject(lineToSpeak, (Dictionary<string, object>)null), 0, agent.Character, null);
 			}
 		}
 		catch (Exception ex)
@@ -480,6 +480,9 @@ internal class BattleChatter : MissionBehavior
 
 	private void LogError(string message)
 	{
-		Debug.Print("[BattleChatter] " + message, 0, (DebugColor)12, 17592186044416uL);
+		Debug.Print("[BattleChatter] " + message, 0, (Debug.DebugColor)12, 17592186044416uL);
 	}
 }
+
+
+

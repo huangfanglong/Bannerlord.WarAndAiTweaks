@@ -24,7 +24,7 @@ public static class MarshalHelper
 		float num4 = num3 / 300f;
 		float partySizeRatio = hero.PartyBelongedTo.PartySizeRatio;
 		float num5 = MBMath.ClampFloat(partySizeRatio, 0f, 250f) / 250f;
-		float totalStrength = hero.Clan.TotalStrength;
+		float totalStrength = hero.Clan.CurrentTotalStrength;
 		float num6 = MBMath.ClampFloat(totalStrength, 0f, 2000f) / 2000f;
 		float influence = hero.Clan.Influence;
 		float num7 = MBMath.ClampFloat(influence, 0f, 1000f) / 1000f;

@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using FeastSystem;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.Settlements;
@@ -98,7 +98,7 @@ public class FeastDuelSystem
 				RewardData.RewardInfo value2 = reward.Value;
 				double nextDuelRewardTime = value2.nextDuelRewardTime;
 				CampaignTime now = CampaignTime.Now;
-				if (nextDuelRewardTime - ((CampaignTime)(ref now)).ToDays > 0.0)
+				if (nextDuelRewardTime - now.ToDays > 0.0)
 				{
 					return true;
 				}
@@ -122,7 +122,8 @@ public class FeastDuelSystem
 			}
 			RewardData.RewardInfo orCreate = value.GetOrCreate(hero1, hero2);
 			CampaignTime now = CampaignTime.Now;
-			orCreate.nextDuelRewardTime = ((CampaignTime)(ref now)).ToDays + 5.0;
+			orCreate.nextDuelRewardTime = now.ToDays + 5.0;
 		}
 	}
 }
+

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using HarmonyLib;
@@ -46,7 +46,7 @@ public class FeastBehavior : CampaignBehaviorBase
 			}
 			try
 			{
-				SetPartyAiAction.GetActionForVisitingSettlement(mobileParty, feastByAttribute.Settlement);
+				SetPartyAiAction.GetActionForVisitingSettlement(mobileParty, feastByAttribute.Settlement, MobileParty.NavigationType.Default, false, false);
 			}
 			catch (Exception)
 			{
@@ -148,7 +148,7 @@ public class FeastBehavior : CampaignBehaviorBase
 	{
 		//IL_0073: Unknown result type (might be due to invalid IL or missing references)
 		//IL_007a: Expected O, but got Unknown
-		foreach (FeastData item in (List<FeastData>)(object)Extensions.ToMBList<FeastData>((List<FeastData>)(object)_activeFeasts))
+		foreach (FeastData item in System.Linq.Enumerable.ToList(_activeFeasts))
 		{
 			Hero host = item.Host;
 			object obj;
@@ -205,7 +205,7 @@ public class FeastBehavior : CampaignBehaviorBase
 		if (_lastFeastProcessByKingdom.TryGetValue(clanKingdom, out var value))
 		{
 			CampaignTime now = CampaignTime.Now;
-			if (((CampaignTime)(ref now)).ToDays - ((CampaignTime)(ref value)).ToDays < 1.0)
+			if (now.ToDays - value.ToDays < 1.0)
 			{
 				return;
 			}
@@ -311,7 +311,7 @@ public class FeastBehavior : CampaignBehaviorBase
 				null
 			};
 			CampaignTime now = CampaignTime.Now;
-			obj[5] = ((object)(CampaignTime)(ref now)).ToString();
+			obj[5] = now.ToString();
 			string questId = string.Concat(obj);
 			new FeastQuest(questId, host, host, settlement, CampaignTime.Now, isPlayerHost: true);
 		}
@@ -345,7 +345,7 @@ public class FeastBehavior : CampaignBehaviorBase
 		}
 		if (obj == obj2)
 		{
-			MBInformationManager.AddQuickInformation(new TextObject(reason, (Dictionary<string, object>)null), 0, (BasicCharacterObject)null, "");
+			MBInformationManager.AddQuickInformation(new TextObject(reason, (Dictionary<string, object>)null), 0, (BasicCharacterObject)null);
 		}
 		Hero host2 = feast.Host;
 		if (((host2 != null) ? host2.MapFaction : null) != null && feast.Kingdom != null)
@@ -413,18 +413,18 @@ public class FeastBehavior : CampaignBehaviorBase
 		{
 			//IL_0002: Unknown result type (might be due to invalid IL or missing references)
 			//IL_0007: Unknown result type (might be due to invalid IL or missing references)
-			EquipmentElement equipmentElement = ((ItemRosterElement)(ref e)).EquipmentElement;
-			ItemObject item = ((EquipmentElement)(ref equipmentElement)).Item;
-			return item != null && item.IsFood && ((ItemRosterElement)(ref e)).Amount > 0;
+			EquipmentElement equipmentElement = e.EquipmentElement;
+			ItemObject item = equipmentElement.Item;
+			return item != null && item.IsFood && e.Amount > 0;
 		}).ToList();
 		foreach (ItemRosterElement item2 in list)
 		{
 			ItemRosterElement current = item2;
-			int num = (int)Math.Floor((double)((ItemRosterElement)(ref current)).Amount * 0.8);
+			int num = (int)Math.Floor((double)current.Amount * 0.8);
 			if (num >= 1)
 			{
-				val3.AddToCounts(((ItemRosterElement)(ref current)).EquipmentElement, -num);
-				feast.FeastRoster.AddToCounts(((ItemRosterElement)(ref current)).EquipmentElement, num);
+				val3.AddToCounts(current.EquipmentElement, -num);
+				feast.FeastRoster.AddToCounts(current.EquipmentElement, num);
 			}
 		}
 	}
@@ -444,3 +444,5 @@ public class FeastBehavior : CampaignBehaviorBase
 		}
 	}
 }
+
+

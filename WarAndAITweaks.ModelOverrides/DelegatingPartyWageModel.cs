@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,6 +7,7 @@ using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.ComponentInterfaces;
 using TaleWorlds.CampaignSystem.GameComponents;
 using TaleWorlds.CampaignSystem.Party;
+using TaleWorlds.CampaignSystem.Roster;
 using TaleWorlds.CampaignSystem.Settlements;
 using TaleWorlds.Core;
 using TaleWorlds.Library;
@@ -23,9 +24,6 @@ internal sealed class DelegatingPartyWageModel : PartyWageModel
 	{
 		get
 		{
-			//IL_0042: Unknown result type (might be due to invalid IL or missing references)
-			//IL_0048: Expected O, but got Unknown
-			//IL_0095: Unknown result type (might be due to invalid IL or missing references)
 			if (_cachedInner != null)
 			{
 				return _cachedInner;
@@ -44,7 +42,7 @@ internal sealed class DelegatingPartyWageModel : PartyWageModel
 			MBReadOnlyList<GameModel> val = (MBReadOnlyList<GameModel>)obj;
 			if (val == null)
 			{
-				return (PartyWageModel)new DefaultPartyWageModel();
+				return new DefaultPartyWageModel();
 			}
 			PartyWageModel val2 = null;
 			foreach (PartyWageModel item in ((IEnumerable)val).OfType<PartyWageModel>())
@@ -55,36 +53,37 @@ internal sealed class DelegatingPartyWageModel : PartyWageModel
 				}
 				val2 = item;
 			}
-			_cachedInner = (PartyWageModel)(((object)val2) ?? ((object)new DefaultPartyWageModel()));
+			_cachedInner = val2 ?? new DefaultPartyWageModel();
 			return _cachedInner;
 		}
 	}
 
-	public override int MaxWage => Inner.MaxWage;
+	public override int MaxWagePaymentLimit => Inner.MaxWagePaymentLimit;
 
 	public override int GetCharacterWage(CharacterObject character)
 	{
 		return Inner.GetCharacterWage(character);
 	}
 
-	public override int GetTroopRecruitmentCost(CharacterObject troop, Hero buyerHero, bool withoutItemCost = false)
+	public override ExplainedNumber GetTroopRecruitmentCost(CharacterObject troop, Hero buyerHero, bool withoutItemCost = false)
 	{
-		int num = Inner.GetTroopRecruitmentCost(troop, buyerHero, withoutItemCost);
+		ExplainedNumber result = Inner.GetTroopRecruitmentCost(troop, buyerHero, withoutItemCost);
 		if (GlobalSettings<WarAndAiTweaksSettings>.Instance.EnableBandTogether && GlobalSettings<WarAndAiTweaksSettings>.Instance.BandTogetherRecruitmentCost)
 		{
-			num = ApplyBandTogetherDiscount(num, buyerHero);
+			float resultNumber = result.ResultNumber;
+			int discounted = ApplyBandTogetherDiscount((int)Math.Round(resultNumber), buyerHero);
+			float delta = discounted - resultNumber;
+			if (Math.Abs(delta) > 0.0001f)
+			{
+				result.Add(delta, LanguageTranslater.L.T("[WarAI] Band Together discount", "[WarAI] Band Together discount"), (TextObject)null);
+			}
 		}
-		return num;
+		return result;
 	}
 
-	public override ExplainedNumber GetTotalWage(MobileParty mobileParty, bool desc)
+	public override ExplainedNumber GetTotalWage(MobileParty mobileParty, TroopRoster troopRoster, bool includeDescriptions = false)
 	{
-		//IL_0009: Unknown result type (might be due to invalid IL or missing references)
-		//IL_000e: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0180: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0181: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0185: Unknown result type (might be due to invalid IL or missing references)
-		ExplainedNumber totalWage = Inner.GetTotalWage(mobileParty, desc);
+		ExplainedNumber totalWage = Inner.GetTotalWage(mobileParty, troopRoster, includeDescriptions);
 		if (GlobalSettings<WarAndAiTweaksSettings>.Instance.EnableGarrisonWageModifier && mobileParty != null && mobileParty.IsGarrison)
 		{
 			float num = GlobalSettings<WarAndAiTweaksSettings>.Instance.GarrisonWageReductionMultiplier;
@@ -98,12 +97,12 @@ internal sealed class DelegatingPartyWageModel : PartyWageModel
 			}
 			if (Math.Abs(num - 1f) > 1E-06f)
 			{
-				float resultNumber = ((ExplainedNumber)(ref totalWage)).ResultNumber;
+				float resultNumber = totalWage.ResultNumber;
 				float num2 = resultNumber * num;
 				float num3 = num2 - resultNumber;
 				if (Math.Abs(num3) > 0.0001f)
 				{
-					((ExplainedNumber)(ref totalWage)).Add(num3, LanguageTranslater.L.T("[WarAI] Garrison wage multiplier", "[WarAI] Garrison wage multiplier"), (TextObject)null);
+					totalWage.Add(num3, LanguageTranslater.L.T("[WarAI] Garrison wage multiplier", "[WarAI] Garrison wage multiplier"), (TextObject)null);
 				}
 			}
 		}
@@ -112,11 +111,11 @@ internal sealed class DelegatingPartyWageModel : PartyWageModel
 			float num4 = CalculateBandTogetherDiscount(mobileParty.LeaderHero);
 			if (num4 > 0f && num4 < 1f)
 			{
-				float resultNumber2 = ((ExplainedNumber)(ref totalWage)).ResultNumber;
+				float resultNumber2 = totalWage.ResultNumber;
 				float num5 = resultNumber2 * (1f - num4);
 				if (Math.Abs(num5) > 0.0001f)
 				{
-					((ExplainedNumber)(ref totalWage)).Add(0f - num5, LanguageTranslater.L.T("[WarAI] Band Together discount", "[WarAI] Band Together discount"), (TextObject)null);
+					totalWage.Add(0f - num5, LanguageTranslater.L.T("[WarAI] Band Together discount", "[WarAI] Band Together discount"), (TextObject)null);
 				}
 			}
 		}

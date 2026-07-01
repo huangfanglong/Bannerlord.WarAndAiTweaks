@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -171,7 +171,7 @@ public class FiefManagementVM : ViewModel
 			{
 				if (item.Banner != null)
 				{
-					val = new ImageIdentifier(item.Banner);
+					val = new BannerImageIdentifier(item.Banner);
 				}
 			}
 			catch
@@ -316,7 +316,7 @@ public class FiefManagementVM : ViewModel
 			{
 				if (item.Banner != null)
 				{
-					val = new ImageIdentifier(item.Banner);
+					val = new BannerImageIdentifier(item.Banner);
 				}
 			}
 			catch
@@ -442,3 +442,4 @@ public class FiefManagementVM : ViewModel
 		}
 	}
 }
+

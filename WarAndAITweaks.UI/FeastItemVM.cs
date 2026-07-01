@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using FeastSystem;
 using TaleWorlds.CampaignSystem;
@@ -208,7 +208,7 @@ public class FeastItemVM : ViewModel
 		{
 			if (((val2 != null) ? val2.Banner : null) != null)
 			{
-				FactionBanner = new ImageIdentifierVM(new ImageIdentifier(val2.Banner));
+				FactionBanner = new BannerImageIdentifierVM(val2.Banner);
 			}
 		}
 		catch
@@ -219,7 +219,7 @@ public class FeastItemVM : ViewModel
 		{
 			if (((val != null) ? val.Banner : null) != null)
 			{
-				ClanBanner = new ImageIdentifierVM(new ImageIdentifier(val.Banner));
+				ClanBanner = new BannerImageIdentifierVM(val.Banner);
 			}
 		}
 		catch
@@ -228,7 +228,7 @@ public class FeastItemVM : ViewModel
 		}
 		AttendeeCount = ((List<Hero>)(object)feast.Attendees)?.Count ?? 0;
 		CampaignTime val3 = CampaignTime.Now - feast.StartTime;
-		int num = (int)((CampaignTime)(ref val3)).ToDays;
+		int num = (int)val3.ToDays;
 		Duration = ((num == 0) ? LanguageTranslater.L.S("feast_duration_just_started", "Just started") : ((object)LanguageTranslater.L.T("feast_duration_days", "{DAYS} day(s)").SetTextVariable("DAYS", num.ToString())).ToString());
 		if (feast.Attendees != null && ((List<Hero>)(object)feast.Attendees).Count > 0)
 		{
@@ -243,3 +243,6 @@ public class FeastItemVM : ViewModel
 		}
 	}
 }
+
+
+

@@ -35,7 +35,7 @@ public class WarAndAIManagementScreen : ScreenBase, IGameStateListener
 		//IL_0021: Expected O, but got Unknown
 		if (_mainLayer == null)
 		{
-			_mainLayer = new GauntletLayer(1, "GauntletLayer", true);
+			_mainLayer = new GauntletLayer("GauntletLayer", 1, true);
 			_datasource = new WarAndAiTweaksManagementVM(_warAndAiTweaksState, this);
 			_mainLayer.LoadMovie("WarAndAITweaksManagement", (ViewModel)(object)_datasource);
 			((ScreenLayer)_mainLayer).InputRestrictions.SetInputRestrictions(true, (InputUsageMask)7);
@@ -68,7 +68,7 @@ public class WarAndAIManagementScreen : ScreenBase, IGameStateListener
 
 	protected override void OnFrameTick(float dt)
 	{
-		((ScreenBase)this).OnFrameTick(dt);
+		base.OnFrameTick(dt);
 		GauntletLayer mainLayer = _mainLayer;
 		if (mainLayer != null && ((ScreenLayer)mainLayer).Input.IsKeyPressed((InputKey)16))
 		{
