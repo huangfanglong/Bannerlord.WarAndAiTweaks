@@ -54,6 +54,26 @@ public class SubModule : MBSubModuleBase
 		}
 	}
 
+	private void SafePatchAll(Harmony harmony)
+	{
+		foreach (var type in typeof(SubModule).Assembly.GetTypes())
+		{
+			try
+			{
+				var attr = type.GetCustomAttributes(typeof(HarmonyPatch), false);
+				if (attr.Length > 0)
+				{
+					var processor = harmony.CreateClassProcessor(type);
+					processor.Patch();
+				}
+			}
+			catch (Exception ex)
+			{
+				InformationManager.DisplayMessage(new InformationMessage($"[WAI] Failed to patch {type.FullName}: {ex.Message}", Colors.Red));
+			}
+		}
+	}
+
 	protected override void OnGameStart(Game game, IGameStarter gameStarter)
 	{
 		//IL_000f: Unknown result type (might be due to invalid IL or missing references)
@@ -61,7 +81,7 @@ public class SubModule : MBSubModuleBase
 		//IL_0042: Unknown result type (might be due to invalid IL or missing references)
 		//IL_0048: Expected O, but got Unknown
 		Harmony val = new Harmony("mod.octavius.bannerlord");
-		val.PatchAll(typeof(SubModule).Assembly);
+		SafePatchAll(val);
 		if (game.GameType is Campaign)
 		{
 			CampaignGameStarter val2 = (CampaignGameStarter)gameStarter;

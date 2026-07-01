@@ -15,19 +15,11 @@ namespace WarAndAITweaks.War_Peace_AI_Overhaul.StrategicAIModules.StrategicAI;
 [HarmonyPriority(999)]
 public class KingdomPlayerPeacePatch
 {
-	public static bool Prefix(KingdomWarItemVM item, ref KingdomDiplomacyVM __instance, KingdomDecision ____currentItemsUnresolvedDecision, Action<KingdomDecision> ____forceDecision)
+	public static bool Prefix(KingdomWarItemVM item, int tributeToPay, int tributeDurationInDays, KingdomDiplomacyVM __instance)
 	{
-		//IL_00fd: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0102: Unknown result type (might be due to invalid IL or missing references)
-		//IL_010c: Expected O, but got Unknown
 		if (!GlobalSettings<WarAndAiTweaksSettings>.Instance.EnablePlayerPeaceFix || !GlobalSettings<WarAndAiTweaksSettings>.Instance.EnableWarPeaceAIOverhaul)
 		{
 			return true;
-		}
-		if (____currentItemsUnresolvedDecision != null)
-		{
-			____forceDecision(____currentItemsUnresolvedDecision);
-			return false;
 		}
 		IFaction faction = ((KingdomDiplomacyItemVM)item).Faction2;
 		Kingdom val = (Kingdom)(object)((faction is Kingdom) ? faction : null);
