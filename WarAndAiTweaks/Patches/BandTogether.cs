@@ -8,7 +8,7 @@ namespace WarAndAiTweaks {
     //Band together logic for reducing troop recruitment cost
     [HarmonyPatch(typeof(DefaultPartyWageModel), "GetTroopRecruitmentCost")]
     public class PartyRecruitmentPatch {
-        static void Postfix(CharacterObject troop, Hero buyerHero, ref int __result) {
+        static void Postfix(CharacterObject troop, Hero buyerHero, ref ExplainedNumber __result) {
             //If disabled, skip logic
             if (!WarAndAiTweaks.Settings.EnableBandTogetherLogic)
                 return;
@@ -23,7 +23,7 @@ namespace WarAndAiTweaks {
 
                 //Get the percentage
                 int percent = (int)((buyerHero.Clan.Kingdom.Fiefs.Count * 100.0f) / 10);
-                __result = (__result * percent) / 100;
+                __result = new ExplainedNumber((__result.ResultNumber * percent) / 100, false, null);
                 return;
             } catch (Exception ex) {
                 return;
