@@ -13,26 +13,38 @@ using TaleWorlds.Library;
 namespace WarAndAiTweaks {
     [HarmonyPatch(typeof(DefaultArmyManagementCalculationModel), "GetMobilePartiesToCallToArmy")]
     [HarmonyPriority(999)]
+    //Feature to prevent player clan members from being called to AI armies
     public class PreventClanMembersBeingCalledToAiArmiesPatch {
         public static void Postfix(MobileParty leaderParty, List<MobileParty> __result) {
+            //If disabled, skip logic
             if (!WarAndAiTweaks.Settings.EnablePreventClanMembersFromBeingCalledToArmies)
                 return;
+
+            //Check for nulls
             if (leaderParty == null || leaderParty.LeaderHero == null || leaderParty.Army == null || __result == null || __result.Count == 0)
                 return;
+
+            //Start
             if (leaderParty.LeaderHero != Hero.MainHero) {
                 foreach (MobileParty party in __result.ToList()) { if (party.LeaderHero.Clan != null && party.LeaderHero.Clan == Clan.PlayerClan) { __result.Remove(party); } }
             }
         }
     }
 
+    //Feature for changes the amount of influence clans can spend on armies******************************************
     [HarmonyPatch(typeof(DefaultArmyManagementCalculationModel), "GetMobilePartiesToCallToArmy")]
     [HarmonyPriority(998)]
     public class ArmyCallPartiesPatch {
         public static void Postfix(MobileParty leaderParty, List<MobileParty> __result) {
+            //If disabled, skip logic
             if (!WarAndAiTweaks.Settings.EnableArmyInfluenceChanges)
                 return;
+
+            //Check for nulls
             if (leaderParty == null || leaderParty.LeaderHero == null || leaderParty.LeaderHero.PartyBelongedTo == null || leaderParty.LeaderHero.Clan == null || leaderParty.Army == null)
                 return;
+
+            //Start
             List<MobileParty> partiesEligible = new List<MobileParty>();
             List<MobileParty> partiesToCall = new List<MobileParty>();
             float armyLeaderInfuenceToSpend = leaderParty.LeaderHero.Clan.Influence * 0.8f;
@@ -46,6 +58,7 @@ namespace WarAndAiTweaks {
                     }
                 }
             }
+            //If prevent clan calls to army is on, remove them here to stop AI from considering them.
             if (WarAndAiTweaks.Settings.EnablePreventClanMembersFromBeingCalledToArmies) {
                 foreach (MobileParty party in partiesEligible.ToList()) {
                     if (party.LeaderHero.Clan == Clan.PlayerClan)
@@ -60,6 +73,7 @@ namespace WarAndAiTweaks {
                     float num4 = 1f - (float)(eligibleParty.Party.MemberRoster.TotalWounded / eligibleParty.Party.MemberRoster.TotalManCount);
                     float valueOfEligableParty = totalStrength / ((float)num3 + 0.1f) * num4;
                     float valueThreshold = 0.01f;
+                    //If the clan has less than 1000 influence, care about the value, otherwise, do not.
                     if (valueOfEligableParty > valueThreshold && leaderParty.LeaderHero.Clan.Influence <= 1000) {
                         armyLeaderInfuenceToSpend -= influenceToCall;
                         partiesToCall.Add(eligibleParty);
@@ -73,67 +87,92 @@ namespace WarAndAiTweaks {
         }
     }
 
+    //Feature to change the amount of influence it costs to call parties by ruler by 1/2
     [HarmonyPatch(typeof(DefaultArmyManagementCalculationModel), "CalculatePartyInfluenceCost")]
     [HarmonyPriority(999)]
     public class KingdomRulerCallPartyPatch {
         public static void Postfix(MobileParty armyLeaderParty, ref int __result) {
+
+            //If disabled, skip logic
             if (!WarAndAiTweaks.Settings.EnableRulerInfluenceChange)
                 return;
+
+            //Check for nulls
             if (armyLeaderParty == null || armyLeaderParty.LeaderHero == null || armyLeaderParty.LeaderHero.Clan == null || armyLeaderParty.LeaderHero.Clan.Kingdom == null)
                 return;
+
+            //Start
             if (armyLeaderParty.LeaderHero == armyLeaderParty.LeaderHero.Clan.Kingdom.RulingClan.Leader)
                 __result = __result / 2;
         }
     }
 
+    //Feature to change the amount of influence it costs to call parties by ruler by 1/2
     [HarmonyPatch(typeof(Kingdom), "CreateArmy")]
     [HarmonyPriority(999)]
     public class CreateArmyPatch {
         public static bool Prefix(Hero armyLeader, Settlement targetSettlement, Army.ArmyTypes selectedArmyType) {
             if (!WarAndAiTweaks.Settings.EnableMilitaryLogicChanges)
                 return true;
+
             if (armyLeader == Hero.MainHero)
                 return true;
+
             if (selectedArmyType != Army.ArmyTypes.Besieger && selectedArmyType != Army.ArmyTypes.Defender)
                 return false;
+
             return true;
         }
     }
 
+    //Feature to change the behavior of faction military
     [HarmonyPatch(typeof(AiMilitaryBehavior), "AiHourlyTick")]
     [HarmonyPriority(999)]
     public class PartyThinkPartyPatch {
         public static void Postfix(MobileParty mobileParty, ref PartyThinkParams p) {
             if (!WarAndAiTweaks.Settings.EnableMilitaryLogicChanges)
                 return;
+
             if (!mobileParty.IsLordParty || mobileParty.LeaderHero == null || mobileParty.LeaderHero.Clan == null || mobileParty.LeaderHero.Clan.Kingdom == null)
                 return;
+
             if (mobileParty.Army != null && mobileParty.Army.LeaderParty != mobileParty)
                 return;
+
+            // Dont run changes on parties that are besieging, instead cancel the siege if the parties strength is lower than the settlement.
             if (mobileParty.BesiegedSettlement != null) {
                 if (mobileParty == MobileParty.MainParty)
                     return;
+
+                // Get besieged settlement total strength
                 float besiegedSettlementStrength = 0;
                 foreach (MobileParty party in mobileParty.BesiegedSettlement.Parties)
                     besiegedSettlementStrength += party.Party.EstimatedStrength;
+                // END SIEGE IF SIEGING PARTY IS LESS STRENGTH THAN SETTLEMENT
                 if (mobileParty.GetTotalLandStrengthWithFollowers(true) <= besiegedSettlementStrength)
                     mobileParty.BesiegerCamp.RemoveAllSiegeParties();
+                // End any further logic
                 return;
             }
 
+            //If nothing to attack, stop the logic
             List<IFaction> factionsAtWarWithSettlements = new List<IFaction>();
             var EnemyFactions = mobileParty.LeaderHero.Clan.Kingdom.FactionsAtWarWith.Where(x => x.Settlements.Count > 0);
             if (EnemyFactions.Count() <= 0)
                 return;
+
             foreach (IFaction faction in EnemyFactions)
                 factionsAtWarWithSettlements.Add(faction);
+
             if (factionsAtWarWithSettlements.Count <= 0)
                 return;
 
             bool hasArmy = mobileParty.Army != null;
             Clan clan = mobileParty.LeaderHero.Clan;
             Kingdom kingdom = clan.Kingdom;
+
             List<float> patrolScores = new List<float>();
+
             List<Settlement> weakSettlements = getWeakSettlementsToPatrol(mobileParty);
 
             foreach ((AIBehaviorData, float) keyValuePair in p.AIBehaviorScores.ToList()) {
