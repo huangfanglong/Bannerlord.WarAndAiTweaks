@@ -40,18 +40,9 @@ public class FiefManagementVM : ViewModel
 	{
 		get
 		{
-			Hero mainHero = Hero.MainHero;
-			object obj;
-			if (mainHero == null)
-			{
-				obj = null;
-			}
-			else
-			{
-				Clan clan = mainHero.Clan;
-				obj = ((clan != null) ? clan.Kingdom : null);
-			}
-			return obj != null && Hero.MainHero == Hero.MainHero.Clan.Kingdom.Leader;
+			if (Hero.MainHero?.Clan?.Kingdom == null)
+				return false;
+			return Hero.MainHero == Hero.MainHero.Clan.Kingdom.Leader;
 		}
 	}
 
@@ -74,7 +65,7 @@ public class FiefManagementVM : ViewModel
 
 	public FiefManagementVM()
 	{
-		RefreshData();
+		FiefClans = new MBBindingList<FiefItemVM>();
 	}
 
 	public void RefreshData()

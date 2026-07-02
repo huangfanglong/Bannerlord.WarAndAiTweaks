@@ -47,6 +47,9 @@ public class MilitaryManagementVM : ViewModel
 	public string ArmyStatusHeader => LanguageTranslater.L.S("military_army_status_header", "Army Status");
 
 	[DataSourceProperty]
+	public string ArmyCreationHeader => LanguageTranslater.L.S("military_army_creation_header", "Army Creation");
+
+	[DataSourceProperty]
 	public bool IsAnyFactionSelected
 	{
 		get
@@ -119,10 +122,7 @@ public class MilitaryManagementVM : ViewModel
 
 	public MilitaryManagementVM()
 	{
-		ValidateGlobalAttackTarget();
-		Settlement globalAttackTarget = _globalAttackTarget;
-		SelectedAttackTarget = ((globalAttackTarget == null) ? null : ((object)globalAttackTarget.Name)?.ToString()) ?? LanguageTranslater.L.S("None", "None");
-		RefreshData();
+		SelectedAttackTarget = LanguageTranslater.L.S("None", "None");
 	}
 
 	public void RefreshData()

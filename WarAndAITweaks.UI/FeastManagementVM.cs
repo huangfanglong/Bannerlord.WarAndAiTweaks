@@ -60,7 +60,7 @@ public class FeastManagementVM : ViewModel
 
 	public FeastManagementVM()
 	{
-		RefreshData();
+		ActiveFeasts = new MBBindingList<FeastItemVM>();
 	}
 
 	public void RefreshData()

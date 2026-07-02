@@ -1,5 +1,8 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
+using TaleWorlds.Engine.GauntletUI;
+using TaleWorlds.ScreenSystem;
 using Bannerlord.UIExtenderEx;
 using ClanRespawn;
 using FeastSystem;
@@ -30,10 +33,10 @@ public class SubModule : MBSubModuleBase
 {
 	public static readonly string Name = typeof(SubModule).Namespace;
 
+	public static bool RequestClose;
+
 	protected override void OnSubModuleLoad()
 	{
-		//IL_000d: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0013: Expected O, but got Unknown
 		UIExtender val = new UIExtender("WarAndAiTweaks.DiplomacyUI");
 		val.Register(typeof(SubModule).Assembly);
 		val.Enable();
@@ -41,9 +44,6 @@ public class SubModule : MBSubModuleBase
 
 	public override void OnGameInitializationFinished(Game game)
 	{
-		//IL_0027: Unknown result type (might be due to invalid IL or missing references)
-		//IL_002c: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0036: Expected O, but got Unknown
 		try
 		{
 			string selectedValue = GlobalSettings<WarAndAiTweaksSettings>.Instance.ManagementUIHotkey.SelectedValue;
@@ -76,10 +76,6 @@ public class SubModule : MBSubModuleBase
 
 	protected override void OnGameStart(Game game, IGameStarter gameStarter)
 	{
-		//IL_000f: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0015: Expected O, but got Unknown
-		//IL_0042: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0048: Expected O, but got Unknown
 		Harmony val = new Harmony("mod.octavius.bannerlord");
 		SafePatchAll(val);
 		if (game.GameType is Campaign)
@@ -127,28 +123,62 @@ public class SubModule : MBSubModuleBase
 		}
 	}
 
-	protected override void OnApplicationTick(float dt)
+	private static void LogWAI(string msg)
 	{
-		//IL_00b3: Unknown result type (might be due to invalid IL or missing references)
-		//IL_00b8: Unknown result type (might be due to invalid IL or missing references)
-		//IL_00c2: Expected O, but got Unknown
-		//IL_0024: Unknown result type (might be due to invalid IL or missing references)
-		//IL_003a: Unknown result type (might be due to invalid IL or missing references)
 		try
 		{
-			string selectedValue = GlobalSettings<WarAndAiTweaksSettings>.Instance.ManagementUIHotkey.SelectedValue;
-			if (!Enum.TryParse<InputKey>(selectedValue, ignoreCase: true, out InputKey result))
+			string path = @"C:\ProgramData\Mount and Blade II Bannerlord\logs\wai_debug.log";
+			File.AppendAllText(path, $"{DateTime.Now:HH:mm:ss.fff} {msg}\n");
+		}
+		catch { }
+	}
+
+	protected override void OnApplicationTick(float dt)
+	{
+		try
+		{
+			if (GameStateManager.Current == null || Campaign.Current == null)
 			{
-				result = (InputKey)16;
+				return;
 			}
-			if ((Input.IsKeyDown((InputKey)56) || Input.IsKeyDown((InputKey)184)) && Input.IsKeyPressed(result) && !GameStateManager.Current.GameStates.Any((GameState s) => s is WarAndAiTweaksManagementState))
+
+			if ((Input.IsKeyDown(InputKey.LeftAlt) || Input.IsKeyDown(InputKey.RightAlt)) && Input.IsKeyPressed(InputKey.Q))
 			{
-				GameStateManager.Current.PushState((GameState)(object)GameStateManager.Current.CreateState<WarAndAiTweaksManagementState>(), 0);
+				LogWAI("Alt+Q pressed");
+				if (GameStateManager.Current.ActiveState is WarAndAiTweaksManagementState)
+				{
+					LogWAI("State active, PopState");
+					GameStateManager.Current.PopState(0);
+					LogWAI("PopState done");
+				}
+				else
+				{
+					LogWAI("Creating state");
+					WarAndAiTweaksManagementState state = GameStateManager.Current.CreateState<WarAndAiTweaksManagementState>();
+					LogWAI("PushState");
+					GameStateManager.Current.PushState(state, 0);
+					LogWAI("PushState done");
+				}
 			}
+
+ 		if (RequestClose && GameStateManager.Current.ActiveState is WarAndAiTweaksManagementState)
+ 			{
+ 				RequestClose = false;
+ 				LogWAI("RequestClose -> PopState");
+ 				GameStateManager.Current.PopState(0);
+ 				LogWAI("PopState done");
+ 			}
+
+ 			if (Input.IsKeyPressed(InputKey.Escape) && GameStateManager.Current.ActiveState is WarAndAiTweaksManagementState)
+ 			{
+ 				LogWAI("Escape pressed, PopState");
+ 				GameStateManager.Current.PopState(0);
+ 				LogWAI("PopState done");
+ 			}
 		}
 		catch (Exception ex)
 		{
-			InformationManager.DisplayMessage(new InformationMessage("[WarAndAiTweaks] Error in OnApplicationTick: " + ex.Message, Colors.Red));
+			LogWAI($"EXCEPTION: {ex.Message}\n{ex.StackTrace}");
 		}
 	}
 
@@ -174,4 +204,3 @@ public class SubModule : MBSubModuleBase
 		}
 	}
 }
-

@@ -1,10 +1,14 @@
+using System;
+using System.IO;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.Core;
 using TaleWorlds.Library;
+using TaleWorlds.MountAndBlade;
+using WarAndAiTweaks;
 
 namespace WarAndAITweaks.UI;
 
-public class WarAndAiTweaksManagementVM : ViewModel
+	public class WarAndAiTweaksManagementVM : ViewModel
 {
 	private WarAndAiTweaksManagementState _state;
 
@@ -385,6 +389,7 @@ public class WarAndAiTweaksManagementVM : ViewModel
 
 	public void ExecuteSelectFeastsTab()
 	{
+		LogWAI("Tab click: Feasts");
 		IsFeastsTabSelected = true;
 		IsMarshalTabSelected = false;
 		IsMilitaryTabSelected = false;
@@ -395,6 +400,7 @@ public class WarAndAiTweaksManagementVM : ViewModel
 
 	public void ExecuteSelectMarshalTab()
 	{
+		LogWAI("Tab click: Marshal");
 		IsFeastsTabSelected = false;
 		IsMarshalTabSelected = true;
 		IsMilitaryTabSelected = false;
@@ -405,6 +411,7 @@ public class WarAndAiTweaksManagementVM : ViewModel
 
 	public void ExecuteSelectMilitaryTab()
 	{
+		LogWAI("Tab click: Military");
 		IsFeastsTabSelected = false;
 		IsMarshalTabSelected = false;
 		IsMilitaryTabSelected = true;
@@ -415,6 +422,7 @@ public class WarAndAiTweaksManagementVM : ViewModel
 
 	public void ExecuteSelectFief()
 	{
+		LogWAI("Tab click: Fief");
 		IsFeastsTabSelected = false;
 		IsMarshalTabSelected = false;
 		IsMilitaryTabSelected = false;
@@ -425,6 +433,7 @@ public class WarAndAiTweaksManagementVM : ViewModel
 
 	public void ExecuteSelectDiplomacyTab()
 	{
+		LogWAI("Tab click: Diplomacy");
 		IsFeastsTabSelected = false;
 		IsMarshalTabSelected = false;
 		IsMilitaryTabSelected = false;
@@ -432,20 +441,47 @@ public class WarAndAiTweaksManagementVM : ViewModel
 		IsFiefTabSelected = false;
 	}
 
-	public WarAndAiTweaksManagementVM(WarAndAiTweaksManagementState state, WarAndAIManagementScreen screen)
-	{
-		_state = state;
-		_screen = screen;
-		RefreshWelcomeText();
-		_feastManagement = new FeastManagementVM();
-		_militaryManagement = new MilitaryManagementVM();
-		_fiefManagement = new FiefManagementVM();
-		_marshalManagement = new MarshalManagementVM();
-		IsFeastsTabSelected = false;
-		IsMarshalTabSelected = false;
-		IsMilitaryTabSelected = true;
-		IsFiefTabSelected = false;
-	}
+  private static void LogWAI(string msg)
+  {
+   try
+   {
+    string path = @"C:\ProgramData\Mount and Blade II Bannerlord\logs\wai_debug.log";
+    File.AppendAllText(path, $"{DateTime.Now:HH:mm:ss.fff} [VM] {msg}\n");
+   }
+   catch { }
+  }
+
+  public WarAndAiTweaksManagementVM(WarAndAiTweaksManagementState state, WarAndAIManagementScreen screen)
+   {
+    LogWAI("ctor start");
+   _state = state;
+   _screen = screen;
+   try
+   {
+    RefreshWelcomeText();
+    File.AppendAllText(@"C:\ProgramData\Mount and Blade II Bannerlord\logs\wai_debug.log", $"{DateTime.Now:HH:mm:ss.fff} [VM] WelcomeText refreshed\n");
+    File.AppendAllText(@"C:\ProgramData\Mount and Blade II Bannerlord\logs\wai_debug.log", $"{DateTime.Now:HH:mm:ss.fff} [VM] creating FeastVM...\n");
+    _feastManagement = new FeastManagementVM();
+    File.AppendAllText(@"C:\ProgramData\Mount and Blade II Bannerlord\logs\wai_debug.log", $"{DateTime.Now:HH:mm:ss.fff} [VM] FeastVM done\n");
+    File.AppendAllText(@"C:\ProgramData\Mount and Blade II Bannerlord\logs\wai_debug.log", $"{DateTime.Now:HH:mm:ss.fff} [VM] creating MilitaryVM...\n");
+    _militaryManagement = new MilitaryManagementVM();
+    File.AppendAllText(@"C:\ProgramData\Mount and Blade II Bannerlord\logs\wai_debug.log", $"{DateTime.Now:HH:mm:ss.fff} [VM] MilitaryVM done\n");
+    File.AppendAllText(@"C:\ProgramData\Mount and Blade II Bannerlord\logs\wai_debug.log", $"{DateTime.Now:HH:mm:ss.fff} [VM] creating FiefVM...\n");
+    _fiefManagement = new FiefManagementVM();
+    File.AppendAllText(@"C:\ProgramData\Mount and Blade II Bannerlord\logs\wai_debug.log", $"{DateTime.Now:HH:mm:ss.fff} [VM] FiefVM done\n");
+    File.AppendAllText(@"C:\ProgramData\Mount and Blade II Bannerlord\logs\wai_debug.log", $"{DateTime.Now:HH:mm:ss.fff} [VM] creating MarshalVM...\n");
+    _marshalManagement = new MarshalManagementVM();
+    File.AppendAllText(@"C:\ProgramData\Mount and Blade II Bannerlord\logs\wai_debug.log", $"{DateTime.Now:HH:mm:ss.fff} [VM] MarshalVM done\n");
+   }
+   catch (Exception ex)
+   {
+    File.AppendAllText(@"C:\ProgramData\Mount and Blade II Bannerlord\logs\wai_debug.log", $"{DateTime.Now:HH:mm:ss.fff} [VM] ctor ERROR: {ex.Message}\n{ex.StackTrace}\n");
+   }
+   IsFeastsTabSelected = false;
+   IsMarshalTabSelected = false;
+   IsMilitaryTabSelected = true;
+   IsFiefTabSelected = false;
+  }
 
 	public override void OnFinalize()
 	{
@@ -481,11 +517,13 @@ public class WarAndAiTweaksManagementVM : ViewModel
 
 	public void ExecuteCancel()
 	{
-		GameStateManager.Current.PopState(0);
+		LogWAI("ExecuteCancel");
+		SubModule.RequestClose = true;
 	}
 
 	public void ExecuteDone()
 	{
-		GameStateManager.Current.PopState(0);
+		LogWAI("ExecuteDone");
+		SubModule.RequestClose = true;
 	}
 }
