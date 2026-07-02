@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Linq;
 using TaleWorlds.Engine.GauntletUI;
 using TaleWorlds.ScreenSystem;
@@ -130,16 +129,6 @@ public class SubModule : MBSubModuleBase
 		}
 	}
 
-	private static void LogWAI(string msg)
-	{
-		try
-		{
-			string path = @"C:\ProgramData\Mount and Blade II Bannerlord\logs\wai_debug.log";
-			File.AppendAllText(path, $"{DateTime.Now:HH:mm:ss.fff} {msg}\n");
-		}
-		catch { }
-	}
-
  	protected override void OnApplicationTick(float dt)
  	{
  		try
@@ -151,7 +140,6 @@ public class SubModule : MBSubModuleBase
 
  			if ((Input.IsKeyDown(InputKey.LeftAlt) || Input.IsKeyDown(InputKey.RightAlt)) && Input.IsKeyPressed(InputKey.Q))
  			{
- 				LogWAI("Alt+Q pressed");
  				if (_isUIOpen)
  				{
  					CloseWaiOverlay();
@@ -164,13 +152,12 @@ public class SubModule : MBSubModuleBase
 
  			if (Input.IsKeyPressed(InputKey.Escape) && _isUIOpen)
  			{
- 				LogWAI("Escape pressed, close overlay");
  				CloseWaiOverlay();
  			}
  		}
  		catch (Exception ex)
  		{
- 			LogWAI($"EXCEPTION: {ex.Message}\n{ex.StackTrace}");
+ 			InformationManager.DisplayMessage(new InformationMessage($"[WAI] {ex.Message}", Colors.Red));
  		}
  	}
 
@@ -178,7 +165,6 @@ public class SubModule : MBSubModuleBase
  	{
  		try
  		{
- 			LogWAI("OpenWaiOverlay start");
  			_waiVM = new WarAndAiTweaksManagementVM();
  			_waiLayer = new GauntletLayer("WaiOverlay", 10000, false);
  			_waiLayer.LoadMovie("WarAndAITweaksManagement", (ViewModel)(object)_waiVM);
@@ -188,11 +174,10 @@ public class SubModule : MBSubModuleBase
  			ScreenManager.TopScreen.AddLayer((ScreenLayer)(object)_waiLayer);
  			IsUIActive = true;
  			_isUIOpen = true;
- 			LogWAI("OpenWaiOverlay done");
  		}
  		catch (Exception ex)
  		{
- 			LogWAI($"OpenWaiOverlay ERROR: {ex.Message}\n{ex.StackTrace}");
+ 			InformationManager.DisplayMessage(new InformationMessage($"[WAI] OpenWaiOverlay ERROR: {ex.Message}", Colors.Red));
  		}
  	}
 
@@ -200,7 +185,6 @@ public class SubModule : MBSubModuleBase
  	{
  		try
  		{
- 			LogWAI("CloseWaiOverlay start");
  			IsUIActive = false;
  			if (_waiLayer != null)
  			{
@@ -210,11 +194,10 @@ public class SubModule : MBSubModuleBase
  			}
  			_waiVM = null;
  			_isUIOpen = false;
- 			LogWAI("CloseWaiOverlay done");
  		}
  		catch (Exception ex)
  		{
- 			LogWAI($"CloseWaiOverlay ERROR: {ex.Message}\n{ex.StackTrace}");
+ 			InformationManager.DisplayMessage(new InformationMessage($"[WAI] CloseWaiOverlay ERROR: {ex.Message}", Colors.Red));
  		}
  	}
 

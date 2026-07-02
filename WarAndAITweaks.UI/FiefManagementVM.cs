@@ -1,7 +1,6 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
 using System.Linq;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.Actions;
@@ -71,7 +70,6 @@ public class FiefManagementVM : ViewModel
 
 	public void RefreshData()
 	{
-		LogWAI("RefreshData start");
 		FiefClans = new MBBindingList<FiefItemVM>();
 		try
 		{
@@ -89,38 +87,24 @@ public class FiefManagementVM : ViewModel
 			Kingdom val = (Kingdom)obj;
 			if (val == null)
 			{
-				LogWAI("RefreshData: no kingdom, returning");
-				return;
+						return;
 			}
-			LogWAI("RefreshData: kingdom found, iterating clans");
-			int count = 0;
+				int count = 0;
 			foreach (Clan item in from c in (IEnumerable<Clan>)val.Clans
 				where !c.IsEliminated
 				orderby ((object)c.Name).ToString()
 				select c)
 			{
-				LogWAI($"RefreshData: creating FiefItemVM for {item.Name} ({count})");
 				((Collection<FiefItemVM>)(object)FiefClans).Add(new FiefItemVM(item));
-				LogWAI($"RefreshData: FiefItemVM done ({count})");
 				count++;
 			}
-			LogWAI($"RefreshData: done, {count} items");
-		}
+			}
 		catch (Exception ex)
 		{
-			LogWAI($"RefreshData ERROR: {ex.Message}");
-			InformationManager.DisplayMessage(new InformationMessage(((object)LanguageTranslater.L.T("error_loading_fief_data", "Error loading fief data: {EX}").SetTextVariable("EX", ex.Message)).ToString(), Colors.Red));
+				InformationManager.DisplayMessage(new InformationMessage(((object)LanguageTranslater.L.T("error_loading_fief_data", "Error loading fief data: {EX}").SetTextVariable("EX", ex.Message)).ToString(), Colors.Red));
 		}
 	}
 
-	private static void LogWAI(string msg)
-	{
-		try
-		{
-			File.AppendAllText(@"C:\ProgramData\Mount and Blade II Bannerlord\logs\wai_debug.log", $"{DateTime.Now:HH:mm:ss.fff} [FiefVM] {msg}\n");
-		}
-		catch { }
-	}
 
 	public void ExecuteGrantFiefTitle()
 	{
@@ -449,4 +433,3 @@ public class FiefManagementVM : ViewModel
 		}
 	}
 }
-

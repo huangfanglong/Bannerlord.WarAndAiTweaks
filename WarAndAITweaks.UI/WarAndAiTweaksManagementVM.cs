@@ -1,5 +1,4 @@
 using System;
-using System.IO;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.Core;
 using TaleWorlds.Library;
@@ -390,7 +389,6 @@ namespace WarAndAITweaks.UI;
 
 	public void ExecuteSelectFeastsTab()
 	{
-		LogWAI("Tab click: Feasts");
 		IsFeastsTabSelected = true;
 		IsMarshalTabSelected = false;
 		IsMilitaryTabSelected = false;
@@ -401,7 +399,6 @@ namespace WarAndAITweaks.UI;
 
 	public void ExecuteSelectMarshalTab()
 	{
-		LogWAI("Tab click: Marshal");
 		IsFeastsTabSelected = false;
 		IsMarshalTabSelected = true;
 		IsMilitaryTabSelected = false;
@@ -412,7 +409,6 @@ namespace WarAndAITweaks.UI;
 
 	public void ExecuteSelectMilitaryTab()
 	{
-		LogWAI("Tab click: Military");
 		IsFeastsTabSelected = false;
 		IsMarshalTabSelected = false;
 		IsMilitaryTabSelected = true;
@@ -423,7 +419,6 @@ namespace WarAndAITweaks.UI;
 
 	public void ExecuteSelectFief()
 	{
-		LogWAI("Tab click: Fief");
 		IsFeastsTabSelected = false;
 		IsMarshalTabSelected = false;
 		IsMilitaryTabSelected = false;
@@ -434,7 +429,6 @@ namespace WarAndAITweaks.UI;
 
 	public void ExecuteSelectDiplomacyTab()
 	{
-		LogWAI("Tab click: Diplomacy");
 		IsFeastsTabSelected = false;
 		IsMarshalTabSelected = false;
 		IsMilitaryTabSelected = false;
@@ -442,51 +436,24 @@ namespace WarAndAITweaks.UI;
 		IsFiefTabSelected = false;
 	}
 
-  private static void LogWAI(string msg)
-  {
-   try
-   {
-    string path = @"C:\ProgramData\Mount and Blade II Bannerlord\logs\wai_debug.log";
-    File.AppendAllText(path, $"{DateTime.Now:HH:mm:ss.fff} [VM] {msg}\n");
-   }
-   catch { }
-  }
-
   public WarAndAiTweaksManagementVM() : this(null, null)
    {
    }
 
   public WarAndAiTweaksManagementVM(WarAndAiTweaksManagementState state, WarAndAIManagementScreen screen)
    {
-    LogWAI("ctor start");
     _state = state;
     _screen = screen;
-   try
-   {
     RefreshWelcomeText();
-    File.AppendAllText(@"C:\ProgramData\Mount and Blade II Bannerlord\logs\wai_debug.log", $"{DateTime.Now:HH:mm:ss.fff} [VM] WelcomeText refreshed\n");
-    File.AppendAllText(@"C:\ProgramData\Mount and Blade II Bannerlord\logs\wai_debug.log", $"{DateTime.Now:HH:mm:ss.fff} [VM] creating FeastVM...\n");
     _feastManagement = new FeastManagementVM();
-    File.AppendAllText(@"C:\ProgramData\Mount and Blade II Bannerlord\logs\wai_debug.log", $"{DateTime.Now:HH:mm:ss.fff} [VM] FeastVM done\n");
-    File.AppendAllText(@"C:\ProgramData\Mount and Blade II Bannerlord\logs\wai_debug.log", $"{DateTime.Now:HH:mm:ss.fff} [VM] creating MilitaryVM...\n");
     _militaryManagement = new MilitaryManagementVM();
-    File.AppendAllText(@"C:\ProgramData\Mount and Blade II Bannerlord\logs\wai_debug.log", $"{DateTime.Now:HH:mm:ss.fff} [VM] MilitaryVM done\n");
-    File.AppendAllText(@"C:\ProgramData\Mount and Blade II Bannerlord\logs\wai_debug.log", $"{DateTime.Now:HH:mm:ss.fff} [VM] creating FiefVM...\n");
     _fiefManagement = new FiefManagementVM();
-    File.AppendAllText(@"C:\ProgramData\Mount and Blade II Bannerlord\logs\wai_debug.log", $"{DateTime.Now:HH:mm:ss.fff} [VM] FiefVM done\n");
-    File.AppendAllText(@"C:\ProgramData\Mount and Blade II Bannerlord\logs\wai_debug.log", $"{DateTime.Now:HH:mm:ss.fff} [VM] creating MarshalVM...\n");
     _marshalManagement = new MarshalManagementVM();
-    File.AppendAllText(@"C:\ProgramData\Mount and Blade II Bannerlord\logs\wai_debug.log", $"{DateTime.Now:HH:mm:ss.fff} [VM] MarshalVM done\n");
+    IsFeastsTabSelected = false;
+    IsMarshalTabSelected = false;
+    IsMilitaryTabSelected = true;
+    IsFiefTabSelected = false;
    }
-   catch (Exception ex)
-   {
-    File.AppendAllText(@"C:\ProgramData\Mount and Blade II Bannerlord\logs\wai_debug.log", $"{DateTime.Now:HH:mm:ss.fff} [VM] ctor ERROR: {ex.Message}\n{ex.StackTrace}\n");
-   }
-   IsFeastsTabSelected = false;
-   IsMarshalTabSelected = false;
-   IsMilitaryTabSelected = true;
-   IsFiefTabSelected = false;
-  }
 
 	public override void OnFinalize()
 	{
@@ -522,13 +489,11 @@ namespace WarAndAITweaks.UI;
 
 	public void ExecuteCancel()
 	{
-		LogWAI("ExecuteCancel");
 		OnCloseRequested?.Invoke();
 	}
 
 	public void ExecuteDone()
 	{
-		LogWAI("ExecuteDone");
 		OnCloseRequested?.Invoke();
 	}
 }
