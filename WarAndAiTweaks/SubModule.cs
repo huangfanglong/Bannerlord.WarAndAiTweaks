@@ -33,6 +33,8 @@ public class SubModule : MBSubModuleBase
 {
 	public static readonly string Name = typeof(SubModule).Namespace;
 
+	public static bool IsUIActive;
+
 	private GauntletLayer _waiLayer;
 
 	private WarAndAiTweaksManagementVM _waiVM;
@@ -178,9 +180,13 @@ public class SubModule : MBSubModuleBase
  		{
  			LogWAI("OpenWaiOverlay start");
  			_waiVM = new WarAndAiTweaksManagementVM();
- 			_waiLayer = new GauntletLayer("WaiOverlay", 1, false);
+ 			_waiLayer = new GauntletLayer("WaiOverlay", 10000, false);
  			_waiLayer.LoadMovie("WarAndAITweaksManagement", (ViewModel)(object)_waiVM);
+ 			((ScreenLayer)_waiLayer).IsFocusLayer = true;
+ 			((ScreenLayer)_waiLayer).InputRestrictions.SetInputRestrictions(true, InputUsageMask.All);
+ 			ScreenManager.TrySetFocus((ScreenLayer)(object)_waiLayer);
  			ScreenManager.TopScreen.AddLayer((ScreenLayer)(object)_waiLayer);
+ 			IsUIActive = true;
  			_isUIOpen = true;
  			LogWAI("OpenWaiOverlay done");
  		}
@@ -195,8 +201,10 @@ public class SubModule : MBSubModuleBase
  		try
  		{
  			LogWAI("CloseWaiOverlay start");
+ 			IsUIActive = false;
  			if (_waiLayer != null)
  			{
+ 				ScreenManager.TryLoseFocus((ScreenLayer)(object)_waiLayer);
  				ScreenManager.TopScreen.RemoveLayer((ScreenLayer)(object)_waiLayer);
  				_waiLayer = null;
  			}
