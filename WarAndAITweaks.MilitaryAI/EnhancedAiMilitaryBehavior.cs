@@ -505,7 +505,8 @@ public class EnhancedAiMilitaryBehavior : CampaignBehaviorBase
 			}
 		}
 		List<Settlement> list = ((IEnumerable<Settlement>)val2).OrderBy((Settlement s) => party2.GetPosition2D.Distance(s.GetPosition2D)).ToList();
-		float num2 = (flag ? party2.GetTotalLandStrengthWithFollowers(true) : (party2.Party.EstimatedStrength + MilitaryAIHelpers.GetCallMobilePartiesForArmy(party2).Sum((MobileParty x) => x.Party.EstimatedStrength)));
+		List<MobileParty> armyMembers = MilitaryAIHelpers.GetCallMobilePartiesForArmy(party2);
+		float num2 = (flag ? party2.GetTotalLandStrengthWithFollowers(true) : (party2.Party.EstimatedStrength + armyMembers.Sum((MobileParty x) => x.Party.EstimatedStrength)));
 		foreach (Settlement item2 in list)
 		{
 			Hero owner = item2.Owner;
@@ -551,7 +552,7 @@ public class EnhancedAiMilitaryBehavior : CampaignBehaviorBase
 				{
 					if (!flag && !partyClan.IsUnderMercenaryService)
 					{
-						val.CreateArmy(party2.LeaderHero, item2, Army.ArmyTypes.Defender);
+						val.CreateArmy(party2.LeaderHero, item2, Army.ArmyTypes.Defender, new MBReadOnlyList<MobileParty>(armyMembers));
 						HandleArmyCreation(party2);
 					}
 					SendToDefendWorkAround(party2, p, item2);
@@ -566,7 +567,7 @@ public class EnhancedAiMilitaryBehavior : CampaignBehaviorBase
 			}
 			if (!flag && !partyClan.IsUnderMercenaryService)
 			{
-				val.CreateArmy(party2.LeaderHero, item2, Army.ArmyTypes.Defender);
+				val.CreateArmy(party2.LeaderHero, item2, Army.ArmyTypes.Defender, new MBReadOnlyList<MobileParty>(armyMembers));
 				HandleArmyCreation(party2);
 			}
 			SendToDefendWorkAround(party2, p, item2);
@@ -617,10 +618,11 @@ public class EnhancedAiMilitaryBehavior : CampaignBehaviorBase
 			float totalSpendableInfluenceFromClan = MilitaryAIHelpers.GetTotalSpendableInfluenceFromClan(val);
 			if (!(totalSpendableInfluenceFromClan < 50f) && (val != Hero.MainHero.Clan || GlobalSettings<WarAndAiTweaksSettings>.Instance.EnablePlayerClanArmyCreation))
 			{
-				float num2 = MilitaryAIHelpers.GetCallMobilePartiesForArmy(party).Sum((MobileParty x) => x.Party.EstimatedStrength);
+				List<MobileParty> armyMembers = MilitaryAIHelpers.GetCallMobilePartiesForArmy(party);
+				float num2 = armyMembers.Sum((MobileParty x) => x.Party.EstimatedStrength);
 				if ((double)num2 >= (double)num * 1.5 && num2 > 600f && !val.IsUnderMercenaryService)
 				{
-					val2.CreateArmy(party.LeaderHero, item, Army.ArmyTypes.Besieger);
+					val2.CreateArmy(party.LeaderHero, item, Army.ArmyTypes.Besieger, new MBReadOnlyList<MobileParty>(armyMembers));
 					HandleArmyCreation(party);
 					return true;
 				}
