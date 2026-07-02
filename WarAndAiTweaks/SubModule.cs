@@ -33,13 +33,18 @@ public class SubModule : MBSubModuleBase
 {
 	public static readonly string Name = typeof(SubModule).Namespace;
 
-	public static bool RequestClose;
+	private GauntletLayer _waiLayer;
+
+	private WarAndAiTweaksManagementVM _waiVM;
+
+	private bool _isUIOpen;
 
 	protected override void OnSubModuleLoad()
 	{
 		UIExtender val = new UIExtender("WarAndAiTweaks.DiplomacyUI");
 		val.Register(typeof(SubModule).Assembly);
 		val.Enable();
+		WarAndAiTweaksManagementVM.OnCloseRequested = CloseWaiOverlay;
 	}
 
 	public override void OnGameInitializationFinished(Game game)
@@ -133,54 +138,77 @@ public class SubModule : MBSubModuleBase
 		catch { }
 	}
 
-	protected override void OnApplicationTick(float dt)
-	{
-		try
-		{
-			if (GameStateManager.Current == null || Campaign.Current == null)
-			{
-				return;
-			}
-
-			if ((Input.IsKeyDown(InputKey.LeftAlt) || Input.IsKeyDown(InputKey.RightAlt)) && Input.IsKeyPressed(InputKey.Q))
-			{
-				LogWAI("Alt+Q pressed");
-				if (GameStateManager.Current.ActiveState is WarAndAiTweaksManagementState)
-				{
-					LogWAI("State active, PopState");
-					GameStateManager.Current.PopState(0);
-					LogWAI("PopState done");
-				}
-				else
-				{
-					LogWAI("Creating state");
-					WarAndAiTweaksManagementState state = GameStateManager.Current.CreateState<WarAndAiTweaksManagementState>();
-					LogWAI("PushState");
-					GameStateManager.Current.PushState(state, 0);
-					LogWAI("PushState done");
-				}
-			}
-
- 		if (RequestClose && GameStateManager.Current.ActiveState is WarAndAiTweaksManagementState)
+ 	protected override void OnApplicationTick(float dt)
+ 	{
+ 		try
+ 		{
+ 			if (Campaign.Current == null || ScreenManager.TopScreen == null)
  			{
- 				RequestClose = false;
- 				LogWAI("RequestClose -> PopState");
- 				GameStateManager.Current.PopState(0);
- 				LogWAI("PopState done");
+ 				return;
  			}
 
- 			if (Input.IsKeyPressed(InputKey.Escape) && GameStateManager.Current.ActiveState is WarAndAiTweaksManagementState)
+ 			if ((Input.IsKeyDown(InputKey.LeftAlt) || Input.IsKeyDown(InputKey.RightAlt)) && Input.IsKeyPressed(InputKey.Q))
  			{
- 				LogWAI("Escape pressed, PopState");
- 				GameStateManager.Current.PopState(0);
- 				LogWAI("PopState done");
+ 				LogWAI("Alt+Q pressed");
+ 				if (_isUIOpen)
+ 				{
+ 					CloseWaiOverlay();
+ 				}
+ 				else
+ 				{
+ 					OpenWaiOverlay();
+ 				}
  			}
-		}
-		catch (Exception ex)
-		{
-			LogWAI($"EXCEPTION: {ex.Message}\n{ex.StackTrace}");
-		}
-	}
+
+ 			if (Input.IsKeyPressed(InputKey.Escape) && _isUIOpen)
+ 			{
+ 				LogWAI("Escape pressed, close overlay");
+ 				CloseWaiOverlay();
+ 			}
+ 		}
+ 		catch (Exception ex)
+ 		{
+ 			LogWAI($"EXCEPTION: {ex.Message}\n{ex.StackTrace}");
+ 		}
+ 	}
+
+ 	private void OpenWaiOverlay()
+ 	{
+ 		try
+ 		{
+ 			LogWAI("OpenWaiOverlay start");
+ 			_waiVM = new WarAndAiTweaksManagementVM();
+ 			_waiLayer = new GauntletLayer("WaiOverlay", 1, false);
+ 			_waiLayer.LoadMovie("WarAndAITweaksManagement", (ViewModel)(object)_waiVM);
+ 			ScreenManager.TopScreen.AddLayer((ScreenLayer)(object)_waiLayer);
+ 			_isUIOpen = true;
+ 			LogWAI("OpenWaiOverlay done");
+ 		}
+ 		catch (Exception ex)
+ 		{
+ 			LogWAI($"OpenWaiOverlay ERROR: {ex.Message}\n{ex.StackTrace}");
+ 		}
+ 	}
+
+ 	private void CloseWaiOverlay()
+ 	{
+ 		try
+ 		{
+ 			LogWAI("CloseWaiOverlay start");
+ 			if (_waiLayer != null)
+ 			{
+ 				ScreenManager.TopScreen.RemoveLayer((ScreenLayer)(object)_waiLayer);
+ 				_waiLayer = null;
+ 			}
+ 			_waiVM = null;
+ 			_isUIOpen = false;
+ 			LogWAI("CloseWaiOverlay done");
+ 		}
+ 		catch (Exception ex)
+ 		{
+ 			LogWAI($"CloseWaiOverlay ERROR: {ex.Message}\n{ex.StackTrace}");
+ 		}
+ 	}
 
 	public override void OnMissionBehaviorInitialize(Mission mission)
 	{

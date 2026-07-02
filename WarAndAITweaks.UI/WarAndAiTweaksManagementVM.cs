@@ -4,17 +4,18 @@ using TaleWorlds.CampaignSystem;
 using TaleWorlds.Core;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
-using WarAndAiTweaks;
 
 namespace WarAndAITweaks.UI;
 
-	public class WarAndAiTweaksManagementVM : ViewModel
-{
-	private WarAndAiTweaksManagementState _state;
+ 	public class WarAndAiTweaksManagementVM : ViewModel
+ 	{
+ 	public static Action OnCloseRequested;
 
-	private WarAndAIManagementScreen _screen;
+ 	private WarAndAiTweaksManagementState _state;
 
-	private string _welcomeText;
+ 	private WarAndAIManagementScreen _screen;
+
+ 	private string _welcomeText;
 
 	private bool _isFeastsTabSelected;
 
@@ -451,11 +452,15 @@ namespace WarAndAITweaks.UI;
    catch { }
   }
 
+  public WarAndAiTweaksManagementVM() : this(null, null)
+   {
+   }
+
   public WarAndAiTweaksManagementVM(WarAndAiTweaksManagementState state, WarAndAIManagementScreen screen)
    {
     LogWAI("ctor start");
-   _state = state;
-   _screen = screen;
+    _state = state;
+    _screen = screen;
    try
    {
     RefreshWelcomeText();
@@ -518,12 +523,12 @@ namespace WarAndAITweaks.UI;
 	public void ExecuteCancel()
 	{
 		LogWAI("ExecuteCancel");
-		SubModule.RequestClose = true;
+		OnCloseRequested?.Invoke();
 	}
 
 	public void ExecuteDone()
 	{
 		LogWAI("ExecuteDone");
-		SubModule.RequestClose = true;
+		OnCloseRequested?.Invoke();
 	}
 }
