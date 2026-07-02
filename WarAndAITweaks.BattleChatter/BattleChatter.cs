@@ -49,9 +49,7 @@ internal class BattleChatter : MissionBehavior
 
 	private bool IsFormationActive(Formation formation)
 	{
-		//IL_0006: Unknown result type (might be due to invalid IL or missing references)
-		//IL_000c: Invalid comparison between Unknown and I4
-		return (int)formation.GetUnderAttackTypeOfUnits(1f) > 0;
+		return formation.GetUnderAttackTypeOfUnits(1f) != Agent.UnderAttackType.NotUnderAttack;
 	}
 
 	public BattleChatter()
@@ -116,8 +114,6 @@ internal class BattleChatter : MissionBehavior
 
 	public override void OnAgentRemoved(Agent affectedAgent, Agent affectorAgent, AgentState agentState, KillingBlow killingBlow)
 	{
-		//IL_008f: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0091: Invalid comparison between Unknown and I4
 		try
 		{
 			if (!HeroList.Any())
@@ -133,7 +129,7 @@ internal class BattleChatter : MissionBehavior
 			}
 			Mission mission = ((MissionBehavior)this).Mission;
 			float num = ((mission != null) ? mission.CurrentTime : 0f);
-			if (num - _lastGlobalIndividualChatterTime < IndividualChatterTimeCooldown || affectorAgent == null || affectedAgent == null || (int)agentState == 3)
+			if (num - _lastGlobalIndividualChatterTime < IndividualChatterTimeCooldown || affectorAgent == null || affectedAgent == null || agentState == AgentState.Unconscious)
 			{
 				return;
 			}
@@ -161,10 +157,6 @@ internal class BattleChatter : MissionBehavior
 
 	public override void OnAgentHit(Agent affectedAgent, Agent affectorAgent, in MissionWeapon affectorWeapon, in Blow blow, in AttackCollisionData attackCollisionData)
 	{
-		//IL_00b6: Unknown result type (might be due to invalid IL or missing references)
-		//IL_00bb: Unknown result type (might be due to invalid IL or missing references)
-		//IL_00cf: Unknown result type (might be due to invalid IL or missing references)
-		//IL_00d4: Unknown result type (might be due to invalid IL or missing references)
 		try
 		{
 			if (!HeroList.Any())
@@ -215,10 +207,8 @@ internal class BattleChatter : MissionBehavior
 
 	public override void OnMissionTick(float dt)
 	{
-		//IL_0017: Unknown result type (might be due to invalid IL or missing references)
-		//IL_001d: Invalid comparison between Unknown and I4
-		((MissionBehavior)this).OnMissionTick(dt);
-		if (((MissionBehavior)this).Mission == null || (int)((MissionBehavior)this).Mission.CombatType > 0)
+		base.OnMissionTick(dt);
+		if (((MissionBehavior)this).Mission == null || ((MissionBehavior)this).Mission.CombatType != Mission.MissionCombatType.Combat)
 		{
 			return;
 		}
@@ -416,8 +406,6 @@ internal class BattleChatter : MissionBehavior
 
 	private void SpeakLine(Agent agent, string lineToSpeak, ChatterType chatterType)
 	{
-		//IL_0068: Unknown result type (might be due to invalid IL or missing references)
-		//IL_007e: Expected O, but got Unknown
 		try
 		{
 			BasicCharacterObject obj = ((agent != null) ? agent.Character : null);

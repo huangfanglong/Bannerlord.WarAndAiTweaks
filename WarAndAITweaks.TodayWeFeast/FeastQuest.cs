@@ -71,12 +71,6 @@ public sealed class FeastQuest : QuestBase
 
 		internal void _003COnGameMenuOpened_003Eb__47_0(CharacterObject winner)
 		{
-			//IL_00de: Unknown result type (might be due to invalid IL or missing references)
-			//IL_00e3: Unknown result type (might be due to invalid IL or missing references)
-			//IL_00ed: Expected O, but got Unknown
-			//IL_003e: Unknown result type (might be due to invalid IL or missing references)
-			//IL_0043: Unknown result type (might be due to invalid IL or missing references)
-			//IL_004d: Expected O, but got Unknown
 			if (winner == CharacterObject.PlayerCharacter)
 			{
 				InformationManager.DisplayMessage(new InformationMessage(((object)LanguageTranslater.L.T("duel_won", "[if:convo_excited]{PLAYER.NAME}, well fought! You bested me in the arena. The guests are still talking about it.").SetTextVariable("OPPONENT", ((object)FeastDuelSystem.PendingDuelHost.Name).ToString())).ToString(), Colors.Green));
@@ -284,8 +278,6 @@ public sealed class FeastQuest : QuestBase
 
 	public static bool HasRewardCooldown(Hero host, Hero guest)
 	{
-		//IL_008e: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0093: Unknown result type (might be due to invalid IL or missing references)
 		Hero host2 = host;
 		Hero guest2 = guest;
 		if (host2 == null || guest2 == null)
@@ -310,8 +302,6 @@ public sealed class FeastQuest : QuestBase
 
 	public static void GiveRewardWithCooldownRespect(Hero host, Hero guest)
 	{
-		//IL_009a: Unknown result type (might be due to invalid IL or missing references)
-		//IL_009f: Unknown result type (might be due to invalid IL or missing references)
 		Hero host2 = host;
 		Hero guest2 = guest;
 		if (host2 == null || guest2 == null)
@@ -337,10 +327,6 @@ public sealed class FeastQuest : QuestBase
 
 	private TextObject GetQuestStartedLogText()
 	{
-		//IL_006f: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0076: Expected O, but got Unknown
-		//IL_011b: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0122: Expected O, but got Unknown
 		if (_isPlayerHost)
 		{
 			TextObject val = LanguageTranslater.L.T("feast_q_host_started", "You are hosting a feast at {SETTLEMENT}.");
@@ -425,8 +411,6 @@ public sealed class FeastQuest : QuestBase
 
 	private TextObject GetPlayerSpokeWithHostLogText()
 	{
-		//IL_006f: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0075: Expected O, but got Unknown
 		TextObject val = LanguageTranslater.L.T("feast_q_spoke", "You spoke with {QUEST_GIVER.NAME} at the feast. {?QUEST_GIVER.GENDER}She{?}He{\\?} appreciates your attendance and conversation. Stay and enjoy the festivities while time passes.");
 		Hero questGiver = base.QuestGiver;
 		if (((questGiver != null) ? questGiver.CharacterObject : null) != null)
@@ -455,9 +439,6 @@ public sealed class FeastQuest : QuestBase
 	public FeastQuest(string questId, Hero questGiver, Hero host, Settlement feastSettlement, CampaignTime feastStart, bool isPlayerHost = false)
 		: base(questId, questGiver, CampaignTime.DaysFromNow(365f), 0)
 	{
-		//IL_0013: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0030: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0032: Unknown result type (might be due to invalid IL or missing references)
 		_host = host;
 		_settlement = feastSettlement;
 		_feastStart = feastStart;
@@ -645,12 +626,6 @@ public sealed class FeastQuest : QuestBase
 		string sceneName = locationWithId.GetSceneName(num);
 		CampaignMission.OpenArenaDuelMission(sceneName, locationWithId, FeastDuelSystem.PendingDuelHost.CharacterObject, false, false, (Action<CharacterObject>)delegate(CharacterObject winner)
 		{
-			//IL_00de: Unknown result type (might be due to invalid IL or missing references)
-			//IL_00e3: Unknown result type (might be due to invalid IL or missing references)
-			//IL_00ed: Expected O, but got Unknown
-			//IL_003e: Unknown result type (might be due to invalid IL or missing references)
-			//IL_0043: Unknown result type (might be due to invalid IL or missing references)
-			//IL_004d: Expected O, but got Unknown
 			if (winner == CharacterObject.PlayerCharacter)
 			{
 				InformationManager.DisplayMessage(new InformationMessage(((object)LanguageTranslater.L.T("duel_won", "[if:convo_excited]{PLAYER.NAME}, well fought! You bested me in the arena. The guests are still talking about it.").SetTextVariable("OPPONENT", ((object)FeastDuelSystem.PendingDuelHost.Name).ToString())).ToString(), Colors.Green));
@@ -784,60 +759,6 @@ public sealed class FeastQuest : QuestBase
 
 	public static void RegisterFeastQuestDialogs(CampaignGameStarter starter)
 	{
-		//IL_002a: Unknown result type (might be due to invalid IL or missing references)
-		//IL_002f: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0035: Expected O, but got Unknown
-		//IL_0068: Unknown result type (might be due to invalid IL or missing references)
-		//IL_006d: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0073: Expected O, but got Unknown
-		//IL_00a6: Unknown result type (might be due to invalid IL or missing references)
-		//IL_00ab: Unknown result type (might be due to invalid IL or missing references)
-		//IL_00b1: Expected O, but got Unknown
-		//IL_00e6: Unknown result type (might be due to invalid IL or missing references)
-		//IL_00eb: Unknown result type (might be due to invalid IL or missing references)
-		//IL_00f1: Expected O, but got Unknown
-		//IL_0123: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0128: Unknown result type (might be due to invalid IL or missing references)
-		//IL_012e: Expected O, but got Unknown
-		//IL_0161: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0166: Unknown result type (might be due to invalid IL or missing references)
-		//IL_016c: Expected O, but got Unknown
-		//IL_01a1: Unknown result type (might be due to invalid IL or missing references)
-		//IL_01a6: Unknown result type (might be due to invalid IL or missing references)
-		//IL_01ac: Expected O, but got Unknown
-		//IL_01de: Unknown result type (might be due to invalid IL or missing references)
-		//IL_01e3: Unknown result type (might be due to invalid IL or missing references)
-		//IL_01e9: Expected O, but got Unknown
-		//IL_01fd: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0202: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0208: Expected O, but got Unknown
-		//IL_023d: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0242: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0248: Expected O, but got Unknown
-		//IL_025c: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0261: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0267: Expected O, but got Unknown
-		//IL_029c: Unknown result type (might be due to invalid IL or missing references)
-		//IL_02a1: Unknown result type (might be due to invalid IL or missing references)
-		//IL_02a7: Expected O, but got Unknown
-		//IL_02da: Unknown result type (might be due to invalid IL or missing references)
-		//IL_02df: Unknown result type (might be due to invalid IL or missing references)
-		//IL_02e5: Expected O, but got Unknown
-		//IL_02f9: Unknown result type (might be due to invalid IL or missing references)
-		//IL_02fe: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0304: Expected O, but got Unknown
-		//IL_0337: Unknown result type (might be due to invalid IL or missing references)
-		//IL_033c: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0342: Expected O, but got Unknown
-		//IL_0375: Unknown result type (might be due to invalid IL or missing references)
-		//IL_037a: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0380: Expected O, but got Unknown
-		//IL_0394: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0399: Unknown result type (might be due to invalid IL or missing references)
-		//IL_039f: Expected O, but got Unknown
-		//IL_03ce: Unknown result type (might be due to invalid IL or missing references)
-		//IL_03d3: Unknown result type (might be due to invalid IL or missing references)
-		//IL_03d9: Expected O, but got Unknown
 		object obj = _003C_003Ec._003C_003E9__54_0;
 		if (obj == null)
 		{
@@ -1114,17 +1035,6 @@ public sealed class FeastQuest : QuestBase
 
 	private static void DeclineHostDuelChallenge()
 	{
-		//IL_00fe: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0103: Unknown result type (might be due to invalid IL or missing references)
-		//IL_010d: Expected O, but got Unknown
-		//IL_018a: Unknown result type (might be due to invalid IL or missing references)
-		//IL_018f: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0199: Expected O, but got Unknown
-		//IL_0152: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0157: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0161: Expected O, but got Unknown
-		//IL_00a1: Unknown result type (might be due to invalid IL or missing references)
-		//IL_00a6: Unknown result type (might be due to invalid IL or missing references)
 		Hero oneToOneConversationHero = Hero.OneToOneConversationHero;
 		Hero mainHero = Hero.MainHero;
 		Settlement settlement = ((mainHero != null) ? mainHero.CurrentSettlement : null);

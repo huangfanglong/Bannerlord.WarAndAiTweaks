@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using MCM.Abstractions.Base.Global;
@@ -52,37 +52,31 @@ public class CompanionHighlightingMissionBehavior : MissionView
 	{
 		get
 		{
-			//IL_000d: Unknown result type (might be due to invalid IL or missing references)
-			//IL_0013: Invalid comparison between Unknown and I4
 			Mission mission = ((MissionBehavior)this).Mission;
-			return mission != null && (int)mission.CombatType == 0;
+			return mission != null && mission.CombatType == Mission.MissionCombatType.Combat;
 		}
 	}
 
 	public override void OnBehaviorInitialize()
 	{
-		((MissionBehavior)this).OnBehaviorInitialize();
-		if (!IsCombatMission)
-		{
-			_state = InitializationState.Failed;
-		}
+		base.OnBehaviorInitialize();
+		_state = InitializationState.Failed;
 	}
 
 	public override void OnMissionScreenFinalize()
 	{
-		((MissionView)this).OnMissionScreenFinalize();
+		base.OnMissionScreenFinalize();
 		CleanupUI();
 	}
 
 	public override void AfterStart()
 	{
-		((MissionBehavior)this).AfterStart();
-		TryInitializeUI();
+		base.AfterStart();
 	}
 
 	public override void OnAgentCreated(Agent agent)
 	{
-		((MissionBehavior)this).OnAgentCreated(agent);
+		base.OnAgentCreated(agent);
 		if (agent == null)
 		{
 			return;
@@ -149,10 +143,8 @@ public class CompanionHighlightingMissionBehavior : MissionView
 
 	public override void OnAgentRemoved(Agent affectedAgent, Agent affectorAgent, AgentState agentState, KillingBlow blow)
 	{
-		//IL_0016: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0017: Unknown result type (might be due to invalid IL or missing references)
 		Agent affectedAgent2 = affectedAgent;
-		((MissionBehavior)this).OnAgentRemoved(affectedAgent2, affectorAgent, agentState, blow);
+		base.OnAgentRemoved(affectedAgent2, affectorAgent, agentState, blow);
 		Hero key = createdStoredAgents.FirstOrDefault<KeyValuePair<Hero, Agent>>((KeyValuePair<Hero, Agent> kvp) => kvp.Value == affectedAgent2).Key;
 		if (key != null)
 		{
@@ -179,23 +171,12 @@ public class CompanionHighlightingMissionBehavior : MissionView
 
 	public override void OnMissionScreenTick(float dt)
 	{
-		((MissionView)this).OnMissionScreenTick(dt);
-		if (_dataSource != null || TryInitializeUI())
-		{
-			addCompanionsToDatasource();
-			addFriendlyLordsToDatasource();
-			addEnemyLordsToDatasource();
-			UpdateCompanionIcons();
-		}
+		base.OnMissionScreenTick(dt);
 	}
 
 	private bool TryInitializeUI()
 	{
-		//IL_000f: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0015: Invalid comparison between Unknown and I4
-		//IL_00c7: Unknown result type (might be due to invalid IL or missing references)
-		//IL_00d1: Expected O, but got Unknown
-		if (((MissionBehavior)this).Mission == null || (int)((MissionBehavior)this).Mission.CurrentState != 2)
+		if (((MissionBehavior)this).Mission == null || ((MissionBehavior)this).Mission.CurrentState != Mission.State.Continuing)
 		{
 			return false;
 		}
@@ -366,12 +347,6 @@ public class CompanionHighlightingMissionBehavior : MissionView
 
 	private void UpdateIconPosition(Agent agent, CompanionIconVM iconVM)
 	{
-		//IL_0002: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0007: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0030: Unknown result type (might be due to invalid IL or missing references)
-		//IL_003e: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0043: Unknown result type (might be due to invalid IL or missing references)
-		//IL_004c: Unknown result type (might be due to invalid IL or missing references)
 		Vec3 eyeGlobalPosition = agent.GetEyeGlobalPosition();
 		eyeGlobalPosition.z += 0.8f;
 		float num = 0f;

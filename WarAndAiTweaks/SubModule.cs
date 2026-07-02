@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using TaleWorlds.Engine.GauntletUI;
 using TaleWorlds.ScreenSystem;
@@ -203,7 +203,7 @@ public class SubModule : MBSubModuleBase
 
 	public override void OnMissionBehaviorInitialize(Mission mission)
 	{
-		((MBSubModuleBase)this).OnMissionBehaviorInitialize(mission);
+		base.OnMissionBehaviorInitialize(mission);
 		if (GlobalSettings<WarAndAiTweaksSettings>.Instance.EnableCompanionUIChanges)
 		{
 			mission.AddMissionBehavior((MissionBehavior)(object)new CompanionHighlightingMissionBehavior());

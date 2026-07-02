@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.Election;
@@ -144,7 +144,7 @@ public class MarshalManagementVM : ViewModel
 			if (value != _canSelectMarshal)
 			{
 				_canSelectMarshal = value;
-				((ViewModel)this).OnPropertyChangedWithValue(value, "CanSelectMarshal");
+				base.OnPropertyChangedWithValue(value, "CanSelectMarshal");
 			}
 		}
 	}
@@ -174,13 +174,6 @@ public class MarshalManagementVM : ViewModel
 
 	public void RefreshData()
 	{
-		//IL_02b5: Unknown result type (might be due to invalid IL or missing references)
-		//IL_02ba: Unknown result type (might be due to invalid IL or missing references)
-		//IL_02c4: Expected O, but got Unknown
-		//IL_0188: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0192: Expected O, but got Unknown
-		//IL_018d: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0197: Expected O, but got Unknown
 		try
 		{
 			Hero mainHero = Hero.MainHero;
@@ -263,30 +256,6 @@ public class MarshalManagementVM : ViewModel
 
 	public void ExecuteAppointMarshal()
 	{
-		//IL_0228: Unknown result type (might be due to invalid IL or missing references)
-		//IL_022d: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0237: Expected O, but got Unknown
-		//IL_003a: Unknown result type (might be due to invalid IL or missing references)
-		//IL_003f: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0049: Expected O, but got Unknown
-		//IL_0075: Unknown result type (might be due to invalid IL or missing references)
-		//IL_007a: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0084: Expected O, but got Unknown
-		//IL_00fc: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0101: Unknown result type (might be due to invalid IL or missing references)
-		//IL_010b: Expected O, but got Unknown
-		//IL_0140: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0145: Unknown result type (might be due to invalid IL or missing references)
-		//IL_014f: Expected O, but got Unknown
-		//IL_017d: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0182: Unknown result type (might be due to invalid IL or missing references)
-		//IL_018c: Expected O, but got Unknown
-		//IL_01ec: Unknown result type (might be due to invalid IL or missing references)
-		//IL_01f1: Unknown result type (might be due to invalid IL or missing references)
-		//IL_01fb: Expected O, but got Unknown
-		//IL_01c9: Unknown result type (might be due to invalid IL or missing references)
-		//IL_01ce: Unknown result type (might be due to invalid IL or missing references)
-		//IL_01d8: Expected O, but got Unknown
 		try
 		{
 			Hero mainHero = Hero.MainHero;
@@ -405,7 +374,7 @@ public class MarshalManagementVM : ViewModel
 	public override void OnFinalize()
 	{
 		MarshalSystemBehavior.MarshalAppointed -= OnMarshalAppointed;
-		((ViewModel)this).OnFinalize();
+		base.OnFinalize();
 	}
 }
 

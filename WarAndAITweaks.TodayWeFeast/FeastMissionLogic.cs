@@ -16,7 +16,7 @@ internal class FeastMissionLogic : MissionBehavior
 
 	public override void AfterStart()
 	{
-		((MissionBehavior)this).AfterStart();
+		base.AfterStart();
 		PlayFeastAmbience();
 	}
 

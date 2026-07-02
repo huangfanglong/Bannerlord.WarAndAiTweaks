@@ -23,8 +23,6 @@ public class RespawnablePartyObject
 
 	public RespawnablePartyObject(MobileParty party)
 	{
-		//IL_0016: Unknown result type (might be due to invalid IL or missing references)
-		//IL_001b: Unknown result type (might be due to invalid IL or missing references)
 		currentWageLimit = party.PaymentLimit;
 		partyobjective = party.Objective;
 		partyHero = party.LeaderHero;

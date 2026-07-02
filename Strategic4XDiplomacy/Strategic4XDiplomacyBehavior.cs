@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using FeastSystem;
@@ -176,9 +176,6 @@ public class Strategic4XDiplomacyBehavior : CampaignBehaviorBase
 
 	private void DailyTick()
 	{
-		//IL_008c: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0091: Unknown result type (might be due to invalid IL or missing references)
-		//IL_009b: Expected O, but got Unknown
 		StrategicX4AIHelpers.UpdateMajorKingdoms();
 		foreach (Kingdom item in (List<Kingdom>)(object)MajorKingdoms)
 		{
@@ -196,12 +193,6 @@ public class Strategic4XDiplomacyBehavior : CampaignBehaviorBase
 
 	private void DailyTickClanEvent(Clan clan)
 	{
-		//IL_00b0: Unknown result type (might be due to invalid IL or missing references)
-		//IL_00b5: Unknown result type (might be due to invalid IL or missing references)
-		//IL_00bf: Expected O, but got Unknown
-		//IL_00ed: Unknown result type (might be due to invalid IL or missing references)
-		//IL_00f2: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0168: Unknown result type (might be due to invalid IL or missing references)
 		if (((clan != null) ? clan.Kingdom : null) == null || !((List<Kingdom>)(object)MajorKingdoms).Contains(clan.Kingdom))
 		{
 			return;
@@ -490,15 +481,6 @@ public class Strategic4XDiplomacyBehavior : CampaignBehaviorBase
 
 	private bool AttemptPeace(Kingdom kingdom, Kingdom target, string story, float ourDesire, float theirDesire)
 	{
-		//IL_0150: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0157: Expected O, but got Unknown
-		//IL_0105: Unknown result type (might be due to invalid IL or missing references)
-		//IL_010a: Unknown result type (might be due to invalid IL or missing references)
-		//IL_013b: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0142: Expected O, but got Unknown
-		//IL_017e: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0183: Unknown result type (might be due to invalid IL or missing references)
-		//IL_018d: Expected O, but got Unknown
 		if (kingdom == null || target == null || kingdom.RulingClan == null || kingdom.RulingClan.Leader == null || target.RulingClan == null || target.RulingClan.Leader == null)
 		{
 			return false;
@@ -552,11 +534,6 @@ public class Strategic4XDiplomacyBehavior : CampaignBehaviorBase
 
 	private void DeclareWar(Kingdom kingdom, Kingdom target, string story)
 	{
-		//IL_0015: Unknown result type (might be due to invalid IL or missing references)
-		//IL_001b: Expected O, but got Unknown
-		//IL_0037: Unknown result type (might be due to invalid IL or missing references)
-		//IL_003c: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0046: Expected O, but got Unknown
 		if (!kingdom.IsAtWarWith((IFaction)(object)target))
 		{
 			DeclareWarDecision val = new DeclareWarDecision(kingdom.RulingClan, (IFaction)(object)target);
@@ -569,54 +546,6 @@ public class Strategic4XDiplomacyBehavior : CampaignBehaviorBase
 
 	private void UpdateWarFatigue(Kingdom k)
 	{
-		//IL_00c8: Unknown result type (might be due to invalid IL or missing references)
-		//IL_00cd: Unknown result type (might be due to invalid IL or missing references)
-		//IL_00d7: Expected O, but got Unknown
-		//IL_0065: Unknown result type (might be due to invalid IL or missing references)
-		//IL_006a: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0074: Expected O, but got Unknown
-		//IL_0029: Unknown result type (might be due to invalid IL or missing references)
-		//IL_002e: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0038: Expected O, but got Unknown
-		//IL_010e: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0113: Unknown result type (might be due to invalid IL or missing references)
-		//IL_011d: Expected O, but got Unknown
-		//IL_014a: Unknown result type (might be due to invalid IL or missing references)
-		//IL_014f: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0159: Expected O, but got Unknown
-		//IL_02f1: Unknown result type (might be due to invalid IL or missing references)
-		//IL_02f6: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0300: Expected O, but got Unknown
-		//IL_02b2: Unknown result type (might be due to invalid IL or missing references)
-		//IL_02b7: Unknown result type (might be due to invalid IL or missing references)
-		//IL_02c1: Expected O, but got Unknown
-		//IL_026e: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0273: Unknown result type (might be due to invalid IL or missing references)
-		//IL_027d: Expected O, but got Unknown
-		//IL_021f: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0224: Unknown result type (might be due to invalid IL or missing references)
-		//IL_022e: Expected O, but got Unknown
-		//IL_01d7: Unknown result type (might be due to invalid IL or missing references)
-		//IL_01dc: Unknown result type (might be due to invalid IL or missing references)
-		//IL_01e6: Expected O, but got Unknown
-		//IL_0198: Unknown result type (might be due to invalid IL or missing references)
-		//IL_019d: Unknown result type (might be due to invalid IL or missing references)
-		//IL_01a7: Expected O, but got Unknown
-		//IL_04cb: Unknown result type (might be due to invalid IL or missing references)
-		//IL_04d0: Unknown result type (might be due to invalid IL or missing references)
-		//IL_04da: Expected O, but got Unknown
-		//IL_051e: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0523: Unknown result type (might be due to invalid IL or missing references)
-		//IL_052d: Expected O, but got Unknown
-		//IL_05d4: Unknown result type (might be due to invalid IL or missing references)
-		//IL_05d9: Unknown result type (might be due to invalid IL or missing references)
-		//IL_05e3: Expected O, but got Unknown
-		//IL_0586: Unknown result type (might be due to invalid IL or missing references)
-		//IL_058b: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0595: Expected O, but got Unknown
-		//IL_0436: Unknown result type (might be due to invalid IL or missing references)
-		//IL_043b: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0445: Expected O, but got Unknown
 		bool showWarFatigueDebug = GlobalSettings<WarAndAiTweaksSettings>.Instance.ShowWarFatigueDebug;
 		if (showWarFatigueDebug)
 		{
@@ -737,11 +666,6 @@ public class Strategic4XDiplomacyBehavior : CampaignBehaviorBase
 
 	private static void HandlePlayerKingdomPeace(Kingdom aiKingdom, Kingdom playerKingdom, string reason)
 	{
-		//IL_0062: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0124: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0130: Expected O, but got Unknown
-		//IL_002c: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0031: Unknown result type (might be due to invalid IL or missing references)
 		Kingdom aiKingdom2 = aiKingdom;
 		Kingdom playerKingdom2 = playerKingdom;
 		if (_lastPlayerPeaceOffer.TryGetValue(aiKingdom2, out var value))
@@ -756,15 +680,6 @@ public class Strategic4XDiplomacyBehavior : CampaignBehaviorBase
 		InformationManager.ShowInquiry(new InquiryData(((object)LanguageTranslater.L.T("diplomacy_peace_offer_title", "{AI} Seeks Peace").SetTextVariable("AI", aiKingdom2.Name)).ToString(), ((object)LanguageTranslater.L.T("diplomacy_peace_offer_body", "{AI} wishes to negotiate peace with {PLAYER}. {REASON} Do you accept?").SetTextVariable("AI", aiKingdom2.Name).SetTextVariable("PLAYER", playerKingdom2.Name)
 			.SetTextVariable("REASON", reason)).ToString(), true, true, LanguageTranslater.L.S("diplomacy_accept", "Accept"), LanguageTranslater.L.S("diplomacy_decline", "Decline"), (Action)delegate
 		{
-			//IL_008d: Unknown result type (might be due to invalid IL or missing references)
-			//IL_0093: Expected O, but got Unknown
-			//IL_0031: Unknown result type (might be due to invalid IL or missing references)
-			//IL_0036: Unknown result type (might be due to invalid IL or missing references)
-			//IL_0070: Unknown result type (might be due to invalid IL or missing references)
-			//IL_0076: Expected O, but got Unknown
-			//IL_00e5: Unknown result type (might be due to invalid IL or missing references)
-			//IL_00ea: Unknown result type (might be due to invalid IL or missing references)
-			//IL_00f4: Expected O, but got Unknown
 			MakePeaceKingdomDecision decision;
 			if (GlobalSettings<WarAndAiTweaksSettings>.Instance.EnableBaseGameTributes)
 			{
@@ -780,9 +695,6 @@ public class Strategic4XDiplomacyBehavior : CampaignBehaviorBase
 			InformationManager.DisplayMessage(new InformationMessage(((object)LanguageTranslater.L.T("diplomacy_peace_proposal_sent", "Peace proposal between {PLAYER} and {AI} has been sent to your council.").SetTextVariable("PLAYER", playerKingdom2.Name).SetTextVariable("AI", aiKingdom2.Name)).ToString(), Colors.Green));
 		}, (Action)delegate
 		{
-			//IL_003f: Unknown result type (might be due to invalid IL or missing references)
-			//IL_0044: Unknown result type (might be due to invalid IL or missing references)
-			//IL_004e: Expected O, but got Unknown
 			InformationManager.DisplayMessage(new InformationMessage(((object)LanguageTranslater.L.T("diplomacy_peace_declined", "{PLAYER} declined peace with {AI}.").SetTextVariable("PLAYER", playerKingdom2.Name).SetTextVariable("AI", aiKingdom2.Name)).ToString(), Colors.Red));
 		}, "", 0f, (Action)null, (Func<ValueTuple<bool, string>>)null, (Func<ValueTuple<bool, string>>)null), true, false);
 	}

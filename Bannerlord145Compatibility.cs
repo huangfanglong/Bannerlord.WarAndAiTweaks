@@ -1,4 +1,4 @@
-﻿global using TaleWorlds.Core.ImageIdentifiers;
+global using TaleWorlds.Core.ImageIdentifiers;
 global using TaleWorlds.Core.ViewModelCollection.ImageIdentifiers;
 global using PartyObjective = TaleWorlds.CampaignSystem.Party.MobileParty.PartyObjective;
 global using ChangeKingdomActionDetail = TaleWorlds.CampaignSystem.Actions.ChangeKingdomAction.ChangeKingdomActionDetail;

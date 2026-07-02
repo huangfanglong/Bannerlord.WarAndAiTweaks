@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Helpers;
@@ -30,10 +30,6 @@ public class ClanRespawnBehavior : CampaignBehaviorBase
 
 	private void onFugitive(Hero prisonerBeingReleased, PartyBase partyBase, IFaction faction, EndCaptivityDetail detail, bool isReleasedFromParty)
 	{
-		//IL_0025: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0028: Invalid comparison between Unknown and I4
-		//IL_01b7: Unknown result type (might be due to invalid IL or missing references)
-		//IL_01c3: Expected O, but got Unknown
 		Hero prisonerBeingReleased2 = prisonerBeingReleased;
 		if (prisonerBeingReleased2.Clan != Hero.MainHero.Clan || (int)detail == 5)
 		{
@@ -64,9 +60,6 @@ public class ClanRespawnBehavior : CampaignBehaviorBase
 				string notEnoughDenars = LanguageTranslater.L.S("not_enough_denars", "You do not have enough denars to reform this caravan.");
 				InformationManager.ShowInquiry(new InquiryData(text, ((object)val).ToString(), true, true, text2, text3, (Action)delegate
 				{
-					//IL_0035: Unknown result type (might be due to invalid IL or missing references)
-					//IL_003a: Unknown result type (might be due to invalid IL or missing references)
-					//IL_0044: Expected O, but got Unknown
 					if (Hero.MainHero.Gold >= 15000)
 					{
 						SpawnCaravanAtPosition(prisonerBeingReleased2);
@@ -104,7 +97,6 @@ public class ClanRespawnBehavior : CampaignBehaviorBase
 
 	private void onMobilePartyCreated(MobileParty mobileparty)
 	{
-		//IL_009c: Unknown result type (might be due to invalid IL or missing references)
 		MobileParty mobileparty2 = mobileparty;
 		if (mobileparty2.LeaderHero != null && mobileparty2.LeaderHero.Clan == Hero.MainHero.Clan && (mobileparty2.IsLordParty || mobileparty2.IsCaravan))
 		{
@@ -123,9 +115,6 @@ public class ClanRespawnBehavior : CampaignBehaviorBase
 
 	private static void SpawnLordPartyAtPosition(Hero hero)
 	{
-		//IL_0067: Unknown result type (might be due to invalid IL or missing references)
-		//IL_006c: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0076: Expected O, but got Unknown
 		if (!hero.IsActive && hero.IsAlive)
 		{
 			GiveGoldAction.ApplyBetweenCharacters((Hero)null, hero, 500, true);
@@ -138,9 +127,6 @@ public class ClanRespawnBehavior : CampaignBehaviorBase
 
 	private static void SpawnCaravanAtPosition(Hero hero)
 	{
-		//IL_0075: Unknown result type (might be due to invalid IL or missing references)
-		//IL_007a: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0084: Expected O, but got Unknown
 		if (!hero.IsActive && hero.IsAlive)
 		{
 			GiveGoldAction.ApplyBetweenCharacters(Hero.MainHero, hero, 15000, true);

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using MCM.Abstractions.Base.Global;
@@ -47,9 +47,6 @@ public class MilitaryAIHelpers
 
 	public static bool FoundStrongerHostilePartyNearSettlement(Settlement x, MobileParty party, float radius)
 	{
-		//IL_0046: Unknown result type (might be due to invalid IL or missing references)
-		//IL_004c: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0051: Unknown result type (might be due to invalid IL or missing references)
 		Hero leaderHero = party.LeaderHero;
 		object obj;
 		if (leaderHero == null)
@@ -99,8 +96,6 @@ public class MilitaryAIHelpers
 
 	public static bool IsVillageTargetedForRaid(Settlement village, MobileParty self)
 	{
-		//IL_00d8: Unknown result type (might be due to invalid IL or missing references)
-		//IL_00de: Invalid comparison between Unknown and I4
 		Kingdom kingdom = self.LeaderHero.Clan.Kingdom;
 		object obj;
 		if (self == null)
@@ -131,7 +126,7 @@ public class MilitaryAIHelpers
 		}
 		foreach (MobileParty item in allParties)
 		{
-			if (item == null || item == self || !item.IsLordParty || !item.IsActive || item.IsDisbanding || item.MapEvent != null || item.Ai == null || item.TargetSettlement != village || (int)item.DefaultBehavior != 4)
+			if (item == null || item == self || !item.IsLordParty || !item.IsActive || item.IsDisbanding || item.MapEvent != null || item.Ai == null || item.TargetSettlement != village || item.DefaultBehavior != AiBehavior.RaidSettlement)
 			{
 				continue;
 			}
@@ -163,9 +158,6 @@ public class MilitaryAIHelpers
 
 	public static (Settlement settlement, bool isFriendly) GetFirstNearbyTownOrCastle(MobileParty party, float radius)
 	{
-		//IL_0017: Unknown result type (might be due to invalid IL or missing references)
-		//IL_001d: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0022: Unknown result type (might be due to invalid IL or missing references)
 		if (party == null)
 		{
 			return (settlement: null, isFriendly: false);
@@ -190,8 +182,6 @@ public class MilitaryAIHelpers
 
 	public static float GetTotalStrengthOfArmiesTargetSameSettlement(Settlement settlement, MobileParty party)
 	{
-		//IL_0088: Unknown result type (might be due to invalid IL or missing references)
-		//IL_008e: Invalid comparison between Unknown and I4
 		object obj;
 		if (party == null)
 		{
@@ -219,7 +209,7 @@ public class MilitaryAIHelpers
 		foreach (Army item in (List<Army>)(object)val.Armies)
 		{
 			MobileParty leaderParty = item.LeaderParty;
-			if (leaderParty != null && leaderParty != party && leaderParty.TargetSettlement == settlement && (int)leaderParty.DefaultBehavior == 5)
+			if (leaderParty != null && leaderParty != party && leaderParty.TargetSettlement == settlement && leaderParty.DefaultBehavior == AiBehavior.BesiegeSettlement)
 			{
 				num += leaderParty.GetTotalLandStrengthWithFollowers(true);
 			}

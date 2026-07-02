@@ -216,7 +216,7 @@ namespace WarAndAITweaks.UI;
 			if (value != _isFeastsTabSelected)
 			{
 				_isFeastsTabSelected = value;
-				((ViewModel)this).OnPropertyChangedWithValue(value, "IsFeastsTabSelected");
+				base.OnPropertyChangedWithValue(value, "IsFeastsTabSelected");
 			}
 		}
 	}
@@ -233,7 +233,7 @@ namespace WarAndAITweaks.UI;
 			if (value != _isMarshalTabSelected)
 			{
 				_isMarshalTabSelected = value;
-				((ViewModel)this).OnPropertyChangedWithValue(value, "IsMarshalTabSelected");
+				base.OnPropertyChangedWithValue(value, "IsMarshalTabSelected");
 			}
 		}
 	}
@@ -250,7 +250,7 @@ namespace WarAndAITweaks.UI;
 			if (value != _isMilitaryTabSelected)
 			{
 				_isMilitaryTabSelected = value;
-				((ViewModel)this).OnPropertyChangedWithValue(value, "IsMilitaryTabSelected");
+				base.OnPropertyChangedWithValue(value, "IsMilitaryTabSelected");
 			}
 		}
 	}
@@ -267,7 +267,7 @@ namespace WarAndAITweaks.UI;
 			if (value != _isDiplomacyTabSelected)
 			{
 				_isDiplomacyTabSelected = value;
-				((ViewModel)this).OnPropertyChangedWithValue(value, "IsDiplomacyTabSelected");
+				base.OnPropertyChangedWithValue(value, "IsDiplomacyTabSelected");
 			}
 		}
 	}
@@ -284,7 +284,7 @@ namespace WarAndAITweaks.UI;
 			if (value != _isFiefTabSelected)
 			{
 				_isFiefTabSelected = value;
-				((ViewModel)this).OnPropertyChangedWithValue(value, "IsFiefTabSelected");
+				base.OnPropertyChangedWithValue(value, "IsFiefTabSelected");
 			}
 		}
 	}
@@ -477,7 +477,7 @@ namespace WarAndAITweaks.UI;
 		{
 			((ViewModel)marshalManagement).OnFinalize();
 		}
-		((ViewModel)this).OnFinalize();
+		base.OnFinalize();
 	}
 
 	private void RefreshWelcomeText()

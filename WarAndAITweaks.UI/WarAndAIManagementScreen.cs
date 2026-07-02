@@ -39,7 +39,7 @@ public class WarAndAIManagementScreen : ScreenBase, IGameStateListener
 			((ScreenLayer)_mainLayer).InputRestrictions.SetInputRestrictions(true, (InputUsageMask)7);
 			((ScreenLayer)_mainLayer).IsFocusLayer = true;
 			ScreenManager.TrySetFocus((ScreenLayer)(object)_mainLayer);
-			((ScreenBase)this).AddLayer((ScreenLayer)(object)_mainLayer);
+			base.AddLayer((ScreenLayer)(object)_mainLayer);
 		}
 	}
 

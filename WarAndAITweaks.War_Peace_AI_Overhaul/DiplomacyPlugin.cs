@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -386,9 +386,6 @@ internal class DiplomacyPlugin
 
 	public static bool IsDiplomacyModLoaded()
 	{
-		//IL_0056: Unknown result type (might be due to invalid IL or missing references)
-		//IL_005b: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0065: Expected O, but got Unknown
 		try
 		{
 			if (_cachedSettingsType != null)
@@ -417,13 +414,6 @@ internal class DiplomacyPlugin
 
 	public static List<DiplomaticAgreementInfo> GetAllDiplomaticAgreements()
 	{
-		//IL_0001: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0007: Unknown result type (might be due to invalid IL or missing references)
-		//IL_000d: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0012: Unknown result type (might be due to invalid IL or missing references)
-		//IL_00b4: Unknown result type (might be due to invalid IL or missing references)
-		//IL_00c2: Unknown result type (might be due to invalid IL or missing references)
-		//IL_00c7: Unknown result type (might be due to invalid IL or missing references)
 		_ = CampaignTime.Now;
 		_ = _lastAgreementsCacheUpdate;
 		CampaignTime now = CampaignTime.Now;

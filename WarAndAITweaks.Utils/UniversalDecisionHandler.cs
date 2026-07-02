@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Reflection;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.CampaignBehaviors;
@@ -11,13 +11,6 @@ internal class UniversalDecisionHandler
 {
 	public static bool HandleAddingDecision(KingdomDecision decision, Kingdom targetKingdom, Kingdom proposerKingdom)
 	{
-		//IL_0303: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0101: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0106: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0130: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0135: Unknown result type (might be due to invalid IL or missing references)
-		//IL_02b1: Unknown result type (might be due to invalid IL or missing references)
-		//IL_02b6: Unknown result type (might be due to invalid IL or missing references)
 		if (decision == null || proposerKingdom == null)
 		{
 			return false;

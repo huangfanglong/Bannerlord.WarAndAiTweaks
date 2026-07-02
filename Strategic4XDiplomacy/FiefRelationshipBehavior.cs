@@ -23,9 +23,6 @@ public class FiefRelationshipBehavior : CampaignBehaviorBase
 
 	private void DailyTickClanEvent(Clan clan)
 	{
-		//IL_00b0: Unknown result type (might be due to invalid IL or missing references)
-		//IL_00b5: Unknown result type (might be due to invalid IL or missing references)
-		//IL_00bf: Expected O, but got Unknown
 		if (clan != null && clan.Kingdom != null && ((List<Settlement>)(object)clan.Settlements).Count <= 0 && !clan.IsUnderMercenaryService && clan.Leader != Hero.MainHero)
 		{
 			int fieflessClansLoss = GlobalSettings<WarAndAiTweaksSettings>.Instance.FieflessClansLoss;

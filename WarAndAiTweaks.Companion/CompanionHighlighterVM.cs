@@ -31,7 +31,7 @@ public class CompanionHighlighterVM : ViewModel
 
 	public override void OnFinalize()
 	{
-		((ViewModel)this).OnFinalize();
+		base.OnFinalize();
 		((Collection<CompanionIconVM>)(object)_companions)?.Clear();
 	}
 }

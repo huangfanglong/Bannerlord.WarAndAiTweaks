@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -70,7 +70,6 @@ internal class MarshalDecision : KingdomDecision
 
 		public override ImageIdentifier GetDecisionImageIdentifier()
 		{
-			//IL_001b: Unknown result type (might be due to invalid IL or missing references)
 			return (Candidate == null) ? ((ImageIdentifier)null) : new CharacterImageIdentifier(CharacterCode.CreateFrom((BasicCharacterObject)(object)Candidate.CharacterObject));
 		}
 	}
@@ -458,12 +457,6 @@ internal class MarshalDecision : KingdomDecision
 
 	public override TextObject GetChosenOutcomeText(DecisionOutcome chosenOutcome, SupportStatus supportStatus, bool isShortVersion)
 	{
-		//IL_0112: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0119: Expected O, but got Unknown
-		//IL_0018: Unknown result type (might be due to invalid IL or missing references)
-		//IL_001a: Invalid comparison between Unknown and I4
-		//IL_001e: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0020: Invalid comparison between Unknown and I4
 		if (chosenOutcome is MarshalOutcome marshalOutcome)
 		{
 			if (1 == 0)

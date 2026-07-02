@@ -19,9 +19,6 @@ internal sealed class DelegatingSettlementFoodModel : SettlementFoodModel
 	{
 		get
 		{
-			//IL_0042: Unknown result type (might be due to invalid IL or missing references)
-			//IL_0048: Expected O, but got Unknown
-			//IL_0095: Unknown result type (might be due to invalid IL or missing references)
 			if (_cachedInner != null)
 			{
 				return _cachedInner;
@@ -77,7 +74,6 @@ internal sealed class DelegatingSettlementFoodModel : SettlementFoodModel
 
 	public override ExplainedNumber CalculateTownFoodStocksChange(Town town, bool includeDescriptions = false, bool includeDescriptionsForMarket = false)
 	{
-		//IL_0009: Unknown result type (might be due to invalid IL or missing references)
 		return Inner.CalculateTownFoodStocksChange(town, includeDescriptions, includeDescriptionsForMarket);
 	}
 }

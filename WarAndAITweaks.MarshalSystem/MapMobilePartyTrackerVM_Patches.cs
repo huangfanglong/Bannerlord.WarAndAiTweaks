@@ -1,4 +1,4 @@
-﻿using HarmonyLib;
+using HarmonyLib;
 using SandBox.ViewModelCollection.Map.Tracker;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.Actions;

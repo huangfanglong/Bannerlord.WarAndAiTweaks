@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using FeastSystem;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.Settlements;
@@ -83,8 +83,6 @@ public class FeastDuelSystem
 
 	private static bool IsOnDuelCooldown(Hero hero1, Hero hero2, Settlement settlement)
 	{
-		//IL_0077: Unknown result type (might be due to invalid IL or missing references)
-		//IL_007c: Unknown result type (might be due to invalid IL or missing references)
 		Settlement settlement2 = settlement;
 		FeastData feastByAttribute = FeastBehavior.GetFeastByAttribute((FeastData f) => f.Settlement == settlement2);
 		if (feastByAttribute == null)
@@ -109,8 +107,6 @@ public class FeastDuelSystem
 
 	public static void RecordDuel(Hero hero1, Hero hero2, Settlement settlement)
 	{
-		//IL_0067: Unknown result type (might be due to invalid IL or missing references)
-		//IL_006c: Unknown result type (might be due to invalid IL or missing references)
 		Settlement settlement2 = settlement;
 		FeastData feastByAttribute = FeastBehavior.GetFeastByAttribute((FeastData f) => f.Settlement == settlement2);
 		if (feastByAttribute != null)

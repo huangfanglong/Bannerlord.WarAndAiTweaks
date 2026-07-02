@@ -116,13 +116,6 @@ public static class MarshalHelper
 
 	public static void RemoveMarshalForTesting(Kingdom kingdom)
 	{
-		//IL_009d: Unknown result type (might be due to invalid IL or missing references)
-		//IL_00a3: Unknown result type (might be due to invalid IL or missing references)
-		//IL_00ae: Unknown result type (might be due to invalid IL or missing references)
-		//IL_00b4: Unknown result type (might be due to invalid IL or missing references)
-		//IL_00d3: Unknown result type (might be due to invalid IL or missing references)
-		//IL_00d8: Unknown result type (might be due to invalid IL or missing references)
-		//IL_00e2: Expected O, but got Unknown
 		if (kingdom == null)
 		{
 			return;

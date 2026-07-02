@@ -45,7 +45,7 @@ public class CompanionIconVM : ViewModel
 			if (Math.Abs(value - _positionX) > 0.01f)
 			{
 				_positionX = value;
-				((ViewModel)this).OnPropertyChangedWithValue(value, "PositionX");
+				base.OnPropertyChangedWithValue(value, "PositionX");
 			}
 		}
 	}
@@ -62,7 +62,7 @@ public class CompanionIconVM : ViewModel
 			if (Math.Abs(value - _positionY) > 0.01f)
 			{
 				_positionY = value;
-				((ViewModel)this).OnPropertyChangedWithValue(value, "PositionY");
+				base.OnPropertyChangedWithValue(value, "PositionY");
 			}
 		}
 	}
@@ -79,7 +79,7 @@ public class CompanionIconVM : ViewModel
 			if (Math.Abs(value - _width) > 0.01f)
 			{
 				_width = value;
-				((ViewModel)this).OnPropertyChangedWithValue(value, "Width");
+				base.OnPropertyChangedWithValue(value, "Width");
 			}
 		}
 	}
@@ -96,7 +96,7 @@ public class CompanionIconVM : ViewModel
 			if (Math.Abs(value - _height) > 0.01f)
 			{
 				_height = value;
-				((ViewModel)this).OnPropertyChangedWithValue(value, "Height");
+				base.OnPropertyChangedWithValue(value, "Height");
 			}
 		}
 	}
@@ -113,7 +113,7 @@ public class CompanionIconVM : ViewModel
 			if (value != _isVisible)
 			{
 				_isVisible = value;
-				((ViewModel)this).OnPropertyChangedWithValue(value, "IsVisible");
+				base.OnPropertyChangedWithValue(value, "IsVisible");
 			}
 		}
 	}
@@ -147,7 +147,7 @@ public class CompanionIconVM : ViewModel
 			if (value != _fontSize)
 			{
 				_fontSize = value;
-				((ViewModel)this).OnPropertyChangedWithValue(value, "FontSize");
+				base.OnPropertyChangedWithValue(value, "FontSize");
 			}
 		}
 	}

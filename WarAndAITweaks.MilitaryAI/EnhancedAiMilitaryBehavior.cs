@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using FeastSystem;
@@ -115,23 +115,17 @@ public class EnhancedAiMilitaryBehavior : CampaignBehaviorBase
 
 	public static bool PartyHasDefensiveObjective(MobileParty party)
 	{
-		//IL_0004: Unknown result type (might be due to invalid IL or missing references)
-		//IL_000a: Invalid comparison between Unknown and I4
-		return party != null && (int)party.Objective == 1;
+		return party != null && party.Objective == MobileParty.PartyObjective.Defensive;
 	}
 
 	public static bool PartyHasAggressiveObjective(MobileParty party)
 	{
-		//IL_0004: Unknown result type (might be due to invalid IL or missing references)
-		//IL_000a: Invalid comparison between Unknown and I4
-		return party != null && (int)party.Objective == 2;
+		return party != null && party.Objective == MobileParty.PartyObjective.Aggressive;
 	}
 
 	public static bool PartyHasBalancedObjective(MobileParty party)
 	{
-		//IL_0004: Unknown result type (might be due to invalid IL or missing references)
-		//IL_000a: Invalid comparison between Unknown and I4
-		return party != null && (int)party.Objective == 0;
+		return party != null && party.Objective == MobileParty.PartyObjective.Neutral;
 	}
 
 	public static bool PartyIsArmyLeader(MobileParty party)
@@ -277,11 +271,6 @@ public class EnhancedAiMilitaryBehavior : CampaignBehaviorBase
 
 	public static void SendToDefendWorkAround(MobileParty party, PartyThinkParams p, Settlement settlement)
 	{
-		//IL_0018: Unknown result type (might be due to invalid IL or missing references)
-		//IL_00d3: Unknown result type (might be due to invalid IL or missing references)
-		//IL_00d5: Unknown result type (might be due to invalid IL or missing references)
-		//IL_00e2: Unknown result type (might be due to invalid IL or missing references)
-		//IL_00e4: Unknown result type (might be due to invalid IL or missing references)
 		if (party == null || p == null || settlement == null)
 		{
 			return;
@@ -376,9 +365,6 @@ public class EnhancedAiMilitaryBehavior : CampaignBehaviorBase
 
 	private void AiHourlyTickEvent(MobileParty mobileParty, PartyThinkParams p)
 	{
-		//IL_00bf: Unknown result type (might be due to invalid IL or missing references)
-		//IL_00c4: Unknown result type (might be due to invalid IL or missing references)
-		//IL_00c7: Unknown result type (might be due to invalid IL or missing references)
 		if (mobileParty.IsDisbanding)
 		{
 			return;
@@ -591,8 +577,6 @@ public class EnhancedAiMilitaryBehavior : CampaignBehaviorBase
 
 	public bool FindMakeArmyAttackPlans(MobileParty party, PartyThinkParams p, bool kingdomUnderSiege, HashSet<IFaction> AtWarKingdoms)
 	{
-		//IL_0102: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0112: Unknown result type (might be due to invalid IL or missing references)
 		if (kingdomUnderSiege)
 		{
 			return false;
@@ -647,10 +631,6 @@ public class EnhancedAiMilitaryBehavior : CampaignBehaviorBase
 
 	private void FindPersonalRaid(MobileParty party, PartyThinkParams p, HashSet<IFaction> AtWarFactions)
 	{
-		//IL_00d8: Unknown result type (might be due to invalid IL or missing references)
-		//IL_00ec: Unknown result type (might be due to invalid IL or missing references)
-		//IL_03bf: Unknown result type (might be due to invalid IL or missing references)
-		//IL_03cf: Unknown result type (might be due to invalid IL or missing references)
 		Hero leaderHero = party.LeaderHero;
 		object obj;
 		if (leaderHero == null)
@@ -789,8 +769,6 @@ public class EnhancedAiMilitaryBehavior : CampaignBehaviorBase
 
 	private void HandleArmyDisband(MobileParty mobileParty, bool isAtWar)
 	{
-		//IL_0048: Unknown result type (might be due to invalid IL or missing references)
-		//IL_004d: Unknown result type (might be due to invalid IL or missing references)
 		if (mobileParty.Army != null && mobileParty.Army.LeaderParty == MobileParty.MainParty)
 		{
 			return;
@@ -814,8 +792,6 @@ public class EnhancedAiMilitaryBehavior : CampaignBehaviorBase
 
 	private void HandleArmyCreation(MobileParty party)
 	{
-		//IL_0029: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0016: Unknown result type (might be due to invalid IL or missing references)
 		if (ArmyCreationDate.ContainsKey(party))
 		{
 			ArmyCreationDate[party] = CampaignTime.Now;

@@ -67,11 +67,6 @@ public sealed class AutoBuildBehavior : CampaignBehaviorBase
 
 	private void TryQueueOneBuilding(Town town)
 	{
-		//IL_01b9: Unknown result type (might be due to invalid IL or missing references)
-		//IL_01be: Unknown result type (might be due to invalid IL or missing references)
-		//IL_01c8: Expected O, but got Unknown
-		//IL_00b6: Unknown result type (might be due to invalid IL or missing references)
-		//IL_00bc: Invalid comparison between Unknown and I4
 		if (town.BuildingsInProgress.Count >= 1)
 		{
 			return;
@@ -150,8 +145,6 @@ public sealed class AutoBuildBehavior : CampaignBehaviorBase
 
 	private static void Log(string msg)
 	{
-		//IL_000b: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0015: Expected O, but got Unknown
 		InformationManager.DisplayMessage(new InformationMessage(msg ?? ""));
 	}
 }

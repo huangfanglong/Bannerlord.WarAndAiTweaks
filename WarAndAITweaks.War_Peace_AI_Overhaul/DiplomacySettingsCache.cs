@@ -1,4 +1,4 @@
-﻿using TaleWorlds.CampaignSystem;
+using TaleWorlds.CampaignSystem;
 
 namespace WarAndAITweaks.War_Peace_AI_Overhaul;
 
@@ -40,11 +40,6 @@ public static class DiplomacySettingsCache
 
 	public static void EnsureInitialized()
 	{
-		//IL_0016: Unknown result type (might be due to invalid IL or missing references)
-		//IL_001c: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0021: Unknown result type (might be due to invalid IL or missing references)
-		//IL_006f: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0074: Unknown result type (might be due to invalid IL or missing references)
 		if (!_isDiplomacyModLoaded)
 		{
 			return;

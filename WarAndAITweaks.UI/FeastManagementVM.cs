@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -80,25 +80,6 @@ public class FeastManagementVM : ViewModel
 
 	public void ExecuteHostFeast()
 	{
-		//IL_0063: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0068: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0072: Expected O, but got Unknown
-		//IL_00cd: Unknown result type (might be due to invalid IL or missing references)
-		//IL_00d2: Unknown result type (might be due to invalid IL or missing references)
-		//IL_00dc: Expected O, but got Unknown
-		//IL_0207: Unknown result type (might be due to invalid IL or missing references)
-		//IL_020c: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0216: Expected O, but got Unknown
-		//IL_012a: Unknown result type (might be due to invalid IL or missing references)
-		//IL_012f: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0139: Expected O, but got Unknown
-		//IL_017d: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0182: Unknown result type (might be due to invalid IL or missing references)
-		//IL_018c: Expected O, but got Unknown
-		//IL_030c: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0318: Expected O, but got Unknown
-		//IL_0276: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0280: Expected O, but got Unknown
 		Hero player = Hero.MainHero;
 		Hero obj = player;
 		Clan val = ((obj != null) ? obj.Clan : null);
@@ -151,15 +132,6 @@ public class FeastManagementVM : ViewModel
 		}
 		MBInformationManager.ShowMultiSelectionInquiry(new MultiSelectionInquiryData(LanguageTranslater.L.S("host_feast_title", "Host Feast"), LanguageTranslater.L.S("host_feast_select_settlement", "Select a settlement to host a feast:"), list2, true, 1, 1, LanguageTranslater.L.S("host", "Host"), LanguageTranslater.L.S("cancel", "Cancel"), (Action<List<InquiryElement>>)delegate(List<InquiryElement> elements)
 		{
-			//IL_0114: Unknown result type (might be due to invalid IL or missing references)
-			//IL_0119: Unknown result type (might be due to invalid IL or missing references)
-			//IL_0123: Expected O, but got Unknown
-			//IL_007f: Unknown result type (might be due to invalid IL or missing references)
-			//IL_0084: Unknown result type (might be due to invalid IL or missing references)
-			//IL_008e: Expected O, but got Unknown
-			//IL_00b8: Unknown result type (might be due to invalid IL or missing references)
-			//IL_00bd: Unknown result type (might be due to invalid IL or missing references)
-			//IL_00c7: Expected O, but got Unknown
 			object obj2 = elements?.FirstOrDefault()?.Identifier;
 			Settlement val2 = (Settlement)((obj2 is Settlement) ? obj2 : null);
 			if (val2 != null)
@@ -196,14 +168,6 @@ public class FeastManagementVM : ViewModel
 
 	public void ExecuteEndFeast()
 	{
-		//IL_0055: Unknown result type (might be due to invalid IL or missing references)
-		//IL_005a: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0064: Expected O, but got Unknown
-		//IL_009e: Unknown result type (might be due to invalid IL or missing references)
-		//IL_00a3: Unknown result type (might be due to invalid IL or missing references)
-		//IL_00ad: Expected O, but got Unknown
-		//IL_017a: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0186: Expected O, but got Unknown
 		Hero mainHero = Hero.MainHero;
 		object obj;
 		if (mainHero == null)
@@ -271,8 +235,6 @@ public class FeastManagementVM : ViewModel
 
 	private static int GetFeastCooldownDaysLeft(IFaction faction)
 	{
-		//IL_0030: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0035: Unknown result type (might be due to invalid IL or missing references)
 		if (faction == null)
 		{
 			return 0;
@@ -290,24 +252,6 @@ public class FeastManagementVM : ViewModel
 
 	private void ShowFeastHostingError()
 	{
-		//IL_0032: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0037: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0041: Expected O, but got Unknown
-		//IL_0069: Unknown result type (might be due to invalid IL or missing references)
-		//IL_006e: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0078: Expected O, but got Unknown
-		//IL_009d: Unknown result type (might be due to invalid IL or missing references)
-		//IL_00a2: Unknown result type (might be due to invalid IL or missing references)
-		//IL_00ac: Expected O, but got Unknown
-		//IL_00d5: Unknown result type (might be due to invalid IL or missing references)
-		//IL_00da: Unknown result type (might be due to invalid IL or missing references)
-		//IL_00e4: Expected O, but got Unknown
-		//IL_014d: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0152: Unknown result type (might be due to invalid IL or missing references)
-		//IL_015c: Expected O, but got Unknown
-		//IL_012c: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0131: Unknown result type (might be due to invalid IL or missing references)
-		//IL_013b: Expected O, but got Unknown
 		Hero mainHero = Hero.MainHero;
 		Clan val = ((mainHero != null) ? mainHero.Clan : null);
 		if (mainHero == null || val == null)

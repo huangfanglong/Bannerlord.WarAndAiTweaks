@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using HarmonyLib;
@@ -146,8 +146,6 @@ public class FeastBehavior : CampaignBehaviorBase
 
 	private void OnWarDeclared(IFaction faction1, IFaction faction2, DeclareWarDetail detail)
 	{
-		//IL_0073: Unknown result type (might be due to invalid IL or missing references)
-		//IL_007a: Expected O, but got Unknown
 		foreach (FeastData item in System.Linq.Enumerable.ToList(_activeFeasts))
 		{
 			Hero host = item.Host;
@@ -194,9 +192,6 @@ public class FeastBehavior : CampaignBehaviorBase
 
 	private void OnDailyTickClan(Clan clan)
 	{
-		//IL_0089: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0051: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0056: Unknown result type (might be due to invalid IL or missing references)
 		Kingdom clanKingdom = ((clan != null) ? clan.Kingdom : null);
 		if (clan == null || clanKingdom == null || clan.IsUnderMercenaryService)
 		{
@@ -251,7 +246,6 @@ public class FeastBehavior : CampaignBehaviorBase
 
 	private void TickFeast(FeastData feast)
 	{
-		//IL_001c: Unknown result type (might be due to invalid IL or missing references)
 		if (feast == null)
 		{
 			return;
@@ -274,13 +268,6 @@ public class FeastBehavior : CampaignBehaviorBase
 
 	public static void StartFeast(Hero host, Settlement settlement)
 	{
-		//IL_000f: Unknown result type (might be due to invalid IL or missing references)
-		//IL_002f: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0039: Expected O, but got Unknown
-		//IL_00a3: Unknown result type (might be due to invalid IL or missing references)
-		//IL_00ed: Unknown result type (might be due to invalid IL or missing references)
-		//IL_00f2: Unknown result type (might be due to invalid IL or missing references)
-		//IL_010e: Unknown result type (might be due to invalid IL or missing references)
 		FeastData feastData = new FeastData
 		{
 			Host = host,
@@ -320,16 +307,6 @@ public class FeastBehavior : CampaignBehaviorBase
 
 	public static void EndFeast(FeastData feast, string reason)
 	{
-		//IL_003e: Unknown result type (might be due to invalid IL or missing references)
-		//IL_004f: Expected O, but got Unknown
-		//IL_0081: Unknown result type (might be due to invalid IL or missing references)
-		//IL_00cc: Unknown result type (might be due to invalid IL or missing references)
-		//IL_00d2: Unknown result type (might be due to invalid IL or missing references)
-		//IL_00e4: Unknown result type (might be due to invalid IL or missing references)
-		//IL_00ea: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0102: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0107: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0111: Expected O, but got Unknown
 		Clan clan = Hero.MainHero.Clan;
 		Kingdom obj = ((clan != null) ? clan.Kingdom : null);
 		Hero host = feast.Host;
@@ -388,10 +365,6 @@ public class FeastBehavior : CampaignBehaviorBase
 
 	public static void HandleAIContributeFoodToFeast(FeastData feast)
 	{
-		//IL_00cb: Unknown result type (might be due to invalid IL or missing references)
-		//IL_00d0: Unknown result type (might be due to invalid IL or missing references)
-		//IL_00fd: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0113: Unknown result type (might be due to invalid IL or missing references)
 		Hero val = feast?.Host;
 		if (val == null || val == Hero.MainHero || feast == null || feast.Settlement == null)
 		{
@@ -411,8 +384,6 @@ public class FeastBehavior : CampaignBehaviorBase
 		}
 		List<ItemRosterElement> list = ((IEnumerable<ItemRosterElement>)val3).Where(delegate(ItemRosterElement e)
 		{
-			//IL_0002: Unknown result type (might be due to invalid IL or missing references)
-			//IL_0007: Unknown result type (might be due to invalid IL or missing references)
 			EquipmentElement equipmentElement = e.EquipmentElement;
 			ItemObject item = equipmentElement.Item;
 			return item != null && item.IsFood && e.Amount > 0;

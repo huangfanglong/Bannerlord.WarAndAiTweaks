@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Reflection;
 using SandBox.ViewModelCollection.Map.Tracker;
 using TaleWorlds.CampaignSystem;

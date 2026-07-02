@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using FeastSystem;
 using TaleWorlds.CampaignSystem;
@@ -108,7 +108,7 @@ public class FeastItemVM : ViewModel
 			if (value != _attendeeCount)
 			{
 				_attendeeCount = value;
-				((ViewModel)this).OnPropertyChangedWithValue(value, "AttendeeCount");
+				base.OnPropertyChangedWithValue(value, "AttendeeCount");
 			}
 		}
 	}
@@ -183,18 +183,6 @@ public class FeastItemVM : ViewModel
 
 	public FeastItemVM(FeastData feast)
 	{
-		//IL_018e: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0194: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0199: Unknown result type (might be due to invalid IL or missing references)
-		//IL_019e: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0155: Unknown result type (might be due to invalid IL or missing references)
-		//IL_015f: Expected O, but got Unknown
-		//IL_015a: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0164: Expected O, but got Unknown
-		//IL_0117: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0121: Expected O, but got Unknown
-		//IL_011c: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0126: Expected O, but got Unknown
 		Hero host = feast.Host;
 		HostName = ((host == null) ? null : ((object)host.Name)?.ToString()) ?? LanguageTranslater.L.S("Unknown", "Unknown");
 		Settlement settlement = feast.Settlement;
