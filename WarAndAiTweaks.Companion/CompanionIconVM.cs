@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using MCM.Abstractions.Base.Global;
 using TaleWorlds.Library;
 
@@ -216,9 +216,6 @@ public class CompanionIconVM : ViewModel
 
 	public static string GetColorHex(string colorName)
 	{
-		if (1 == 0)
-		{
-		}
 		string result = colorName switch
 		{
 			"White" => "#FFFFFFFF", 
@@ -233,17 +230,11 @@ public class CompanionIconVM : ViewModel
 			"Black" => "#000000FF", 
 			_ => "#FFFFFFFF", 
 		};
-		if (1 == 0)
-		{
-		}
 		return result;
 	}
 
 	public static string GetIconSprite(string iconName)
 	{
-		if (1 == 0)
-		{
-		}
 		string result = iconName switch
 		{
 			"Hero" => "General\\Mission\\hero_icon", 
@@ -252,9 +243,6 @@ public class CompanionIconVM : ViewModel
 			"Spear" => "General\\Mission\\spear-brace-active", 
 			_ => "General\\Mission\\hero_icon", 
 		};
-		if (1 == 0)
-		{
-		}
 		return result;
 	}
 }

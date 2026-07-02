@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -110,9 +110,6 @@ internal class StrategicX4AIHelpers
 	{
 		string text = ((us == null) ? null : ((object)us.Name)?.ToString()) ?? LanguageTranslater.L.S("Unknown", "Unknown");
 		string text2 = ((them == null) ? null : ((object)them.Name)?.ToString()) ?? LanguageTranslater.L.S("Unknown", "Unknown");
-		if (1 == 0)
-		{
-		}
 		string text3 = tag switch
 		{
 			"prevent_snowball_war" => "narrative_prevent_snowball_war", 
@@ -123,9 +120,6 @@ internal class StrategicX4AIHelpers
 			"war_fatigue_peace" => "narrative_war_fatigue_peace", 
 			_ => string.Empty, 
 		};
-		if (1 == 0)
-		{
-		}
 		string text4 = text3;
 		if (!string.IsNullOrEmpty(text4))
 		{
@@ -142,9 +136,6 @@ internal class StrategicX4AIHelpers
 
 	private static string GetXmlTextForKey(string key)
 	{
-		if (1 == 0)
-		{
-		}
 		string result = key switch
 		{
 			"narrative_prevent_snowball_war" => "Our council reports that {US} moves to contain {THEM}'s unchecked expansion.", 
@@ -157,17 +148,11 @@ internal class StrategicX4AIHelpers
 			"Unknown" => "Unknown", 
 			_ => string.Empty, 
 		};
-		if (1 == 0)
-		{
-		}
 		return result;
 	}
 
 	private static string GetFallbackText(string tag, string usName, string themName)
 	{
-		if (1 == 0)
-		{
-		}
 		string result = tag switch
 		{
 			"prevent_snowball_war" => "Our council reports that " + usName + " moves to contain " + themName + "'s unchecked expansion.", 
@@ -178,9 +163,6 @@ internal class StrategicX4AIHelpers
 			"war_fatigue_peace" => "After a gruelling campaign, " + usName + " requests " + themName + " to end hostilities.", 
 			_ => "Councillors discuss shifting allegiances across the realm.", 
 		};
-		if (1 == 0)
-		{
-		}
 		return result;
 	}
 

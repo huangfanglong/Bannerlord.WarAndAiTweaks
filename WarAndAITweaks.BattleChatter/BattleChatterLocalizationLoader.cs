@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Xml;
@@ -162,9 +162,6 @@ public static class BattleChatterLocalizationLoader
 
 	private static string GetLanguageCode(string language)
 	{
-		if (1 == 0)
-		{
-		}
 		string result = language switch
 		{
 			"English" => "", 
@@ -182,9 +179,6 @@ public static class BattleChatterLocalizationLoader
 			"日本語" => "JP", 
 			_ => "", 
 		};
-		if (1 == 0)
-		{
-		}
 		return result;
 	}
 

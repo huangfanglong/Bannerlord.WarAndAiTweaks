@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -459,13 +459,7 @@ internal class MarshalDecision : KingdomDecision
 	{
 		if (chosenOutcome is MarshalOutcome marshalOutcome)
 		{
-			if (1 == 0)
-			{
-			}
 			string text = (((int)supportStatus == 1) ? "marshal_decision_outcome_majority" : (((int)supportStatus != 2) ? "marshal_decision_outcome_single" : "marshal_decision_outcome_minority"));
-			if (1 == 0)
-			{
-			}
 			string text2 = text;
 			TextObject val = LanguageTranslater.L.T(text2, (text2 == "marshal_decision_outcome_majority" || text2 == "marshal_decision_outcome_minority" || text2 == "marshal_decision_outcome_single") ? "{RULER.NAME} of the {KINGDOM} has appointed {MARSHAL.NAME} as Marshal." : "");
 			Kingdom kingdom = Kingdom;

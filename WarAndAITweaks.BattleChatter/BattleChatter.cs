@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using MCM.Abstractions.Base.Global;
@@ -279,9 +279,6 @@ internal class BattleChatter : MissionBehavior
 			{
 				return;
 			}
-			if (1 == 0)
-			{
-			}
 			string text = agentUnitType switch
 			{
 				UnitType.Infantry => "bc_form_same_inf", 
@@ -289,9 +286,6 @@ internal class BattleChatter : MissionBehavior
 				UnitType.Archer => "bc_form_same_rng", 
 				_ => null, 
 			};
-			if (1 == 0)
-			{
-			}
 			string text2 = text;
 			if (text2 == null || !DialogCategories.Contains(text2))
 			{
@@ -336,9 +330,6 @@ internal class BattleChatter : MissionBehavior
 
 	private static string? GetCrossFormationCategory(UnitType speakerType, UnitType targetType)
 	{
-		if (1 == 0)
-		{
-		}
 		string result;
 		switch (speakerType)
 		{
@@ -381,9 +372,6 @@ internal class BattleChatter : MissionBehavior
 		default:
 			result = null;
 			break;
-		}
-		if (1 == 0)
-		{
 		}
 		return result;
 	}
