@@ -125,16 +125,24 @@ public class Strategic4XDiplomacyBehavior : CampaignBehaviorBase
 		{
 			updateKingdomTargetsCache(item2);
 		}
-		ReasonableDistanceForBesiegingTown = (127f + 2.27f * Campaign.AverageDistanceBetweenTwoFortifications) / 2f;
+		ReasonableDistanceForBesiegingTown = (127f + 2.27f * 56f) / 2f;
 		if (GlobalSettings<WarAndAiTweaksSettings>.Instance.EnableBaseGameTributes)
 		{
 			return;
 		}
 		foreach (Kingdom item3 in (List<Kingdom>)(object)Kingdom.All)
 		{
-			foreach (StanceLink stance in item3.Stances)
+			foreach (Kingdom otherKingdom in (List<Kingdom>)(object)Kingdom.All)
 			{
-				stance.SetDailyTributePaid(item3.MapFaction, 0);
+				if (otherKingdom == item3)
+				{
+					continue;
+				}
+				StanceLink stanceWith = item3.GetStanceWith((IFaction)(object)otherKingdom);
+				if (stanceWith != null)
+				{
+					stanceWith.SetDailyTributePaid(item3.MapFaction, 0, 0);
+				}
 			}
 		}
 	}
@@ -168,9 +176,6 @@ public class Strategic4XDiplomacyBehavior : CampaignBehaviorBase
 
 	private void DailyTick()
 	{
-		//IL_008c: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0091: Unknown result type (might be due to invalid IL or missing references)
-		//IL_009b: Expected O, but got Unknown
 		StrategicX4AIHelpers.UpdateMajorKingdoms();
 		foreach (Kingdom item in (List<Kingdom>)(object)MajorKingdoms)
 		{
@@ -188,12 +193,6 @@ public class Strategic4XDiplomacyBehavior : CampaignBehaviorBase
 
 	private void DailyTickClanEvent(Clan clan)
 	{
-		//IL_00b0: Unknown result type (might be due to invalid IL or missing references)
-		//IL_00b5: Unknown result type (might be due to invalid IL or missing references)
-		//IL_00bf: Expected O, but got Unknown
-		//IL_00ed: Unknown result type (might be due to invalid IL or missing references)
-		//IL_00f2: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0168: Unknown result type (might be due to invalid IL or missing references)
 		if (((clan != null) ? clan.Kingdom : null) == null || !((List<Kingdom>)(object)MajorKingdoms).Contains(clan.Kingdom))
 		{
 			return;
@@ -215,7 +214,7 @@ public class Strategic4XDiplomacyBehavior : CampaignBehaviorBase
 		if (_lastDiplomaticAction.TryGetValue(kingdom, out var value))
 		{
 			CampaignTime now = CampaignTime.Now;
-			if (((CampaignTime)(ref now)).ToDays - ((CampaignTime)(ref value)).ToDays < 7.0)
+			if (now.ToDays - value.ToDays < 7.0)
 			{
 				return;
 			}
@@ -386,7 +385,7 @@ public class Strategic4XDiplomacyBehavior : CampaignBehaviorBase
 		}
 		if (DiplomacySettingsCache.IsDiplomacyModLoaded)
 		{
-			return Extensions.ToMBList<Kingdom>(source.Where((Kingdom x) => (!((double)targetStrengths[x] * 0.8 >= (double)inputStrength) || ((IEnumerable<Kingdom>)MajorKingdoms).Any((Kingdom other) => other != x && x.IsAtWarWith((IFaction)(object)other))) && (!kingdomAgreements.Contains(x) || !FactionManager.IsAlliedWithFaction((IFaction)(object)x, (IFaction)(object)kingdom2)) && (!DiplomacySettingsCache.NoWarBetweenFriends.GetValueOrDefault() || kingdom2.Leader == null || x.Leader == null || !kingdom2.Leader.IsFriend(x.Leader)) && (!DiplomacySettingsCache.NoWarOnGoodRelations.GetValueOrDefault() || !DiplomacySettingsCache.NoWarOnGoodRelationsThreshold.HasValue || kingdom2.Leader == null || x.Leader == null || kingdom2.Leader.GetRelation(x.Leader) < DiplomacySettingsCache.NoWarOnGoodRelationsThreshold.Value) && (!DiplomacySettingsCache.NoWarWhenMarriedLeaderClans.GetValueOrDefault() || kingdom2.RulingClan == null || x.RulingClan == null || !DiplomacyPlugin.HasMarriedClanLeaderRelation(kingdom2.RulingClan, x.RulingClan))));
+			return Extensions.ToMBList<Kingdom>(source.Where((Kingdom x) => (!((double)targetStrengths[x] * 0.8 >= (double)inputStrength) || ((IEnumerable<Kingdom>)MajorKingdoms).Any((Kingdom other) => other != x && x.IsAtWarWith((IFaction)(object)other))) && (!kingdomAgreements.Contains(x) || FactionManager.IsAtWarAgainstFaction((IFaction)(object)x, (IFaction)(object)kingdom2)) && (!DiplomacySettingsCache.NoWarBetweenFriends.GetValueOrDefault() || kingdom2.Leader == null || x.Leader == null || !kingdom2.Leader.IsFriend(x.Leader)) && (!DiplomacySettingsCache.NoWarOnGoodRelations.GetValueOrDefault() || !DiplomacySettingsCache.NoWarOnGoodRelationsThreshold.HasValue || kingdom2.Leader == null || x.Leader == null || kingdom2.Leader.GetRelation(x.Leader) < DiplomacySettingsCache.NoWarOnGoodRelationsThreshold.Value) && (!DiplomacySettingsCache.NoWarWhenMarriedLeaderClans.GetValueOrDefault() || kingdom2.RulingClan == null || x.RulingClan == null || !DiplomacyPlugin.HasMarriedClanLeaderRelation(kingdom2.RulingClan, x.RulingClan))));
 		}
 		return Extensions.ToMBList<Kingdom>(source.Where((Kingdom x) => !((double)targetStrengths[x] * 0.8 >= (double)inputStrength) || ((IEnumerable<Kingdom>)MajorKingdoms).Any((Kingdom other) => other != x && x.IsAtWarWith((IFaction)(object)other))));
 	}
@@ -469,8 +468,8 @@ public class Strategic4XDiplomacyBehavior : CampaignBehaviorBase
 				IsSnowballing = t.IsSnowballing
 			};
 		}));
-		int bestScore = ((IEnumerable<_003C_003Ef__AnonymousType1<Kingdom, int, float, int, int, int, bool>>)source).Max(x => x.Score);
-		var list2 = ((IEnumerable<_003C_003Ef__AnonymousType1<Kingdom, int, float, int, int, int, bool>>)source).Where(x => x.Score == bestScore).ToList();
+		int bestScore = source.Max(x => x.Score);
+		var list2 = source.Where(x => x.Score == bestScore).ToList();
 		if (list2.Count == 1)
 		{
 			return list2[0].Target;
@@ -482,15 +481,6 @@ public class Strategic4XDiplomacyBehavior : CampaignBehaviorBase
 
 	private bool AttemptPeace(Kingdom kingdom, Kingdom target, string story, float ourDesire, float theirDesire)
 	{
-		//IL_0150: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0157: Expected O, but got Unknown
-		//IL_0105: Unknown result type (might be due to invalid IL or missing references)
-		//IL_010a: Unknown result type (might be due to invalid IL or missing references)
-		//IL_013b: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0142: Expected O, but got Unknown
-		//IL_017e: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0183: Unknown result type (might be due to invalid IL or missing references)
-		//IL_018d: Expected O, but got Unknown
 		if (kingdom == null || target == null || kingdom.RulingClan == null || kingdom.RulingClan.Leader == null || target.RulingClan == null || target.RulingClan.Leader == null)
 		{
 			return false;
@@ -523,12 +513,12 @@ public class Strategic4XDiplomacyBehavior : CampaignBehaviorBase
 		if (GlobalSettings<WarAndAiTweaksSettings>.Instance.EnableBaseGameTributes)
 		{
 			int valueForFaction = ((Barterable)new PeaceBarterable(val2.RulingClan.Leader, (IFaction)(object)val2, (IFaction)(object)val3, CampaignTime.Years(1f))).GetValueForFaction((IFaction)(object)val3);
-			int dailyTributeForValue = Campaign.Current.Models.DiplomacyModel.GetDailyTributeForValue(valueForFaction);
-			val4 = new MakePeaceKingdomDecision(val2.RulingClan, (IFaction)(object)val3, dailyTributeForValue, true);
+			int dailyTributePaid = 0;
+			val4 = new MakePeaceKingdomDecision(val2.RulingClan, (IFaction)(object)val3, dailyTributePaid, 0, true);
 		}
 		else
 		{
-			val4 = new MakePeaceKingdomDecision(val2.RulingClan, (IFaction)(object)val3, 0, true);
+			val4 = new MakePeaceKingdomDecision(val2.RulingClan, (IFaction)(object)val3, 0, 0, true);
 		}
 		if (val4 == null)
 		{
@@ -544,11 +534,6 @@ public class Strategic4XDiplomacyBehavior : CampaignBehaviorBase
 
 	private void DeclareWar(Kingdom kingdom, Kingdom target, string story)
 	{
-		//IL_0015: Unknown result type (might be due to invalid IL or missing references)
-		//IL_001b: Expected O, but got Unknown
-		//IL_0037: Unknown result type (might be due to invalid IL or missing references)
-		//IL_003c: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0046: Expected O, but got Unknown
 		if (!kingdom.IsAtWarWith((IFaction)(object)target))
 		{
 			DeclareWarDecision val = new DeclareWarDecision(kingdom.RulingClan, (IFaction)(object)target);
@@ -561,54 +546,6 @@ public class Strategic4XDiplomacyBehavior : CampaignBehaviorBase
 
 	private void UpdateWarFatigue(Kingdom k)
 	{
-		//IL_00c8: Unknown result type (might be due to invalid IL or missing references)
-		//IL_00cd: Unknown result type (might be due to invalid IL or missing references)
-		//IL_00d7: Expected O, but got Unknown
-		//IL_0065: Unknown result type (might be due to invalid IL or missing references)
-		//IL_006a: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0074: Expected O, but got Unknown
-		//IL_0029: Unknown result type (might be due to invalid IL or missing references)
-		//IL_002e: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0038: Expected O, but got Unknown
-		//IL_010e: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0113: Unknown result type (might be due to invalid IL or missing references)
-		//IL_011d: Expected O, but got Unknown
-		//IL_014a: Unknown result type (might be due to invalid IL or missing references)
-		//IL_014f: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0159: Expected O, but got Unknown
-		//IL_02f1: Unknown result type (might be due to invalid IL or missing references)
-		//IL_02f6: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0300: Expected O, but got Unknown
-		//IL_02b2: Unknown result type (might be due to invalid IL or missing references)
-		//IL_02b7: Unknown result type (might be due to invalid IL or missing references)
-		//IL_02c1: Expected O, but got Unknown
-		//IL_026e: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0273: Unknown result type (might be due to invalid IL or missing references)
-		//IL_027d: Expected O, but got Unknown
-		//IL_021f: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0224: Unknown result type (might be due to invalid IL or missing references)
-		//IL_022e: Expected O, but got Unknown
-		//IL_01d7: Unknown result type (might be due to invalid IL or missing references)
-		//IL_01dc: Unknown result type (might be due to invalid IL or missing references)
-		//IL_01e6: Expected O, but got Unknown
-		//IL_0198: Unknown result type (might be due to invalid IL or missing references)
-		//IL_019d: Unknown result type (might be due to invalid IL or missing references)
-		//IL_01a7: Expected O, but got Unknown
-		//IL_04cb: Unknown result type (might be due to invalid IL or missing references)
-		//IL_04d0: Unknown result type (might be due to invalid IL or missing references)
-		//IL_04da: Expected O, but got Unknown
-		//IL_051e: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0523: Unknown result type (might be due to invalid IL or missing references)
-		//IL_052d: Expected O, but got Unknown
-		//IL_05d4: Unknown result type (might be due to invalid IL or missing references)
-		//IL_05d9: Unknown result type (might be due to invalid IL or missing references)
-		//IL_05e3: Expected O, but got Unknown
-		//IL_0586: Unknown result type (might be due to invalid IL or missing references)
-		//IL_058b: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0595: Expected O, but got Unknown
-		//IL_0436: Unknown result type (might be due to invalid IL or missing references)
-		//IL_043b: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0445: Expected O, but got Unknown
 		bool showWarFatigueDebug = GlobalSettings<WarAndAiTweaksSettings>.Instance.ShowWarFatigueDebug;
 		if (showWarFatigueDebug)
 		{
@@ -672,7 +609,18 @@ public class Strategic4XDiplomacyBehavior : CampaignBehaviorBase
 		float num6 = 0f;
 		float num7 = 0f;
 		float num8 = 0f;
-		List<StanceLink> list = k.Stances.Where((StanceLink x) => x.IsAtWar).ToList();
+		List<StanceLink> list = new List<StanceLink>();
+		foreach (Kingdom otherK in (List<Kingdom>)(object)Kingdom.All)
+		{
+			if (otherK != k)
+			{
+				StanceLink stanceWith = k.GetStanceWith((IFaction)(object)otherK);
+				if (stanceWith != null && stanceWith.IsAtWar)
+				{
+					list.Add(stanceWith);
+				}
+			}
+		}
 		foreach (StanceLink item in list)
 		{
 			IFaction faction = item.Faction2;
@@ -684,8 +632,8 @@ public class Strategic4XDiplomacyBehavior : CampaignBehaviorBase
 			}
 			if (val != null && val != k)
 			{
-				int count = DiplomacyHelper.GetRaidsInWar((IFaction)(object)val, item, (Func<Settlement, bool>)null).Count;
-				int count2 = DiplomacyHelper.GetSuccessfullSiegesInWarForFaction((IFaction)(object)val, item, (Func<Settlement, bool>)null).Count;
+				int count = 0;
+				int count2 = 0;
 				float num9 = item.GetCasualties((IFaction)(object)k);
 				int count3 = DiplomacyHelper.GetPrisonersOfWarTakenByFaction((IFaction)(object)val, (IFaction)(object)k).Count;
 				if (showWarFatigueDebug)
@@ -718,17 +666,12 @@ public class Strategic4XDiplomacyBehavior : CampaignBehaviorBase
 
 	private static void HandlePlayerKingdomPeace(Kingdom aiKingdom, Kingdom playerKingdom, string reason)
 	{
-		//IL_0062: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0124: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0130: Expected O, but got Unknown
-		//IL_002c: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0031: Unknown result type (might be due to invalid IL or missing references)
 		Kingdom aiKingdom2 = aiKingdom;
 		Kingdom playerKingdom2 = playerKingdom;
 		if (_lastPlayerPeaceOffer.TryGetValue(aiKingdom2, out var value))
 		{
 			CampaignTime now = CampaignTime.Now;
-			if (((CampaignTime)(ref now)).ToDays - ((CampaignTime)(ref value)).ToDays < 20.0)
+			if (now.ToDays - value.ToDays < 20.0)
 			{
 				return;
 			}
@@ -737,34 +680,24 @@ public class Strategic4XDiplomacyBehavior : CampaignBehaviorBase
 		InformationManager.ShowInquiry(new InquiryData(((object)LanguageTranslater.L.T("diplomacy_peace_offer_title", "{AI} Seeks Peace").SetTextVariable("AI", aiKingdom2.Name)).ToString(), ((object)LanguageTranslater.L.T("diplomacy_peace_offer_body", "{AI} wishes to negotiate peace with {PLAYER}. {REASON} Do you accept?").SetTextVariable("AI", aiKingdom2.Name).SetTextVariable("PLAYER", playerKingdom2.Name)
 			.SetTextVariable("REASON", reason)).ToString(), true, true, LanguageTranslater.L.S("diplomacy_accept", "Accept"), LanguageTranslater.L.S("diplomacy_decline", "Decline"), (Action)delegate
 		{
-			//IL_008d: Unknown result type (might be due to invalid IL or missing references)
-			//IL_0093: Expected O, but got Unknown
-			//IL_0031: Unknown result type (might be due to invalid IL or missing references)
-			//IL_0036: Unknown result type (might be due to invalid IL or missing references)
-			//IL_0070: Unknown result type (might be due to invalid IL or missing references)
-			//IL_0076: Expected O, but got Unknown
-			//IL_00e5: Unknown result type (might be due to invalid IL or missing references)
-			//IL_00ea: Unknown result type (might be due to invalid IL or missing references)
-			//IL_00f4: Expected O, but got Unknown
 			MakePeaceKingdomDecision decision;
 			if (GlobalSettings<WarAndAiTweaksSettings>.Instance.EnableBaseGameTributes)
 			{
 				int valueForFaction = ((Barterable)new PeaceBarterable(aiKingdom2.RulingClan.Leader, (IFaction)(object)aiKingdom2, (IFaction)(object)playerKingdom2, CampaignTime.Years(1f))).GetValueForFaction((IFaction)(object)playerKingdom2);
-				int dailyTributeForValue = Campaign.Current.Models.DiplomacyModel.GetDailyTributeForValue(valueForFaction);
-				decision = new MakePeaceKingdomDecision(playerKingdom2.RulingClan, (IFaction)(object)aiKingdom2, dailyTributeForValue, true);
+				int dailyTributePaid = 0;
+				decision = new MakePeaceKingdomDecision(playerKingdom2.RulingClan, (IFaction)(object)aiKingdom2, dailyTributePaid, 0, true);
 			}
 			else
 			{
-				decision = new MakePeaceKingdomDecision(playerKingdom2.RulingClan, (IFaction)(object)aiKingdom2, 0, true);
+				decision = new MakePeaceKingdomDecision(playerKingdom2.RulingClan, (IFaction)(object)aiKingdom2, 0, 0, true);
 			}
 			UniversalDecisionHandler.HandleAddingDecision((KingdomDecision)(object)decision, aiKingdom2, playerKingdom2);
 			InformationManager.DisplayMessage(new InformationMessage(((object)LanguageTranslater.L.T("diplomacy_peace_proposal_sent", "Peace proposal between {PLAYER} and {AI} has been sent to your council.").SetTextVariable("PLAYER", playerKingdom2.Name).SetTextVariable("AI", aiKingdom2.Name)).ToString(), Colors.Green));
 		}, (Action)delegate
 		{
-			//IL_003f: Unknown result type (might be due to invalid IL or missing references)
-			//IL_0044: Unknown result type (might be due to invalid IL or missing references)
-			//IL_004e: Expected O, but got Unknown
 			InformationManager.DisplayMessage(new InformationMessage(((object)LanguageTranslater.L.T("diplomacy_peace_declined", "{PLAYER} declined peace with {AI}.").SetTextVariable("PLAYER", playerKingdom2.Name).SetTextVariable("AI", aiKingdom2.Name)).ToString(), Colors.Red));
 		}, "", 0f, (Action)null, (Func<ValueTuple<bool, string>>)null, (Func<ValueTuple<bool, string>>)null), true, false);
 	}
 }
+
+

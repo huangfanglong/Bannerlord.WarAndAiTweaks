@@ -93,7 +93,7 @@ public class AiLordItemVM : ViewModel
 			if (value != _partySize)
 			{
 				_partySize = value;
-				((ViewModel)this).OnPropertyChangedWithValue(value, "PartySize");
+				base.OnPropertyChangedWithValue(value, "PartySize");
 			}
 		}
 	}
@@ -110,7 +110,7 @@ public class AiLordItemVM : ViewModel
 			if (value != _influence)
 			{
 				_influence = value;
-				((ViewModel)this).OnPropertyChangedWithValue(value, "Influence");
+				base.OnPropertyChangedWithValue(value, "Influence");
 			}
 		}
 	}
@@ -127,7 +127,7 @@ public class AiLordItemVM : ViewModel
 			if (value != _allowArmyCreation)
 			{
 				_allowArmyCreation = value;
-				((ViewModel)this).OnPropertyChangedWithValue(value, "AllowArmyCreation");
+				base.OnPropertyChangedWithValue(value, "AllowArmyCreation");
 				ArmyStatusText = (value ? LanguageTranslater.L.S("army_status_enabled", "Enabled") : LanguageTranslater.L.S("army_status_disabled", "Disabled"));
 			}
 		}
@@ -162,7 +162,7 @@ public class AiLordItemVM : ViewModel
 			if (value != _canToggleArmyCreation)
 			{
 				_canToggleArmyCreation = value;
-				((ViewModel)this).OnPropertyChangedWithValue(value, "CanToggleArmyCreation");
+				base.OnPropertyChangedWithValue(value, "CanToggleArmyCreation");
 			}
 		}
 	}
@@ -192,10 +192,6 @@ public class AiLordItemVM : ViewModel
 
 	public void RefreshValues()
 	{
-		//IL_00b1: Unknown result type (might be due to invalid IL or missing references)
-		//IL_00bb: Expected O, but got Unknown
-		//IL_00b6: Unknown result type (might be due to invalid IL or missing references)
-		//IL_00c0: Expected O, but got Unknown
 		if (_hero == null)
 		{
 			return;
@@ -208,7 +204,7 @@ public class AiLordItemVM : ViewModel
 			Clan clan2 = _hero.Clan;
 			if (((clan2 != null) ? clan2.Banner : null) != null)
 			{
-				ClanBanner = new ImageIdentifierVM(new ImageIdentifier(_hero.Clan.Banner));
+				ClanBanner = new BannerImageIdentifierVM(_hero.Clan.Banner);
 			}
 			else
 			{
@@ -246,14 +242,10 @@ public class AiLordItemVM : ViewModel
 
 	public void ExecuteToggleArmyCreation()
 	{
-		//IL_0096: Unknown result type (might be due to invalid IL or missing references)
-		//IL_008f: Unknown result type (might be due to invalid IL or missing references)
-		//IL_009b: Unknown result type (might be due to invalid IL or missing references)
-		//IL_00a5: Expected O, but got Unknown
 		if (CanToggleArmyCreation)
 		{
 			AllowArmyCreation = !AllowArmyCreation;
-			((ViewModel)this).OnPropertyChangedWithValue(AllowArmyCreation, "AllowArmyCreation");
+			base.OnPropertyChangedWithValue(AllowArmyCreation, "AllowArmyCreation");
 			string id = (AllowArmyCreation ? "ailord_army_enabled" : "ailord_army_disabled");
 			string fallback = (AllowArmyCreation ? "{HERO} can now form armies" : "{HERO} is no longer allowed to form armies");
 			string text = ((object)LanguageTranslater.L.T(id, fallback).SetTextVariable("HERO", ((object)_hero.Name).ToString())).ToString();
@@ -288,3 +280,5 @@ public class AiLordItemVM : ViewModel
 		return _hero;
 	}
 }
+
+

@@ -1,5 +1,7 @@
 using System;
 using System.Linq;
+using TaleWorlds.Engine.GauntletUI;
+using TaleWorlds.ScreenSystem;
 using Bannerlord.UIExtenderEx;
 using ClanRespawn;
 using FeastSystem;
@@ -30,21 +32,24 @@ public class SubModule : MBSubModuleBase
 {
 	public static readonly string Name = typeof(SubModule).Namespace;
 
+	public static bool IsUIActive;
+
+	private GauntletLayer _waiLayer;
+
+	private WarAndAiTweaksManagementVM _waiVM;
+
+	private bool _isUIOpen;
+
 	protected override void OnSubModuleLoad()
 	{
-		//IL_000d: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0013: Expected O, but got Unknown
-		((MBSubModuleBase)this).OnSubModuleLoad();
 		UIExtender val = new UIExtender("WarAndAiTweaks.DiplomacyUI");
 		val.Register(typeof(SubModule).Assembly);
 		val.Enable();
+		WarAndAiTweaksManagementVM.OnCloseRequested = CloseWaiOverlay;
 	}
 
 	public override void OnGameInitializationFinished(Game game)
 	{
-		//IL_0027: Unknown result type (might be due to invalid IL or missing references)
-		//IL_002c: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0036: Expected O, but got Unknown
 		try
 		{
 			string selectedValue = GlobalSettings<WarAndAiTweaksSettings>.Instance.ManagementUIHotkey.SelectedValue;
@@ -55,15 +60,30 @@ public class SubModule : MBSubModuleBase
 		}
 	}
 
+	private void SafePatchAll(Harmony harmony)
+	{
+		foreach (var type in typeof(SubModule).Assembly.GetTypes())
+		{
+			try
+			{
+				var attr = type.GetCustomAttributes(typeof(HarmonyPatch), false);
+				if (attr.Length > 0)
+				{
+					var processor = harmony.CreateClassProcessor(type);
+					processor.Patch();
+				}
+			}
+			catch (Exception ex)
+			{
+				InformationManager.DisplayMessage(new InformationMessage($"[WAI] Failed to patch {type.FullName}: {ex.Message}", Colors.Red));
+			}
+		}
+	}
+
 	protected override void OnGameStart(Game game, IGameStarter gameStarter)
 	{
-		//IL_000f: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0015: Expected O, but got Unknown
-		//IL_0042: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0048: Expected O, but got Unknown
-		((MBSubModuleBase)this).OnGameStart(game, gameStarter);
 		Harmony val = new Harmony("mod.octavius.bannerlord");
-		val.PatchAll(typeof(SubModule).Assembly);
+		SafePatchAll(val);
 		if (game.GameType is Campaign)
 		{
 			CampaignGameStarter val2 = (CampaignGameStarter)gameStarter;
@@ -109,34 +129,81 @@ public class SubModule : MBSubModuleBase
 		}
 	}
 
-	protected override void OnApplicationTick(float dt)
-	{
-		//IL_00b3: Unknown result type (might be due to invalid IL or missing references)
-		//IL_00b8: Unknown result type (might be due to invalid IL or missing references)
-		//IL_00c2: Expected O, but got Unknown
-		//IL_0024: Unknown result type (might be due to invalid IL or missing references)
-		//IL_003a: Unknown result type (might be due to invalid IL or missing references)
-		try
-		{
-			string selectedValue = GlobalSettings<WarAndAiTweaksSettings>.Instance.ManagementUIHotkey.SelectedValue;
-			if (!Enum.TryParse<InputKey>(selectedValue, ignoreCase: true, out InputKey result))
-			{
-				result = (InputKey)16;
-			}
-			if ((Input.IsKeyDown((InputKey)56) || Input.IsKeyDown((InputKey)184)) && Input.IsKeyPressed(result) && !GameStateManager.Current.GameStates.Any((GameState s) => s is WarAndAiTweaksManagementState))
-			{
-				GameStateManager.Current.PushState((GameState)(object)GameStateManager.Current.CreateState<WarAndAiTweaksManagementState>(), 0);
-			}
-		}
-		catch (Exception ex)
-		{
-			InformationManager.DisplayMessage(new InformationMessage("[WarAndAiTweaks] Error in OnApplicationTick: " + ex.Message, Colors.Red));
-		}
-	}
+ 	protected override void OnApplicationTick(float dt)
+ 	{
+ 		try
+ 		{
+ 			if (Campaign.Current == null || ScreenManager.TopScreen == null)
+ 			{
+ 				return;
+ 			}
+
+ 			if ((Input.IsKeyDown(InputKey.LeftAlt) || Input.IsKeyDown(InputKey.RightAlt)) && Input.IsKeyPressed(InputKey.Q))
+ 			{
+ 				if (_isUIOpen)
+ 				{
+ 					CloseWaiOverlay();
+ 				}
+ 				else
+ 				{
+ 					OpenWaiOverlay();
+ 				}
+ 			}
+
+ 			if (Input.IsKeyPressed(InputKey.Escape) && _isUIOpen)
+ 			{
+ 				CloseWaiOverlay();
+ 			}
+ 		}
+ 		catch (Exception ex)
+ 		{
+ 			InformationManager.DisplayMessage(new InformationMessage($"[WAI] {ex.Message}", Colors.Red));
+ 		}
+ 	}
+
+ 	private void OpenWaiOverlay()
+ 	{
+ 		try
+ 		{
+ 			_waiVM = new WarAndAiTweaksManagementVM();
+ 			_waiLayer = new GauntletLayer("WaiOverlay", 10000, false);
+ 			_waiLayer.LoadMovie("WarAndAITweaksManagement", (ViewModel)(object)_waiVM);
+ 			((ScreenLayer)_waiLayer).IsFocusLayer = true;
+ 			((ScreenLayer)_waiLayer).InputRestrictions.SetInputRestrictions(true, InputUsageMask.All);
+ 			ScreenManager.TrySetFocus((ScreenLayer)(object)_waiLayer);
+ 			ScreenManager.TopScreen.AddLayer((ScreenLayer)(object)_waiLayer);
+ 			IsUIActive = true;
+ 			_isUIOpen = true;
+ 		}
+ 		catch (Exception ex)
+ 		{
+ 			InformationManager.DisplayMessage(new InformationMessage($"[WAI] OpenWaiOverlay ERROR: {ex.Message}", Colors.Red));
+ 		}
+ 	}
+
+ 	private void CloseWaiOverlay()
+ 	{
+ 		try
+ 		{
+ 			IsUIActive = false;
+ 			if (_waiLayer != null)
+ 			{
+ 				ScreenManager.TryLoseFocus((ScreenLayer)(object)_waiLayer);
+ 				ScreenManager.TopScreen.RemoveLayer((ScreenLayer)(object)_waiLayer);
+ 				_waiLayer = null;
+ 			}
+ 			_waiVM = null;
+ 			_isUIOpen = false;
+ 		}
+ 		catch (Exception ex)
+ 		{
+ 			InformationManager.DisplayMessage(new InformationMessage($"[WAI] CloseWaiOverlay ERROR: {ex.Message}", Colors.Red));
+ 		}
+ 	}
 
 	public override void OnMissionBehaviorInitialize(Mission mission)
 	{
-		((MBSubModuleBase)this).OnMissionBehaviorInitialize(mission);
+		base.OnMissionBehaviorInitialize(mission);
 		if (GlobalSettings<WarAndAiTweaksSettings>.Instance.EnableCompanionUIChanges)
 		{
 			mission.AddMissionBehavior((MissionBehavior)(object)new CompanionHighlightingMissionBehavior());

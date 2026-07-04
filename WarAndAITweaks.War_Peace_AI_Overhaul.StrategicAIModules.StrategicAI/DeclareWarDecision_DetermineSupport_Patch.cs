@@ -20,7 +20,7 @@ internal static class DeclareWarDecision_DetermineSupport_Patch
 		}
 		if (clan != null && clan != Clan.PlayerClan)
 		{
-			DeclareWarDecisionOutcome val = (DeclareWarDecisionOutcome)(object)((possibleOutcome is DeclareWarDecisionOutcome) ? possibleOutcome : null);
+			DeclareWarDecision.DeclareWarDecisionOutcome val = (DeclareWarDecision.DeclareWarDecisionOutcome)(object)((possibleOutcome is DeclareWarDecision.DeclareWarDecisionOutcome) ? possibleOutcome : null);
 			if (val != null)
 			{
 				Kingdom kingdom = val.Kingdom ?? clan.Kingdom;

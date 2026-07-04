@@ -40,11 +40,6 @@ public static class DiplomacySettingsCache
 
 	public static void EnsureInitialized()
 	{
-		//IL_0016: Unknown result type (might be due to invalid IL or missing references)
-		//IL_001c: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0021: Unknown result type (might be due to invalid IL or missing references)
-		//IL_006f: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0074: Unknown result type (might be due to invalid IL or missing references)
 		if (!_isDiplomacyModLoaded)
 		{
 			return;
@@ -53,7 +48,7 @@ public static class DiplomacySettingsCache
 		{
 			_ = _lastUpdate;
 			CampaignTime now = CampaignTime.Now;
-			if (!(((CampaignTime)(ref now)).ToDays - ((CampaignTime)(ref _lastUpdate)).ToDays > 5.0))
+			if (!(now.ToDays - _lastUpdate.ToDays > 5.0))
 			{
 				return;
 			}
@@ -66,3 +61,5 @@ public static class DiplomacySettingsCache
 		_isInitialized = true;
 	}
 }
+
+

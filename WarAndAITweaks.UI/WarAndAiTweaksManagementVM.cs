@@ -1,16 +1,20 @@
+using System;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.Core;
 using TaleWorlds.Library;
+using TaleWorlds.MountAndBlade;
 
 namespace WarAndAITweaks.UI;
 
-public class WarAndAiTweaksManagementVM : ViewModel
-{
-	private WarAndAiTweaksManagementState _state;
+ 	public class WarAndAiTweaksManagementVM : ViewModel
+ 	{
+ 	public static Action OnCloseRequested;
 
-	private WarAndAIManagementScreen _screen;
+ 	private WarAndAiTweaksManagementState _state;
 
-	private string _welcomeText;
+ 	private WarAndAIManagementScreen _screen;
+
+ 	private string _welcomeText;
 
 	private bool _isFeastsTabSelected;
 
@@ -212,7 +216,7 @@ public class WarAndAiTweaksManagementVM : ViewModel
 			if (value != _isFeastsTabSelected)
 			{
 				_isFeastsTabSelected = value;
-				((ViewModel)this).OnPropertyChangedWithValue(value, "IsFeastsTabSelected");
+				base.OnPropertyChangedWithValue(value, "IsFeastsTabSelected");
 			}
 		}
 	}
@@ -229,7 +233,7 @@ public class WarAndAiTweaksManagementVM : ViewModel
 			if (value != _isMarshalTabSelected)
 			{
 				_isMarshalTabSelected = value;
-				((ViewModel)this).OnPropertyChangedWithValue(value, "IsMarshalTabSelected");
+				base.OnPropertyChangedWithValue(value, "IsMarshalTabSelected");
 			}
 		}
 	}
@@ -246,7 +250,7 @@ public class WarAndAiTweaksManagementVM : ViewModel
 			if (value != _isMilitaryTabSelected)
 			{
 				_isMilitaryTabSelected = value;
-				((ViewModel)this).OnPropertyChangedWithValue(value, "IsMilitaryTabSelected");
+				base.OnPropertyChangedWithValue(value, "IsMilitaryTabSelected");
 			}
 		}
 	}
@@ -263,7 +267,7 @@ public class WarAndAiTweaksManagementVM : ViewModel
 			if (value != _isDiplomacyTabSelected)
 			{
 				_isDiplomacyTabSelected = value;
-				((ViewModel)this).OnPropertyChangedWithValue(value, "IsDiplomacyTabSelected");
+				base.OnPropertyChangedWithValue(value, "IsDiplomacyTabSelected");
 			}
 		}
 	}
@@ -280,7 +284,7 @@ public class WarAndAiTweaksManagementVM : ViewModel
 			if (value != _isFiefTabSelected)
 			{
 				_isFiefTabSelected = value;
-				((ViewModel)this).OnPropertyChangedWithValue(value, "IsFiefTabSelected");
+				base.OnPropertyChangedWithValue(value, "IsFiefTabSelected");
 			}
 		}
 	}
@@ -432,20 +436,24 @@ public class WarAndAiTweaksManagementVM : ViewModel
 		IsFiefTabSelected = false;
 	}
 
-	public WarAndAiTweaksManagementVM(WarAndAiTweaksManagementState state, WarAndAIManagementScreen screen)
-	{
-		_state = state;
-		_screen = screen;
-		RefreshWelcomeText();
-		_feastManagement = new FeastManagementVM();
-		_militaryManagement = new MilitaryManagementVM();
-		_fiefManagement = new FiefManagementVM();
-		_marshalManagement = new MarshalManagementVM();
-		IsFeastsTabSelected = false;
-		IsMarshalTabSelected = false;
-		IsMilitaryTabSelected = true;
-		IsFiefTabSelected = false;
-	}
+  public WarAndAiTweaksManagementVM() : this(null, null)
+   {
+   }
+
+  public WarAndAiTweaksManagementVM(WarAndAiTweaksManagementState state, WarAndAIManagementScreen screen)
+   {
+    _state = state;
+    _screen = screen;
+    RefreshWelcomeText();
+    _feastManagement = new FeastManagementVM();
+    _militaryManagement = new MilitaryManagementVM();
+    _fiefManagement = new FiefManagementVM();
+    _marshalManagement = new MarshalManagementVM();
+    IsFeastsTabSelected = false;
+    IsMarshalTabSelected = false;
+    IsMilitaryTabSelected = true;
+    IsFiefTabSelected = false;
+   }
 
 	public override void OnFinalize()
 	{
@@ -469,7 +477,7 @@ public class WarAndAiTweaksManagementVM : ViewModel
 		{
 			((ViewModel)marshalManagement).OnFinalize();
 		}
-		((ViewModel)this).OnFinalize();
+		base.OnFinalize();
 	}
 
 	private void RefreshWelcomeText()
@@ -481,11 +489,11 @@ public class WarAndAiTweaksManagementVM : ViewModel
 
 	public void ExecuteCancel()
 	{
-		GameStateManager.Current.PopState(0);
+		OnCloseRequested?.Invoke();
 	}
 
 	public void ExecuteDone()
 	{
-		GameStateManager.Current.PopState(0);
+		OnCloseRequested?.Invoke();
 	}
 }

@@ -108,7 +108,7 @@ public class FeastItemVM : ViewModel
 			if (value != _attendeeCount)
 			{
 				_attendeeCount = value;
-				((ViewModel)this).OnPropertyChangedWithValue(value, "AttendeeCount");
+				base.OnPropertyChangedWithValue(value, "AttendeeCount");
 			}
 		}
 	}
@@ -183,18 +183,6 @@ public class FeastItemVM : ViewModel
 
 	public FeastItemVM(FeastData feast)
 	{
-		//IL_018e: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0194: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0199: Unknown result type (might be due to invalid IL or missing references)
-		//IL_019e: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0155: Unknown result type (might be due to invalid IL or missing references)
-		//IL_015f: Expected O, but got Unknown
-		//IL_015a: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0164: Expected O, but got Unknown
-		//IL_0117: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0121: Expected O, but got Unknown
-		//IL_011c: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0126: Expected O, but got Unknown
 		Hero host = feast.Host;
 		HostName = ((host == null) ? null : ((object)host.Name)?.ToString()) ?? LanguageTranslater.L.S("Unknown", "Unknown");
 		Settlement settlement = feast.Settlement;
@@ -208,7 +196,7 @@ public class FeastItemVM : ViewModel
 		{
 			if (((val2 != null) ? val2.Banner : null) != null)
 			{
-				FactionBanner = new ImageIdentifierVM(new ImageIdentifier(val2.Banner));
+				FactionBanner = new BannerImageIdentifierVM(val2.Banner);
 			}
 		}
 		catch
@@ -219,7 +207,7 @@ public class FeastItemVM : ViewModel
 		{
 			if (((val != null) ? val.Banner : null) != null)
 			{
-				ClanBanner = new ImageIdentifierVM(new ImageIdentifier(val.Banner));
+				ClanBanner = new BannerImageIdentifierVM(val.Banner);
 			}
 		}
 		catch
@@ -228,7 +216,7 @@ public class FeastItemVM : ViewModel
 		}
 		AttendeeCount = ((List<Hero>)(object)feast.Attendees)?.Count ?? 0;
 		CampaignTime val3 = CampaignTime.Now - feast.StartTime;
-		int num = (int)((CampaignTime)(ref val3)).ToDays;
+		int num = (int)val3.ToDays;
 		Duration = ((num == 0) ? LanguageTranslater.L.S("feast_duration_just_started", "Just started") : ((object)LanguageTranslater.L.T("feast_duration_days", "{DAYS} day(s)").SetTextVariable("DAYS", num.ToString())).ToString());
 		if (feast.Attendees != null && ((List<Hero>)(object)feast.Attendees).Count > 0)
 		{
@@ -243,3 +231,6 @@ public class FeastItemVM : ViewModel
 		}
 	}
 }
+
+
+

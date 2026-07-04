@@ -18,7 +18,7 @@ internal static class MakePeaceKingdomDecision_DetermineSupport_Patch
 		}
 		if (clan != null && clan != Clan.PlayerClan)
 		{
-			MakePeaceDecisionOutcome val = (MakePeaceDecisionOutcome)(object)((possibleOutcome is MakePeaceDecisionOutcome) ? possibleOutcome : null);
+			MakePeaceKingdomDecision.MakePeaceDecisionOutcome val = (MakePeaceKingdomDecision.MakePeaceDecisionOutcome)(object)((possibleOutcome is MakePeaceKingdomDecision.MakePeaceDecisionOutcome) ? possibleOutcome : null);
 			if (val != null)
 			{
 				Kingdom val2 = val.Kingdom ?? clan.Kingdom;

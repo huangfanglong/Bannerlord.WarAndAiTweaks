@@ -33,57 +33,51 @@ public sealed class FeastQuest : QuestBase
 
 		public static Func<Hero, string> _003C_003E9__52_0;
 
-		public static OnConditionDelegate _003C_003E9__54_0;
+		public static ConversationSentence.OnConditionDelegate _003C_003E9__54_0;
 
-		public static OnConditionDelegate _003C_003E9__54_1;
+		public static ConversationSentence.OnConditionDelegate _003C_003E9__54_1;
 
-		public static OnConditionDelegate _003C_003E9__54_2;
+		public static ConversationSentence.OnConditionDelegate _003C_003E9__54_2;
 
-		public static OnConsequenceDelegate _003C_003E9__54_3;
+		public static ConversationSentence.OnConsequenceDelegate _003C_003E9__54_3;
 
-		public static OnConditionDelegate _003C_003E9__54_4;
+		public static ConversationSentence.OnConditionDelegate _003C_003E9__54_4;
 
-		public static OnConditionDelegate _003C_003E9__54_5;
+		public static ConversationSentence.OnConditionDelegate _003C_003E9__54_5;
 
-		public static OnConsequenceDelegate _003C_003E9__54_6;
+		public static ConversationSentence.OnConsequenceDelegate _003C_003E9__54_6;
 
-		public static OnConditionDelegate _003C_003E9__54_7;
+		public static ConversationSentence.OnConditionDelegate _003C_003E9__54_7;
 
-		public static OnConsequenceDelegate _003C_003E9__54_8;
+		public static ConversationSentence.OnConsequenceDelegate _003C_003E9__54_8;
 
-		public static OnConditionDelegate _003C_003E9__54_9;
+		public static ConversationSentence.OnConditionDelegate _003C_003E9__54_9;
 
-		public static OnConsequenceDelegate _003C_003E9__54_10;
+		public static ConversationSentence.OnConsequenceDelegate _003C_003E9__54_10;
 
-		public static OnConditionDelegate _003C_003E9__54_11;
+		public static ConversationSentence.OnConditionDelegate _003C_003E9__54_11;
 
-		public static OnConditionDelegate _003C_003E9__54_12;
+		public static ConversationSentence.OnConditionDelegate _003C_003E9__54_12;
 
-		public static OnConsequenceDelegate _003C_003E9__54_13;
+		public static ConversationSentence.OnConsequenceDelegate _003C_003E9__54_13;
 
-		public static OnConditionDelegate _003C_003E9__54_14;
+		public static ConversationSentence.OnConditionDelegate _003C_003E9__54_14;
 
-		public static OnConditionDelegate _003C_003E9__54_15;
+		public static ConversationSentence.OnConditionDelegate _003C_003E9__54_15;
 
-		public static OnConsequenceDelegate _003C_003E9__54_16;
+		public static ConversationSentence.OnConsequenceDelegate _003C_003E9__54_16;
 
-		public static OnConditionDelegate _003C_003E9__54_17;
+		public static ConversationSentence.OnConditionDelegate _003C_003E9__54_17;
 
 		internal void _003COnGameMenuOpened_003Eb__47_0(CharacterObject winner)
 		{
-			//IL_00de: Unknown result type (might be due to invalid IL or missing references)
-			//IL_00e3: Unknown result type (might be due to invalid IL or missing references)
-			//IL_00ed: Expected O, but got Unknown
-			//IL_003e: Unknown result type (might be due to invalid IL or missing references)
-			//IL_0043: Unknown result type (might be due to invalid IL or missing references)
-			//IL_004d: Expected O, but got Unknown
 			if (winner == CharacterObject.PlayerCharacter)
 			{
 				InformationManager.DisplayMessage(new InformationMessage(((object)LanguageTranslater.L.T("duel_won", "[if:convo_excited]{PLAYER.NAME}, well fought! You bested me in the arena. The guests are still talking about it.").SetTextVariable("OPPONENT", ((object)FeastDuelSystem.PendingDuelHost.Name).ToString())).ToString(), Colors.Green));
 				Hero.MainHero.AddSkillXp(DefaultSkills.OneHanded, 100f);
 				GiveGoldAction.ApplyBetweenCharacters(FeastDuelSystem.PendingDuelHost, Hero.MainHero, 200, false);
 				ChangeRelationAction.ApplyRelationChangeBetweenHeroes(FeastDuelSystem.PendingDuelHost, Hero.MainHero, 2, true);
-				MBInformationManager.AddQuickInformation(LanguageTranslater.L.T("feast_q_duel_reward", "You gained 200 gold, 2 relation, and 100 One Handed XP!"), 0, (BasicCharacterObject)null, "");
+				MBInformationManager.AddQuickInformation(LanguageTranslater.L.T("feast_q_duel_reward", "You gained 200 gold, 2 relation, and 100 One Handed XP!"), 0, null, null);
 				FeastDuelSystem.LastDuelWasPlayerWin = true;
 			}
 			else
@@ -248,14 +242,14 @@ public sealed class FeastQuest : QuestBase
 		{
 			TextObject val = LanguageTranslater.L.T("feast_q_title", "Feast at {SETTLEMENT}");
 			Settlement settlement = _settlement;
-			val.SetTextVariable("SETTLEMENT", ((settlement != null) ? settlement.Name : null) ?? TextObject.Empty);
+			val.SetTextVariable("SETTLEMENT", ((settlement != null) ? settlement.Name : null) ?? new TextObject("", null));
 			return val;
 		}
 	}
 
 	public override bool IsRemainingTimeHidden => true;
 
-	public override bool IsSpecialQuest => true;
+	public override string SpecialQuestType => "SaintsWarAndAiTweaks.Feast";
 
 	private FeastData FindActiveFeast()
 	{
@@ -284,8 +278,6 @@ public sealed class FeastQuest : QuestBase
 
 	public static bool HasRewardCooldown(Hero host, Hero guest)
 	{
-		//IL_008e: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0093: Unknown result type (might be due to invalid IL or missing references)
 		Hero host2 = host;
 		Hero guest2 = guest;
 		if (host2 == null || guest2 == null)
@@ -302,7 +294,7 @@ public sealed class FeastQuest : QuestBase
 			RewardData.RewardInfo orCreate = value.GetOrCreate(host2, guest2);
 			double nextFeastRewardTime = orCreate.nextFeastRewardTime;
 			CampaignTime now = CampaignTime.Now;
-			double num = nextFeastRewardTime - ((CampaignTime)(ref now)).ToDays;
+			double num = nextFeastRewardTime - now.ToDays;
 			return num > 0.0;
 		}
 		return false;
@@ -310,8 +302,6 @@ public sealed class FeastQuest : QuestBase
 
 	public static void GiveRewardWithCooldownRespect(Hero host, Hero guest)
 	{
-		//IL_009a: Unknown result type (might be due to invalid IL or missing references)
-		//IL_009f: Unknown result type (might be due to invalid IL or missing references)
 		Hero host2 = host;
 		Hero guest2 = guest;
 		if (host2 == null || guest2 == null)
@@ -328,7 +318,7 @@ public sealed class FeastQuest : QuestBase
 			}
 			RewardData.RewardInfo orCreate = value.GetOrCreate(host2, guest2);
 			CampaignTime now = CampaignTime.Now;
-			orCreate.nextFeastRewardTime = ((CampaignTime)(ref now)).ToDays + (double)GlobalSettings<WarAndAiTweaksSettings>.Instance.TodayWeFeastDialogCooldown;
+			orCreate.nextFeastRewardTime = now.ToDays + (double)GlobalSettings<WarAndAiTweaksSettings>.Instance.TodayWeFeastDialogCooldown;
 			ChangeRelationAction.ApplyRelationChangeBetweenHeroes(host2, guest2, 1, true);
 			GainRenownAction.Apply(host2, 3f, false);
 			GainRenownAction.Apply(guest2, 3f, false);
@@ -337,10 +327,6 @@ public sealed class FeastQuest : QuestBase
 
 	private TextObject GetQuestStartedLogText()
 	{
-		//IL_006f: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0076: Expected O, but got Unknown
-		//IL_011b: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0122: Expected O, but got Unknown
 		if (_isPlayerHost)
 		{
 			TextObject val = LanguageTranslater.L.T("feast_q_host_started", "You are hosting a feast at {SETTLEMENT}.");
@@ -350,16 +336,16 @@ public sealed class FeastQuest : QuestBase
 			}
 			if (string.IsNullOrEmpty(((object)val).ToString()))
 			{
-				Debug.Print("[FeastQuest] Warning: feast_q_host_started returned empty text", 0, (DebugColor)12, 17592186044416uL);
+				Debug.Print("[FeastQuest] Warning: feast_q_host_started returned empty text", 0, (Debug.DebugColor)12, 17592186044416uL);
 				return new TextObject("You are hosting a feast at {SETTLEMENT}.", (Dictionary<string, object>)null);
 			}
 			return val;
 		}
 		TextObject val2 = LanguageTranslater.L.T("feast_q_start", "{QUEST_GIVER.NAME} has invited you to a feast at {SETTLEMENT}. {?QUEST_GIVER.GENDER}She{?}He{\\?} asks that you travel there and speak with {?QUEST_GIVER.GENDER}her{?}him{\\?} to enjoy the festivities and build relations with the realm's nobility.");
-		Hero questGiver = ((QuestBase)this).QuestGiver;
+		Hero questGiver = base.QuestGiver;
 		if (((questGiver != null) ? questGiver.CharacterObject : null) != null)
 		{
-			StringHelpers.SetCharacterProperties("QUEST_GIVER", ((QuestBase)this).QuestGiver.CharacterObject, val2, false);
+			StringHelpers.SetCharacterProperties("QUEST_GIVER", base.QuestGiver.CharacterObject, val2, false);
 		}
 		if (_settlement != null)
 		{
@@ -367,7 +353,7 @@ public sealed class FeastQuest : QuestBase
 		}
 		if (string.IsNullOrEmpty(((object)val2).ToString()))
 		{
-			Debug.Print("[FeastQuest] Warning: feast_q_start returned empty text", 0, (DebugColor)12, 17592186044416uL);
+			Debug.Print("[FeastQuest] Warning: feast_q_start returned empty text", 0, (Debug.DebugColor)12, 17592186044416uL);
 			return new TextObject("{QUEST_GIVER.NAME} has invited you to a feast at {SETTLEMENT}.", (Dictionary<string, object>)null);
 		}
 		return val2;
@@ -376,10 +362,10 @@ public sealed class FeastQuest : QuestBase
 	private TextObject GetQuestConcludedLogText()
 	{
 		TextObject val = LanguageTranslater.L.T("feast_q_success", "You attended the feast hosted by {QUEST_GIVER.NAME} at {SETTLEMENT}. Your participation has strengthened your bonds with the nobles of the realm.");
-		Hero questGiver = ((QuestBase)this).QuestGiver;
+		Hero questGiver = base.QuestGiver;
 		if (((questGiver != null) ? questGiver.CharacterObject : null) != null)
 		{
-			StringHelpers.SetCharacterProperties("QUEST_GIVER", ((QuestBase)this).QuestGiver.CharacterObject, val, false);
+			StringHelpers.SetCharacterProperties("QUEST_GIVER", base.QuestGiver.CharacterObject, val, false);
 		}
 		if (_settlement != null)
 		{
@@ -391,10 +377,10 @@ public sealed class FeastQuest : QuestBase
 	private TextObject GetQuestCanceledDueToWarLogText()
 	{
 		TextObject val = LanguageTranslater.L.T("feast_q_cancel_war", "Your clan is now at war with {QUEST_GIVER.NAME}'s faction. The feast invitation has been rescinded, and your agreement was canceled.");
-		Hero questGiver = ((QuestBase)this).QuestGiver;
+		Hero questGiver = base.QuestGiver;
 		if (((questGiver != null) ? questGiver.CharacterObject : null) != null)
 		{
-			StringHelpers.SetCharacterProperties("QUEST_GIVER", ((QuestBase)this).QuestGiver.CharacterObject, val, false);
+			StringHelpers.SetCharacterProperties("QUEST_GIVER", base.QuestGiver.CharacterObject, val, false);
 		}
 		return val;
 	}
@@ -411,10 +397,10 @@ public sealed class FeastQuest : QuestBase
 			return val;
 		}
 		TextObject val2 = LanguageTranslater.L.T("feast_q_arrived", "You have arrived at the feast hosted by {QUEST_GIVER.NAME} in {SETTLEMENT}. Speak with {?QUEST_GIVER.GENDER}her{?}him{\\?} to participate in the festivities.");
-		Hero questGiver = ((QuestBase)this).QuestGiver;
+		Hero questGiver = base.QuestGiver;
 		if (((questGiver != null) ? questGiver.CharacterObject : null) != null)
 		{
-			StringHelpers.SetCharacterProperties("QUEST_GIVER", ((QuestBase)this).QuestGiver.CharacterObject, val2, false);
+			StringHelpers.SetCharacterProperties("QUEST_GIVER", base.QuestGiver.CharacterObject, val2, false);
 		}
 		if (_settlement != null)
 		{
@@ -425,17 +411,15 @@ public sealed class FeastQuest : QuestBase
 
 	private TextObject GetPlayerSpokeWithHostLogText()
 	{
-		//IL_006f: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0075: Expected O, but got Unknown
 		TextObject val = LanguageTranslater.L.T("feast_q_spoke", "You spoke with {QUEST_GIVER.NAME} at the feast. {?QUEST_GIVER.GENDER}She{?}He{\\?} appreciates your attendance and conversation. Stay and enjoy the festivities while time passes.");
-		Hero questGiver = ((QuestBase)this).QuestGiver;
+		Hero questGiver = base.QuestGiver;
 		if (((questGiver != null) ? questGiver.CharacterObject : null) != null)
 		{
-			StringHelpers.SetCharacterProperties("QUEST_GIVER", ((QuestBase)this).QuestGiver.CharacterObject, val, false);
+			StringHelpers.SetCharacterProperties("QUEST_GIVER", base.QuestGiver.CharacterObject, val, false);
 		}
 		if (string.IsNullOrEmpty(((object)val).ToString()))
 		{
-			Debug.Print("[FeastQuest] Warning: feast_q_spoke returned empty text", 0, (DebugColor)12, 17592186044416uL);
+			Debug.Print("[FeastQuest] Warning: feast_q_spoke returned empty text", 0, (Debug.DebugColor)12, 17592186044416uL);
 			return new TextObject("You spoke with {QUEST_GIVER.NAME} at the feast.", (Dictionary<string, object>)null);
 		}
 		return val;
@@ -444,10 +428,10 @@ public sealed class FeastQuest : QuestBase
 	private TextObject GetCooldownExpiredLogText()
 	{
 		TextObject val = LanguageTranslater.L.T("feast_q_cooldown", "Enough time has passed. You may speak with {QUEST_GIVER.NAME} again to continue building your relationship.");
-		Hero questGiver = ((QuestBase)this).QuestGiver;
+		Hero questGiver = base.QuestGiver;
 		if (((questGiver != null) ? questGiver.CharacterObject : null) != null)
 		{
-			StringHelpers.SetCharacterProperties("QUEST_GIVER", ((QuestBase)this).QuestGiver.CharacterObject, val, false);
+			StringHelpers.SetCharacterProperties("QUEST_GIVER", base.QuestGiver.CharacterObject, val, false);
 		}
 		return val;
 	}
@@ -455,31 +439,26 @@ public sealed class FeastQuest : QuestBase
 	public FeastQuest(string questId, Hero questGiver, Hero host, Settlement feastSettlement, CampaignTime feastStart, bool isPlayerHost = false)
 		: base(questId, questGiver, CampaignTime.DaysFromNow(365f), 0)
 	{
-		//IL_0013: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0030: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0032: Unknown result type (might be due to invalid IL or missing references)
 		_host = host;
 		_settlement = feastSettlement;
 		_feastStart = feastStart;
 		_isPlayerHost = isPlayerHost;
 		_timesSpokenToHost = 0;
-		if (_host != null && ActiveByHost.TryGetValue(_host, out FeastQuest value) && ((QuestBase)value).IsOngoing)
+		if (_host != null && ActiveByHost.TryGetValue(_host, out FeastQuest value) && value.IsOngoing)
 		{
-			((QuestBase)value).CompleteQuestWithCancel(LanguageTranslater.L.T("feast_q_replaced", "A new feast invitation has replaced the previous one."));
+			value.CompleteQuestWithCancel(LanguageTranslater.L.T("feast_q_replaced", "A new feast invitation has replaced the previous one."));
 		}
 		ActiveByHost[_host] = this;
-		((QuestBase)this).SetDialogs();
-		((QuestBase)this).InitializeQuestOnCreation();
-		((QuestBase)this).StartQuest();
+		base.StartQuest();
 		TextObject val = LanguageTranslater.L.T("feast_q_start", "{QUEST_GIVER.NAME} has invited you to a feast at {SETTLEMENT}. {?QUEST_GIVER.GENDER}She{?}He{\\?} asks that you travel there and speak with {?QUEST_GIVER.GENDER}her{?}him{\\?} to enjoy the festivities and build relations with the realm's nobility.");
-		Debug.Print("[FeastQuest] LanguageTranslater test - feast_q_start: '" + ((object)val).ToString() + "'", 0, (DebugColor)12, 17592186044416uL);
-		((QuestBase)this).AddLog(GetQuestStartedLogText(), false);
+		Debug.Print("[FeastQuest] LanguageTranslater test - feast_q_start: '" + ((object)val).ToString() + "'", 0, (Debug.DebugColor)12, 17592186044416uL);
+		base.AddLog(GetQuestStartedLogText(), false);
 		TextObject val2 = (_isPlayerHost ? LanguageTranslater.L.T("feast_q_host_travel", "Travel to {SETTLEMENT} to start your feast.") : LanguageTranslater.L.T("feast_q_travel", "Travel to {SETTLEMENT} to attend the feast."));
 		if (_settlement != null)
 		{
 			val2.SetTextVariable("SETTLEMENT", _settlement.EncyclopediaLinkWithName);
-			_travelLog = ((QuestBase)this).AddLog(val2, false);
-			((QuestBase)this).AddTrackedObject((ITrackableCampaignObject)(object)_settlement);
+			_travelLog = base.AddLog(val2, false);
+			base.AddTrackedObject((ITrackableCampaignObject)(object)_settlement);
 		}
 	}
 
@@ -497,7 +476,7 @@ public sealed class FeastQuest : QuestBase
 
 	protected override void HourlyTick()
 	{
-		if (!((QuestBase)this).IsOngoing)
+		if (!base.IsOngoing)
 		{
 			return;
 		}
@@ -507,10 +486,10 @@ public sealed class FeastQuest : QuestBase
 			{
 				Hero.MainHero.AddSkillXp(DefaultSkills.Leadership, 50f);
 				GiveGoldAction.ApplyBetweenCharacters((Hero)null, Hero.MainHero, 1000, false);
-				((QuestBase)this).AddLog(LanguageTranslater.L.T("feast_q_host_success", "Your feast was a success! You gained leadership XP and gold."), false);
+				base.AddLog(LanguageTranslater.L.T("feast_q_host_success", "Your feast was a success! You gained leadership XP and gold."), false);
 			}
-			((QuestBase)this).AddLog(GetQuestConcludedLogText(), false);
-			((QuestBase)this).CompleteQuestWithSuccess();
+			base.AddLog(GetQuestConcludedLogText(), false);
+			base.CompleteQuestWithSuccess();
 		}
 		else if (_isPlayerHost)
 		{
@@ -535,9 +514,9 @@ public sealed class FeastQuest : QuestBase
 
 	protected override void OnFinalize()
 	{
-		if (_settlement != null && ((QuestBase)this).IsTracked((ITrackableCampaignObject)(object)_settlement))
+		if (_settlement != null && base.IsTracked((ITrackableCampaignObject)(object)_settlement))
 		{
-			((QuestBase)this).RemoveTrackedObject((ITrackableCampaignObject)(object)_settlement);
+			base.RemoveTrackedObject((ITrackableCampaignObject)(object)_settlement);
 		}
 		if (_host != null && ActiveByHost.TryGetValue(_host, out FeastQuest value) && value == this)
 		{
@@ -545,7 +524,7 @@ public sealed class FeastQuest : QuestBase
 		}
 		if (_interactionLog != null)
 		{
-			((QuestBase)this).RemoveLog(_interactionLog);
+			base.RemoveLog(_interactionLog);
 			_interactionLog = null;
 		}
 	}
@@ -562,7 +541,7 @@ public sealed class FeastQuest : QuestBase
 	{
 	}
 
-	public override void OnHeroCanHaveQuestOrIssueInfoIsRequested(Hero hero, ref bool result)
+	public override void OnHeroCanHaveCampaignIssuesInfoIsRequested(Hero hero, ref bool result)
 	{
 		if (hero == _host)
 		{
@@ -586,8 +565,8 @@ public sealed class FeastQuest : QuestBase
 		Kingdom val = (Kingdom)obj;
 		if (val != null && (val == f1 || val == f2))
 		{
-			((QuestBase)this).AddLog(GetQuestCanceledDueToWarLogText(), false);
-			((QuestBase)this).CompleteQuestWithCancel((TextObject)null);
+			base.AddLog(GetQuestCanceledDueToWarLogText(), false);
+			base.CompleteQuestWithCancel((TextObject)null);
 		}
 	}
 
@@ -608,22 +587,22 @@ public sealed class FeastQuest : QuestBase
 			}
 			if (obj != null && _host.Clan.Kingdom.IsAtWarWith(Hero.MainHero.MapFaction))
 			{
-				((QuestBase)this).AddLog(GetQuestCanceledDueToWarLogText(), false);
-				((QuestBase)this).CompleteQuestWithCancel((TextObject)null);
+				base.AddLog(GetQuestCanceledDueToWarLogText(), false);
+				base.CompleteQuestWithCancel((TextObject)null);
 			}
 		}
 	}
 
 	private void OnSettlementEntered(MobileParty party, Settlement settlement, Hero hero)
 	{
-		if (((QuestBase)this).IsOngoing && party == MobileParty.MainParty && settlement == _settlement && !_travelCompleted)
+		if (base.IsOngoing && party == MobileParty.MainParty && settlement == _settlement && !_travelCompleted)
 		{
 			_travelCompleted = true;
-			if (_travelLog != null && ((QuestBase)this).IsTracked((ITrackableCampaignObject)(object)_settlement))
+			if (_travelLog != null && base.IsTracked((ITrackableCampaignObject)(object)_settlement))
 			{
-				((QuestBase)this).RemoveTrackedObject((ITrackableCampaignObject)(object)_settlement);
+				base.RemoveTrackedObject((ITrackableCampaignObject)(object)_settlement);
 			}
-			((QuestBase)this).AddLog(GetPlayerArrivedAtFeastLogText(), false);
+			base.AddLog(GetPlayerArrivedAtFeastLogText(), false);
 			if (_isPlayerHost)
 			{
 				CreateMingleTask();
@@ -647,19 +626,13 @@ public sealed class FeastQuest : QuestBase
 		string sceneName = locationWithId.GetSceneName(num);
 		CampaignMission.OpenArenaDuelMission(sceneName, locationWithId, FeastDuelSystem.PendingDuelHost.CharacterObject, false, false, (Action<CharacterObject>)delegate(CharacterObject winner)
 		{
-			//IL_00de: Unknown result type (might be due to invalid IL or missing references)
-			//IL_00e3: Unknown result type (might be due to invalid IL or missing references)
-			//IL_00ed: Expected O, but got Unknown
-			//IL_003e: Unknown result type (might be due to invalid IL or missing references)
-			//IL_0043: Unknown result type (might be due to invalid IL or missing references)
-			//IL_004d: Expected O, but got Unknown
 			if (winner == CharacterObject.PlayerCharacter)
 			{
 				InformationManager.DisplayMessage(new InformationMessage(((object)LanguageTranslater.L.T("duel_won", "[if:convo_excited]{PLAYER.NAME}, well fought! You bested me in the arena. The guests are still talking about it.").SetTextVariable("OPPONENT", ((object)FeastDuelSystem.PendingDuelHost.Name).ToString())).ToString(), Colors.Green));
 				Hero.MainHero.AddSkillXp(DefaultSkills.OneHanded, 100f);
 				GiveGoldAction.ApplyBetweenCharacters(FeastDuelSystem.PendingDuelHost, Hero.MainHero, 200, false);
 				ChangeRelationAction.ApplyRelationChangeBetweenHeroes(FeastDuelSystem.PendingDuelHost, Hero.MainHero, 2, true);
-				MBInformationManager.AddQuickInformation(LanguageTranslater.L.T("feast_q_duel_reward", "You gained 200 gold, 2 relation, and 100 One Handed XP!"), 0, (BasicCharacterObject)null, "");
+				MBInformationManager.AddQuickInformation(LanguageTranslater.L.T("feast_q_duel_reward", "You gained 200 gold, 2 relation, and 100 One Handed XP!"), 0, null, null);
 				FeastDuelSystem.LastDuelWasPlayerWin = true;
 			}
 			else
@@ -677,15 +650,15 @@ public sealed class FeastQuest : QuestBase
 	{
 		_activeInteractionTask = true;
 		TextObject val = (firstTime ? LanguageTranslater.L.T("feast_q_speak_first", "Speak to {QUEST_GIVER.NAME} at the feast.") : LanguageTranslater.L.T("feast_q_speak_again", "Speak to {QUEST_GIVER.NAME} again now that enough time has passed."));
-		StringHelpers.SetCharacterProperties("QUEST_GIVER", ((QuestBase)this).QuestGiver.CharacterObject, val, false);
+		StringHelpers.SetCharacterProperties("QUEST_GIVER", base.QuestGiver.CharacterObject, val, false);
 		if (!firstTime)
 		{
-			((QuestBase)this).AddLog(GetCooldownExpiredLogText(), false);
+			base.AddLog(GetCooldownExpiredLogText(), false);
 		}
-		_interactionLog = ((QuestBase)this).AddLog(val, false);
-		if (_settlement != null && !((QuestBase)this).IsTracked((ITrackableCampaignObject)(object)_settlement))
+		_interactionLog = base.AddLog(val, false);
+		if (_settlement != null && !base.IsTracked((ITrackableCampaignObject)(object)_settlement))
 		{
-			((QuestBase)this).AddTrackedObject((ITrackableCampaignObject)(object)_settlement);
+			base.AddTrackedObject((ITrackableCampaignObject)(object)_settlement);
 		}
 	}
 
@@ -728,9 +701,9 @@ public sealed class FeastQuest : QuestBase
 		{
 			if (_interactionLog != null)
 			{
-				((QuestBase)this).RemoveLog(_interactionLog);
+				base.RemoveLog(_interactionLog);
 			}
-			_interactionLog = ((QuestBase)this).AddDiscreteLog(val2, val, _spokenGuests.Count, _mingleInitialTargetCount, (TextObject)null, false);
+			_interactionLog = base.AddDiscreteLog(val2, val, _spokenGuests.Count, _mingleInitialTargetCount, (TextObject)null, false);
 			_lastMingleLogText = text2;
 		}
 	}
@@ -771,233 +744,179 @@ public sealed class FeastQuest : QuestBase
 		}
 		if (_interactionLog != null)
 		{
-			((QuestBase)this).RemoveLog(_interactionLog);
+			base.RemoveLog(_interactionLog);
 			_interactionLog = null;
 		}
-		((QuestBase)this).AddLog(GetPlayerSpokeWithHostLogText(), false);
+		base.AddLog(GetPlayerSpokeWithHostLogText(), false);
 		if (_timesSpokenToHost > 1)
 		{
 			TextObject val = LanguageTranslater.L.T("feast_q_cooldown_info", "You must wait {DAYS} days before speaking with {QUEST_GIVER.NAME} again.");
 			val.SetTextVariable("DAYS", CooldownDays);
-			StringHelpers.SetCharacterProperties("QUEST_GIVER", ((QuestBase)this).QuestGiver.CharacterObject, val, false);
-			MBInformationManager.AddQuickInformation(val, 0, (BasicCharacterObject)null, "");
+			StringHelpers.SetCharacterProperties("QUEST_GIVER", base.QuestGiver.CharacterObject, val, false);
+			MBInformationManager.AddQuickInformation(val, 0, null, null);
 		}
 	}
 
 	public static void RegisterFeastQuestDialogs(CampaignGameStarter starter)
 	{
-		//IL_002a: Unknown result type (might be due to invalid IL or missing references)
-		//IL_002f: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0035: Expected O, but got Unknown
-		//IL_0068: Unknown result type (might be due to invalid IL or missing references)
-		//IL_006d: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0073: Expected O, but got Unknown
-		//IL_00a6: Unknown result type (might be due to invalid IL or missing references)
-		//IL_00ab: Unknown result type (might be due to invalid IL or missing references)
-		//IL_00b1: Expected O, but got Unknown
-		//IL_00e6: Unknown result type (might be due to invalid IL or missing references)
-		//IL_00eb: Unknown result type (might be due to invalid IL or missing references)
-		//IL_00f1: Expected O, but got Unknown
-		//IL_0123: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0128: Unknown result type (might be due to invalid IL or missing references)
-		//IL_012e: Expected O, but got Unknown
-		//IL_0161: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0166: Unknown result type (might be due to invalid IL or missing references)
-		//IL_016c: Expected O, but got Unknown
-		//IL_01a1: Unknown result type (might be due to invalid IL or missing references)
-		//IL_01a6: Unknown result type (might be due to invalid IL or missing references)
-		//IL_01ac: Expected O, but got Unknown
-		//IL_01de: Unknown result type (might be due to invalid IL or missing references)
-		//IL_01e3: Unknown result type (might be due to invalid IL or missing references)
-		//IL_01e9: Expected O, but got Unknown
-		//IL_01fd: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0202: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0208: Expected O, but got Unknown
-		//IL_023d: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0242: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0248: Expected O, but got Unknown
-		//IL_025c: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0261: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0267: Expected O, but got Unknown
-		//IL_029c: Unknown result type (might be due to invalid IL or missing references)
-		//IL_02a1: Unknown result type (might be due to invalid IL or missing references)
-		//IL_02a7: Expected O, but got Unknown
-		//IL_02da: Unknown result type (might be due to invalid IL or missing references)
-		//IL_02df: Unknown result type (might be due to invalid IL or missing references)
-		//IL_02e5: Expected O, but got Unknown
-		//IL_02f9: Unknown result type (might be due to invalid IL or missing references)
-		//IL_02fe: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0304: Expected O, but got Unknown
-		//IL_0337: Unknown result type (might be due to invalid IL or missing references)
-		//IL_033c: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0342: Expected O, but got Unknown
-		//IL_0375: Unknown result type (might be due to invalid IL or missing references)
-		//IL_037a: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0380: Expected O, but got Unknown
-		//IL_0394: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0399: Unknown result type (might be due to invalid IL or missing references)
-		//IL_039f: Expected O, but got Unknown
-		//IL_03ce: Unknown result type (might be due to invalid IL or missing references)
-		//IL_03d3: Unknown result type (might be due to invalid IL or missing references)
-		//IL_03d9: Expected O, but got Unknown
 		object obj = _003C_003Ec._003C_003E9__54_0;
 		if (obj == null)
 		{
-			OnConditionDelegate val = () => IsPlayerAttendingAIHostFeast() && IsFirstTimePlayerTalksToAIHost();
+			ConversationSentence.OnConditionDelegate val = () => IsPlayerAttendingAIHostFeast() && IsFirstTimePlayerTalksToAIHost();
 			_003C_003Ec._003C_003E9__54_0 = val;
 			obj = (object)val;
 		}
-		starter.AddDialogLine("feastquest_aihost_greet_player_first", "start", "feastquest_aihost_menu", "{=feast_q_host_greet}Ah, {PLAYER.NAME}! Welcome to my feast. [ib:hip][if:convo_excited]The festivities are in full swing!", (OnConditionDelegate)obj, (OnConsequenceDelegate)null, 125, (OnClickableConditionDelegate)null);
+		starter.AddDialogLine("feastquest_aihost_greet_player_first", "start", "feastquest_aihost_menu", "{=feast_q_host_greet}Ah, {PLAYER.NAME}! Welcome to my feast. [ib:hip][if:convo_excited]The festivities are in full swing!", (ConversationSentence.OnConditionDelegate)obj, (ConversationSentence.OnConsequenceDelegate)null, 125, null);
 		object obj2 = _003C_003Ec._003C_003E9__54_1;
 		if (obj2 == null)
 		{
-			OnConditionDelegate val2 = () => IsPlayerAttendingAIHostFeast() && !IsFirstTimePlayerTalksToAIHost();
+			ConversationSentence.OnConditionDelegate val2 = () => IsPlayerAttendingAIHostFeast() && !IsFirstTimePlayerTalksToAIHost();
 			_003C_003Ec._003C_003E9__54_1 = val2;
 			obj2 = (object)val2;
 		}
-		starter.AddDialogLine("feastquest_aihost_greet_player_return", "start", "feastquest_aihost_menu", "{=feast_q_host_greet_return}Glad to see you're still here, {PLAYER.NAME}! [ib:normal][if:convo_approving]I hope you're enjoying yourself.", (OnConditionDelegate)obj2, (OnConsequenceDelegate)null, 125, (OnClickableConditionDelegate)null);
+		starter.AddDialogLine("feastquest_aihost_greet_player_return", "start", "feastquest_aihost_menu", "{=feast_q_host_greet_return}Glad to see you're still here, {PLAYER.NAME}! [ib:normal][if:convo_approving]I hope you're enjoying yourself.", (ConversationSentence.OnConditionDelegate)obj2, (ConversationSentence.OnConsequenceDelegate)null, 125, null);
 		object obj3 = _003C_003Ec._003C_003E9__54_2;
 		if (obj3 == null)
 		{
-			OnConditionDelegate val3 = () => ShouldCompleteInteractionForCurrentConversation();
+			ConversationSentence.OnConditionDelegate val3 = () => ShouldCompleteInteractionForCurrentConversation();
 			_003C_003Ec._003C_003E9__54_2 = val3;
 			obj3 = (object)val3;
 		}
-		starter.AddPlayerLine("feastquest_aihost_player_respond", "feastquest_aihost_menu", "feastquest_aihost_response", "{=feast_q_player_speak}Thank you for the invitation. I am honored to be here.", (OnConditionDelegate)obj3, (OnConsequenceDelegate)null, 100, (OnClickableConditionDelegate)null, (OnPersuasionOptionDelegate)null);
+		starter.AddPlayerLine("feastquest_aihost_player_respond", "feastquest_aihost_menu", "feastquest_aihost_response", "{=feast_q_player_speak}Thank you for the invitation. I am honored to be here.", (ConversationSentence.OnConditionDelegate)obj3, (ConversationSentence.OnConsequenceDelegate)null, 100, null, null);
 		object obj4 = _003C_003Ec._003C_003E9__54_3;
 		if (obj4 == null)
 		{
-			OnConsequenceDelegate val4 = delegate
+			ConversationSentence.OnConsequenceDelegate val4 = delegate
 			{
 				CompleteInteractionForCurrentConversation();
 			};
 			_003C_003Ec._003C_003E9__54_3 = val4;
 			obj4 = (object)val4;
 		}
-		starter.AddDialogLine("feastquest_aihost_response_line", "feastquest_aihost_response", "feastquest_duel_offer", "{=feast_q_host_response}The honor is mine. [ib:normal][if:convo_approving]Enjoy yourself, and feel free to mingle with the other guests.", (OnConditionDelegate)null, (OnConsequenceDelegate)obj4, 100, (OnClickableConditionDelegate)null);
+		starter.AddDialogLine("feastquest_aihost_response_line", "feastquest_aihost_response", "feastquest_duel_offer", "{=feast_q_host_response}The honor is mine. [ib:normal][if:convo_approving]Enjoy yourself, and feel free to mingle with the other guests.", (ConversationSentence.OnConditionDelegate)null, (ConversationSentence.OnConsequenceDelegate)obj4, 100, null);
 		object obj5 = _003C_003Ec._003C_003E9__54_4;
 		if (obj5 == null)
 		{
-			OnConditionDelegate val5 = () => IsPlayerHostTalkingToGuest();
+			ConversationSentence.OnConditionDelegate val5 = () => IsPlayerHostTalkingToGuest();
 			_003C_003Ec._003C_003E9__54_4 = val5;
 			obj5 = (object)val5;
 		}
-		starter.AddDialogLine("feastquest_guest_greet_playerhost", "start", "feastquest_guest_menu", "{=feast_q_guest_greet}It is an honour to be at your feast! [ib:hip][if:convo_approving]The hall is splendid.", (OnConditionDelegate)obj5, (OnConsequenceDelegate)null, 120, (OnClickableConditionDelegate)null);
+		starter.AddDialogLine("feastquest_guest_greet_playerhost", "start", "feastquest_guest_menu", "{=feast_q_guest_greet}It is an honour to be at your feast! [ib:hip][if:convo_approving]The hall is splendid.", (ConversationSentence.OnConditionDelegate)obj5, (ConversationSentence.OnConsequenceDelegate)null, 120, null);
 		object obj6 = _003C_003Ec._003C_003E9__54_5;
 		if (obj6 == null)
 		{
-			OnConditionDelegate val6 = () => ShouldCompleteInteractionForCurrentConversation() && !HasRewardCooldown(Hero.MainHero, Hero.OneToOneConversationHero);
+			ConversationSentence.OnConditionDelegate val6 = () => ShouldCompleteInteractionForCurrentConversation() && !HasRewardCooldown(Hero.MainHero, Hero.OneToOneConversationHero);
 			_003C_003Ec._003C_003E9__54_5 = val6;
 			obj6 = (object)val6;
 		}
-		starter.AddPlayerLine("feastquest_playerhost_respond_guest", "feastquest_guest_menu", "feastquest_guest_response", "{=feast_q_player_host_ack}Welcome, enjoy the feast. Make yourself at home.", (OnConditionDelegate)obj6, (OnConsequenceDelegate)null, 110, (OnClickableConditionDelegate)null, (OnPersuasionOptionDelegate)null);
+		starter.AddPlayerLine("feastquest_playerhost_respond_guest", "feastquest_guest_menu", "feastquest_guest_response", "{=feast_q_player_host_ack}Welcome, enjoy the feast. Make yourself at home.", (ConversationSentence.OnConditionDelegate)obj6, (ConversationSentence.OnConsequenceDelegate)null, 110, null, null);
 		object obj7 = _003C_003Ec._003C_003E9__54_6;
 		if (obj7 == null)
 		{
-			OnConsequenceDelegate val7 = delegate
+			ConversationSentence.OnConsequenceDelegate val7 = delegate
 			{
 				CompleteInteractionForCurrentConversation();
 			};
 			_003C_003Ec._003C_003E9__54_6 = val7;
 			obj7 = (object)val7;
 		}
-		starter.AddDialogLine("feastquest_guest_response_line", "feastquest_guest_response", "feastquest_duel_offer", "{=feast_q_guest_response}Thank you. I shall enjoy the company.", (OnConditionDelegate)null, (OnConsequenceDelegate)obj7, 100, (OnClickableConditionDelegate)null);
+		starter.AddDialogLine("feastquest_guest_response_line", "feastquest_guest_response", "feastquest_duel_offer", "{=feast_q_guest_response}Thank you. I shall enjoy the company.", (ConversationSentence.OnConditionDelegate)null, (ConversationSentence.OnConsequenceDelegate)obj7, 100, null);
 		object obj8 = _003C_003Ec._003C_003E9__54_7;
 		if (obj8 == null)
 		{
-			OnConditionDelegate val8 = () => ShouldShowDuelCommentDialog(win: true);
+			ConversationSentence.OnConditionDelegate val8 = () => ShouldShowDuelCommentDialog(win: true);
 			_003C_003Ec._003C_003E9__54_7 = val8;
 			obj8 = (object)val8;
 		}
 		object obj9 = _003C_003Ec._003C_003E9__54_8;
 		if (obj9 == null)
 		{
-			OnConsequenceDelegate val9 = delegate
+			ConversationSentence.OnConsequenceDelegate val9 = delegate
 			{
 				ClearDuelCommentFlag();
 			};
 			_003C_003Ec._003C_003E9__54_8 = val9;
 			obj9 = (object)val9;
 		}
-		starter.AddDialogLine("feastquest_duel_comment_win", "start", "feastquest_host_menu", "{=feast_q_duel_comment_win}[if:convo_excited]{PLAYER.NAME}, well fought! You bested me in the arena. The guests are still talking about it.", (OnConditionDelegate)obj8, (OnConsequenceDelegate)obj9, 150, (OnClickableConditionDelegate)null);
+		starter.AddDialogLine("feastquest_duel_comment_win", "start", "feastquest_host_menu", "{=feast_q_duel_comment_win}[if:convo_excited]{PLAYER.NAME}, well fought! You bested me in the arena. The guests are still talking about it.", (ConversationSentence.OnConditionDelegate)obj8, (ConversationSentence.OnConsequenceDelegate)obj9, 150, null);
 		object obj10 = _003C_003Ec._003C_003E9__54_9;
 		if (obj10 == null)
 		{
-			OnConditionDelegate val10 = () => ShouldShowDuelCommentDialog(win: false);
+			ConversationSentence.OnConditionDelegate val10 = () => ShouldShowDuelCommentDialog(win: false);
 			_003C_003Ec._003C_003E9__54_9 = val10;
 			obj10 = (object)val10;
 		}
 		object obj11 = _003C_003Ec._003C_003E9__54_10;
 		if (obj11 == null)
 		{
-			OnConsequenceDelegate val11 = delegate
+			ConversationSentence.OnConsequenceDelegate val11 = delegate
 			{
 				ClearDuelCommentFlag();
 			};
 			_003C_003Ec._003C_003E9__54_10 = val11;
 			obj11 = (object)val11;
 		}
-		starter.AddDialogLine("feastquest_duel_comment_lose", "start", "feastquest_host_menu", "{=feast_q_duel_comment_lose}[if:convo_proud]A good effort, {PLAYER.NAME}, but victory was mine this time. Perhaps a rematch later?", (OnConditionDelegate)obj10, (OnConsequenceDelegate)obj11, 150, (OnClickableConditionDelegate)null);
+		starter.AddDialogLine("feastquest_duel_comment_lose", "start", "feastquest_host_menu", "{=feast_q_duel_comment_lose}[if:convo_proud]A good effort, {PLAYER.NAME}, but victory was mine this time. Perhaps a rematch later?", (ConversationSentence.OnConditionDelegate)obj10, (ConversationSentence.OnConsequenceDelegate)obj11, 150, null);
 		object obj12 = _003C_003Ec._003C_003E9__54_11;
 		if (obj12 == null)
 		{
-			OnConditionDelegate val12 = () => ShouldOfferDuelForCurrentConversation();
+			ConversationSentence.OnConditionDelegate val12 = () => ShouldOfferDuelForCurrentConversation();
 			_003C_003Ec._003C_003E9__54_11 = val12;
 			obj12 = (object)val12;
 		}
-		starter.AddDialogLine("feastquest_duel_offer_line", "feastquest_duel_offer", "feastquest_duel_player_response", "{=feast_q_duel_offer}Say, {PLAYER.NAME}, care for a friendly bout? [ib:confident][if:convo_excited]Nothing like a bit of steel to liven up a feast!", (OnConditionDelegate)obj12, (OnConsequenceDelegate)null, 100, (OnClickableConditionDelegate)null);
+		starter.AddDialogLine("feastquest_duel_offer_line", "feastquest_duel_offer", "feastquest_duel_player_response", "{=feast_q_duel_offer}Say, {PLAYER.NAME}, care for a friendly bout? [ib:confident][if:convo_excited]Nothing like a bit of steel to liven up a feast!", (ConversationSentence.OnConditionDelegate)obj12, (ConversationSentence.OnConsequenceDelegate)null, 100, null);
 		object obj13 = _003C_003Ec._003C_003E9__54_12;
 		if (obj13 == null)
 		{
-			OnConditionDelegate val13 = () => true;
+			ConversationSentence.OnConditionDelegate val13 = () => true;
 			_003C_003Ec._003C_003E9__54_12 = val13;
 			obj13 = (object)val13;
 		}
 		object obj14 = _003C_003Ec._003C_003E9__54_13;
 		if (obj14 == null)
 		{
-			OnConsequenceDelegate val14 = delegate
+			ConversationSentence.OnConsequenceDelegate val14 = delegate
 			{
 				AcceptHostDuelChallenge();
 			};
 			_003C_003Ec._003C_003E9__54_13 = val14;
 			obj14 = (object)val14;
 		}
-		starter.AddPlayerLine("feastquest_player_accept_duel", "feastquest_duel_player_response", "feastquest_duel_meet_arena", "{=feast_q_player_accept_duel}I accept your challenge!", (OnConditionDelegate)obj13, (OnConsequenceDelegate)obj14, 100, (OnClickableConditionDelegate)null, (OnPersuasionOptionDelegate)null);
+		starter.AddPlayerLine("feastquest_player_accept_duel", "feastquest_duel_player_response", "feastquest_duel_meet_arena", "{=feast_q_player_accept_duel}I accept your challenge!", (ConversationSentence.OnConditionDelegate)obj13, (ConversationSentence.OnConsequenceDelegate)obj14, 100, null, null);
 		object obj15 = _003C_003Ec._003C_003E9__54_14;
 		if (obj15 == null)
 		{
-			OnConditionDelegate val15 = () => true;
+			ConversationSentence.OnConditionDelegate val15 = () => true;
 			_003C_003Ec._003C_003E9__54_14 = val15;
 			obj15 = (object)val15;
 		}
-		starter.AddDialogLine("feastquest_duel_meet_arena", "feastquest_duel_meet_arena", "close_window", "{=feast_q_duel_meet_arena}Meet me in the arena to begin your duel.", (OnConditionDelegate)obj15, (OnConsequenceDelegate)null, 100, (OnClickableConditionDelegate)null);
+		starter.AddDialogLine("feastquest_duel_meet_arena", "feastquest_duel_meet_arena", "close_window", "{=feast_q_duel_meet_arena}Meet me in the arena to begin your duel.", (ConversationSentence.OnConditionDelegate)obj15, (ConversationSentence.OnConsequenceDelegate)null, 100, null);
 		object obj16 = _003C_003Ec._003C_003E9__54_15;
 		if (obj16 == null)
 		{
-			OnConditionDelegate val16 = () => true;
+			ConversationSentence.OnConditionDelegate val16 = () => true;
 			_003C_003Ec._003C_003E9__54_15 = val16;
 			obj16 = (object)val16;
 		}
 		object obj17 = _003C_003Ec._003C_003E9__54_16;
 		if (obj17 == null)
 		{
-			OnConsequenceDelegate val17 = delegate
+			ConversationSentence.OnConsequenceDelegate val17 = delegate
 			{
 				DeclineHostDuelChallenge();
 			};
 			_003C_003Ec._003C_003E9__54_16 = val17;
 			obj17 = (object)val17;
 		}
-		starter.AddPlayerLine("feastquest_player_decline_duel", "feastquest_duel_player_response", "close_window", "{=feast_q_player_decline_duel}Perhaps another time.", (OnConditionDelegate)obj16, (OnConsequenceDelegate)obj17, 100, (OnClickableConditionDelegate)null, (OnPersuasionOptionDelegate)null);
+		starter.AddPlayerLine("feastquest_player_decline_duel", "feastquest_duel_player_response", "close_window", "{=feast_q_player_decline_duel}Perhaps another time.", (ConversationSentence.OnConditionDelegate)obj16, (ConversationSentence.OnConsequenceDelegate)obj17, 100, null, null);
 		object obj18 = _003C_003Ec._003C_003E9__54_17;
 		if (obj18 == null)
 		{
-			OnConditionDelegate val18 = () => !ShouldOfferDuelForCurrentConversation();
+			ConversationSentence.OnConditionDelegate val18 = () => !ShouldOfferDuelForCurrentConversation();
 			_003C_003Ec._003C_003E9__54_17 = val18;
 			obj18 = (object)val18;
 		}
-		starter.AddDialogLine("feastquest_no_duel", "feastquest_duel_offer", "close_window", (string)null, (OnConditionDelegate)obj18, (OnConsequenceDelegate)null, 100, (OnClickableConditionDelegate)null);
+		starter.AddDialogLine("feastquest_no_duel", "feastquest_duel_offer", "close_window", (string)null, (ConversationSentence.OnConditionDelegate)obj18, (ConversationSentence.OnConsequenceDelegate)null, 100, null);
 	}
 
 	private static bool IsPlayerAttendingAIHostFeast()
@@ -1008,7 +927,7 @@ public sealed class FeastQuest : QuestBase
 			return false;
 		}
 		FeastQuest feastQuest = FindForConversationHost();
-		if (feastQuest == null || !((QuestBase)feastQuest).IsOngoing || feastQuest._isPlayerHost)
+		if (feastQuest == null || !feastQuest.IsOngoing || feastQuest._isPlayerHost)
 		{
 			return false;
 		}
@@ -1032,7 +951,7 @@ public sealed class FeastQuest : QuestBase
 			return false;
 		}
 		FeastQuest value;
-		return ActiveByHost.TryGetValue(feastByAttribute.Host, out value) && value != null && ((QuestBase)value).IsOngoing && value._isPlayerHost;
+		return ActiveByHost.TryGetValue(feastByAttribute.Host, out value) && value != null && value.IsOngoing && value._isPlayerHost;
 	}
 
 	private static bool IsFirstTimePlayerTalksToAIHost()
@@ -1048,7 +967,7 @@ public sealed class FeastQuest : QuestBase
 	private static bool ShouldCompleteInteractionForCurrentConversation()
 	{
 		FeastQuest feastQuest = FindForConversationHost();
-		return feastQuest != null && ((QuestBase)feastQuest).IsOngoing && feastQuest._activeInteractionTask;
+		return feastQuest != null && feastQuest.IsOngoing && feastQuest._activeInteractionTask;
 	}
 
 	private static void CompleteInteractionForCurrentConversation()
@@ -1116,17 +1035,6 @@ public sealed class FeastQuest : QuestBase
 
 	private static void DeclineHostDuelChallenge()
 	{
-		//IL_00fe: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0103: Unknown result type (might be due to invalid IL or missing references)
-		//IL_010d: Expected O, but got Unknown
-		//IL_018a: Unknown result type (might be due to invalid IL or missing references)
-		//IL_018f: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0199: Expected O, but got Unknown
-		//IL_0152: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0157: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0161: Expected O, but got Unknown
-		//IL_00a1: Unknown result type (might be due to invalid IL or missing references)
-		//IL_00a6: Unknown result type (might be due to invalid IL or missing references)
 		Hero oneToOneConversationHero = Hero.OneToOneConversationHero;
 		Hero mainHero = Hero.MainHero;
 		Settlement settlement = ((mainHero != null) ? mainHero.CurrentSettlement : null);
@@ -1144,7 +1052,7 @@ public sealed class FeastQuest : QuestBase
 			}
 			RewardData.RewardInfo orCreate = value.GetOrCreate(oneToOneConversationHero, mainHero);
 			CampaignTime now = CampaignTime.Now;
-			orCreate.nextDuelRewardTime = ((CampaignTime)(ref now)).ToDays + (double)GlobalSettings<WarAndAiTweaksSettings>.Instance.TodayWeFeastDialogCooldown;
+			orCreate.nextDuelRewardTime = now.ToDays + (double)GlobalSettings<WarAndAiTweaksSettings>.Instance.TodayWeFeastDialogCooldown;
 		}
 		int relation = oneToOneConversationHero.GetRelation(mainHero);
 		if (relation >= 20)
@@ -1162,3 +1070,9 @@ public sealed class FeastQuest : QuestBase
 		}
 	}
 }
+
+
+
+
+
+

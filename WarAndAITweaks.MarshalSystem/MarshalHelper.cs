@@ -24,7 +24,7 @@ public static class MarshalHelper
 		float num4 = num3 / 300f;
 		float partySizeRatio = hero.PartyBelongedTo.PartySizeRatio;
 		float num5 = MBMath.ClampFloat(partySizeRatio, 0f, 250f) / 250f;
-		float totalStrength = hero.Clan.TotalStrength;
+		float totalStrength = hero.Clan.CurrentTotalStrength;
 		float num6 = MBMath.ClampFloat(totalStrength, 0f, 2000f) / 2000f;
 		float influence = hero.Clan.Influence;
 		float num7 = MBMath.ClampFloat(influence, 0f, 1000f) / 1000f;
@@ -116,13 +116,6 @@ public static class MarshalHelper
 
 	public static void RemoveMarshalForTesting(Kingdom kingdom)
 	{
-		//IL_009d: Unknown result type (might be due to invalid IL or missing references)
-		//IL_00a3: Unknown result type (might be due to invalid IL or missing references)
-		//IL_00ae: Unknown result type (might be due to invalid IL or missing references)
-		//IL_00b4: Unknown result type (might be due to invalid IL or missing references)
-		//IL_00d3: Unknown result type (might be due to invalid IL or missing references)
-		//IL_00d8: Unknown result type (might be due to invalid IL or missing references)
-		//IL_00e2: Expected O, but got Unknown
 		if (kingdom == null)
 		{
 			return;

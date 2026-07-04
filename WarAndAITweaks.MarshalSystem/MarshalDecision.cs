@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -70,8 +70,7 @@ internal class MarshalDecision : KingdomDecision
 
 		public override ImageIdentifier GetDecisionImageIdentifier()
 		{
-			//IL_001b: Unknown result type (might be due to invalid IL or missing references)
-			return (Candidate == null) ? ((ImageIdentifier)null) : new ImageIdentifier(CharacterCode.CreateFrom((BasicCharacterObject)(object)Candidate.CharacterObject));
+			return (Candidate == null) ? ((ImageIdentifier)null) : new CharacterImageIdentifier(CharacterCode.CreateFrom((BasicCharacterObject)(object)Candidate.CharacterObject));
 		}
 	}
 
@@ -345,7 +344,7 @@ internal class MarshalDecision : KingdomDecision
 		float num2 = ((Candidates.Count > 0) ? Candidates.Max(delegate(Hero c)
 		{
 			Clan clan3 = c.Clan;
-			return (clan3 != null) ? clan3.TotalStrength : 0f;
+			return (clan3 != null) ? clan3.CurrentTotalStrength : 0f;
 		}) : 1f);
 		float num3 = ((Candidates.Count > 0) ? Candidates.Max(delegate(Hero c)
 		{
@@ -399,7 +398,7 @@ internal class MarshalDecision : KingdomDecision
 		float item4 = maxCandidateStats.maxInfluence;
 		float item5 = maxCandidateStats.maxWealth;
 		float num = N(MarshalHelper.CalculateTrueSkill(candidate), item);
-		float num2 = N(candidate.Clan.TotalStrength, item2);
+		float num2 = N(candidate.Clan.CurrentTotalStrength, item2);
 		float num3 = N(candidate.Clan.Tier, item3);
 		float num4 = N(candidate.Clan.Influence, item4);
 		float num5 = N(candidate.Gold, item5);
@@ -458,21 +457,9 @@ internal class MarshalDecision : KingdomDecision
 
 	public override TextObject GetChosenOutcomeText(DecisionOutcome chosenOutcome, SupportStatus supportStatus, bool isShortVersion)
 	{
-		//IL_0112: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0119: Expected O, but got Unknown
-		//IL_0018: Unknown result type (might be due to invalid IL or missing references)
-		//IL_001a: Invalid comparison between Unknown and I4
-		//IL_001e: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0020: Invalid comparison between Unknown and I4
 		if (chosenOutcome is MarshalOutcome marshalOutcome)
 		{
-			if (1 == 0)
-			{
-			}
 			string text = (((int)supportStatus == 1) ? "marshal_decision_outcome_majority" : (((int)supportStatus != 2) ? "marshal_decision_outcome_single" : "marshal_decision_outcome_minority"));
-			if (1 == 0)
-			{
-			}
 			string text2 = text;
 			TextObject val = LanguageTranslater.L.T(text2, (text2 == "marshal_decision_outcome_majority" || text2 == "marshal_decision_outcome_minority" || text2 == "marshal_decision_outcome_single") ? "{RULER.NAME} of the {KINGDOM} has appointed {MARSHAL.NAME} as Marshal." : "");
 			Kingdom kingdom = Kingdom;
@@ -531,3 +518,4 @@ internal class MarshalDecision : KingdomDecision
 		return val;
 	}
 }
+

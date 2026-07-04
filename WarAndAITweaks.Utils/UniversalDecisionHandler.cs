@@ -11,13 +11,6 @@ internal class UniversalDecisionHandler
 {
 	public static bool HandleAddingDecision(KingdomDecision decision, Kingdom targetKingdom, Kingdom proposerKingdom)
 	{
-		//IL_0303: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0101: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0106: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0130: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0135: Unknown result type (might be due to invalid IL or missing references)
-		//IL_02b1: Unknown result type (might be due to invalid IL or missing references)
-		//IL_02b6: Unknown result type (might be due to invalid IL or missing references)
 		if (decision == null || proposerKingdom == null)
 		{
 			return false;
@@ -50,7 +43,7 @@ internal class UniversalDecisionHandler
 				if (((KingdomDecision)val3).Kingdom == Hero.MainHero.MapFaction && val3.FactionToMakePeaceWith == proposerKingdom)
 				{
 					triggerTime = item.TriggerTime;
-					if (((CampaignTime)(ref triggerTime)).IsFuture)
+					if (triggerTime.IsFuture)
 					{
 						goto IL_014a;
 					}
@@ -60,7 +53,7 @@ internal class UniversalDecisionHandler
 					continue;
 				}
 				triggerTime = item.TriggerTime;
-				if (!((CampaignTime)(ref triggerTime)).IsFuture)
+				if (!triggerTime.IsFuture)
 				{
 					continue;
 				}
@@ -120,7 +113,7 @@ internal class UniversalDecisionHandler
 			if (item2 is MarshalDecision marshalDecision && decision is MarshalDecision marshalDecision2 && marshalDecision.Kingdom == marshalDecision2.Kingdom)
 			{
 				triggerTime = item2.TriggerTime;
-				if (((CampaignTime)(ref triggerTime)).IsFuture)
+				if (triggerTime.IsFuture)
 				{
 					flag2 = true;
 					break;
@@ -137,3 +130,5 @@ internal class UniversalDecisionHandler
 		return true;
 	}
 }
+
+

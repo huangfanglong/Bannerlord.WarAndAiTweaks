@@ -11,7 +11,7 @@ namespace WarAndAITweaks.War_Peace_AI_Overhaul.StrategicAIModules.StrategicAI;
 [HarmonyPriority(800)]
 public class Patch_DisableConsiderPeace
 {
-	public static bool Prefix(Clan clan, Clan otherClan, Kingdom kingdom, IFaction otherFaction, out MakePeaceKingdomDecision decision)
+	public static bool Prefix(Clan clan, Clan otherClan, IFaction otherFaction, ref MakePeaceKingdomDecision decision)
 	{
 		if (!GlobalSettings<WarAndAiTweaksSettings>.Instance.EnableWarPeaceAIOverhaul)
 		{

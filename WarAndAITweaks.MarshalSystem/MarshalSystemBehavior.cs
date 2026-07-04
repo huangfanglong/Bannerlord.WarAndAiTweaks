@@ -66,9 +66,6 @@ public class MarshalSystemBehavior : CampaignBehaviorBase
 
 	private void DailyTickClanEvent(Clan clan)
 	{
-		//IL_008d: Unknown result type (might be due to invalid IL or missing references)
-		//IL_005d: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0062: Unknown result type (might be due to invalid IL or missing references)
 		if (clan.Kingdom == null || ((List<Settlement>)(object)clan.Kingdom.Settlements).Count < 1)
 		{
 			return;
@@ -81,7 +78,7 @@ public class MarshalSystemBehavior : CampaignBehaviorBase
 		if (_lastMarshalProcess.TryGetValue(kingdom, out var value))
 		{
 			CampaignTime now = CampaignTime.Now;
-			if (((CampaignTime)(ref now)).ToDays - ((CampaignTime)(ref value)).ToDays < 5.0)
+			if (now.ToDays - value.ToDays < 5.0)
 			{
 				return;
 			}
@@ -92,10 +89,6 @@ public class MarshalSystemBehavior : CampaignBehaviorBase
 
 	private void ProcessMarshalStateAndElections(Kingdom kingdom)
 	{
-		//IL_0094: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0099: Unknown result type (might be due to invalid IL or missing references)
-		//IL_00a3: Unknown result type (might be due to invalid IL or missing references)
-		//IL_00a8: Unknown result type (might be due to invalid IL or missing references)
 		if (!_kingdomMarshals.ContainsKey(kingdom))
 		{
 			_kingdomMarshals[kingdom] = new MarshalData();
@@ -111,9 +104,9 @@ public class MarshalSystemBehavior : CampaignBehaviorBase
 		if (currentMarshal != null)
 		{
 			CampaignTime val = CampaignTime.Now;
-			double toDays = ((CampaignTime)(ref val)).ToDays;
+			double toDays = val.ToDays;
 			val = marshalData.AppointmentEndDate;
-			if (toDays >= ((CampaignTime)(ref val)).ToDays)
+			if (toDays >= val.ToDays)
 			{
 				StartMarshalElection(kingdom);
 				return;
@@ -149,11 +142,6 @@ public class MarshalSystemBehavior : CampaignBehaviorBase
 
 	public void AppointMarshal(Kingdom kingdom, Hero marshal)
 	{
-		//IL_0017: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0036: Unknown result type (might be due to invalid IL or missing references)
-		//IL_00a6: Unknown result type (might be due to invalid IL or missing references)
-		//IL_00ab: Unknown result type (might be due to invalid IL or missing references)
-		//IL_00b5: Expected O, but got Unknown
 		MarshalData marshalData = _kingdomMarshals[kingdom];
 		marshalData.CurrentMarshal = marshal;
 		marshalData.AppointmentStartDate = CampaignTime.Now;
@@ -171,9 +159,6 @@ public class MarshalSystemBehavior : CampaignBehaviorBase
 
 	private void RemoveMarshal(Kingdom kingdom, string reason)
 	{
-		//IL_0091: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0096: Unknown result type (might be due to invalid IL or missing references)
-		//IL_00a0: Expected O, but got Unknown
 		MarshalData marshalData = _kingdomMarshals[kingdom];
 		if (marshalData.CurrentMarshal != null && Hero.MainHero.Clan != null && Hero.MainHero.Clan.Kingdom == kingdom)
 		{
@@ -242,3 +227,5 @@ public class MarshalSystemBehavior : CampaignBehaviorBase
 		return Campaign.Current.GetCampaignBehavior<MarshalSystemBehavior>()?._kingdomMarshals.Values.Any((MarshalData m) => m.CurrentMarshal == hero2) ?? false;
 	}
 }
+
+

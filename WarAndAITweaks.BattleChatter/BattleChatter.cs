@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using MCM.Abstractions.Base.Global;
@@ -49,9 +49,7 @@ internal class BattleChatter : MissionBehavior
 
 	private bool IsFormationActive(Formation formation)
 	{
-		//IL_0006: Unknown result type (might be due to invalid IL or missing references)
-		//IL_000c: Invalid comparison between Unknown and I4
-		return (int)formation.GetUnderAttackTypeOfUnits(1f) > 0;
+		return formation.GetUnderAttackTypeOfUnits(1f) != Agent.UnderAttackType.NotUnderAttack;
 	}
 
 	public BattleChatter()
@@ -72,7 +70,7 @@ internal class BattleChatter : MissionBehavior
 		}
 		catch (Exception ex)
 		{
-			Debug.Print("[BattleChatter] Failed to initialize: " + ex.Message, 0, (DebugColor)12, 17592186044416uL);
+			Debug.Print("[BattleChatter] Failed to initialize: " + ex.Message, 0, (Debug.DebugColor)12, 17592186044416uL);
 		}
 	}
 
@@ -116,8 +114,6 @@ internal class BattleChatter : MissionBehavior
 
 	public override void OnAgentRemoved(Agent affectedAgent, Agent affectorAgent, AgentState agentState, KillingBlow killingBlow)
 	{
-		//IL_008f: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0091: Invalid comparison between Unknown and I4
 		try
 		{
 			if (!HeroList.Any())
@@ -133,7 +129,7 @@ internal class BattleChatter : MissionBehavior
 			}
 			Mission mission = ((MissionBehavior)this).Mission;
 			float num = ((mission != null) ? mission.CurrentTime : 0f);
-			if (num - _lastGlobalIndividualChatterTime < IndividualChatterTimeCooldown || affectorAgent == null || affectedAgent == null || (int)agentState == 3)
+			if (num - _lastGlobalIndividualChatterTime < IndividualChatterTimeCooldown || affectorAgent == null || affectedAgent == null || agentState == AgentState.Unconscious)
 			{
 				return;
 			}
@@ -161,10 +157,6 @@ internal class BattleChatter : MissionBehavior
 
 	public override void OnAgentHit(Agent affectedAgent, Agent affectorAgent, in MissionWeapon affectorWeapon, in Blow blow, in AttackCollisionData attackCollisionData)
 	{
-		//IL_00b6: Unknown result type (might be due to invalid IL or missing references)
-		//IL_00bb: Unknown result type (might be due to invalid IL or missing references)
-		//IL_00cf: Unknown result type (might be due to invalid IL or missing references)
-		//IL_00d4: Unknown result type (might be due to invalid IL or missing references)
 		try
 		{
 			if (!HeroList.Any())
@@ -187,10 +179,10 @@ internal class BattleChatter : MissionBehavior
 			}
 			Blow val3 = blow;
 			int num2;
-			if (!((Blow)(ref val3)).IsBlowCrit((int)affectorAgent.HealthLimit))
+			if (!val3.IsBlowCrit((int)affectorAgent.HealthLimit))
 			{
 				val3 = blow;
-				num2 = (((Blow)(ref val3)).IsHeadShot() ? 1 : 0);
+				num2 = val3.IsHeadShot() ? 1 : 0;
 			}
 			else
 			{
@@ -215,10 +207,8 @@ internal class BattleChatter : MissionBehavior
 
 	public override void OnMissionTick(float dt)
 	{
-		//IL_0017: Unknown result type (might be due to invalid IL or missing references)
-		//IL_001d: Invalid comparison between Unknown and I4
-		((MissionBehavior)this).OnMissionTick(dt);
-		if (((MissionBehavior)this).Mission == null || (int)((MissionBehavior)this).Mission.CombatType > 0)
+		base.OnMissionTick(dt);
+		if (((MissionBehavior)this).Mission == null || ((MissionBehavior)this).Mission.CombatType != Mission.MissionCombatType.Combat)
 		{
 			return;
 		}
@@ -289,9 +279,6 @@ internal class BattleChatter : MissionBehavior
 			{
 				return;
 			}
-			if (1 == 0)
-			{
-			}
 			string text = agentUnitType switch
 			{
 				UnitType.Infantry => "bc_form_same_inf", 
@@ -299,9 +286,6 @@ internal class BattleChatter : MissionBehavior
 				UnitType.Archer => "bc_form_same_rng", 
 				_ => null, 
 			};
-			if (1 == 0)
-			{
-			}
 			string text2 = text;
 			if (text2 == null || !DialogCategories.Contains(text2))
 			{
@@ -346,9 +330,6 @@ internal class BattleChatter : MissionBehavior
 
 	private static string? GetCrossFormationCategory(UnitType speakerType, UnitType targetType)
 	{
-		if (1 == 0)
-		{
-		}
 		string result;
 		switch (speakerType)
 		{
@@ -392,9 +373,6 @@ internal class BattleChatter : MissionBehavior
 			result = null;
 			break;
 		}
-		if (1 == 0)
-		{
-		}
 		return result;
 	}
 
@@ -416,8 +394,6 @@ internal class BattleChatter : MissionBehavior
 
 	private void SpeakLine(Agent agent, string lineToSpeak, ChatterType chatterType)
 	{
-		//IL_0068: Unknown result type (might be due to invalid IL or missing references)
-		//IL_007e: Expected O, but got Unknown
 		try
 		{
 			BasicCharacterObject obj = ((agent != null) ? agent.Character : null);
@@ -434,7 +410,7 @@ internal class BattleChatter : MissionBehavior
 				{
 					_nextGlobalFormationChatterTime = num + FormationChatterTimeCooldown;
 				}
-				MBInformationManager.AddQuickInformation(new TextObject(lineToSpeak, (Dictionary<string, object>)null), 0, agent.Character, "");
+				MBInformationManager.AddQuickInformation(new TextObject(lineToSpeak, (Dictionary<string, object>)null), 0, agent.Character, null);
 			}
 		}
 		catch (Exception ex)
@@ -480,6 +456,9 @@ internal class BattleChatter : MissionBehavior
 
 	private void LogError(string message)
 	{
-		Debug.Print("[BattleChatter] " + message, 0, (DebugColor)12, 17592186044416uL);
+		Debug.Print("[BattleChatter] " + message, 0, (Debug.DebugColor)12, 17592186044416uL);
 	}
 }
+
+
+

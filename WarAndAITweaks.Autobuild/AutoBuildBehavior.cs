@@ -39,26 +39,18 @@ public sealed class AutoBuildBehavior : CampaignBehaviorBase
 
 	private void OnSessionLaunched(CampaignGameStarter s)
 	{
-		//IL_0027: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0033: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0041: Expected O, but got Unknown
-		//IL_0041: Expected O, but got Unknown
-		//IL_0092: Unknown result type (might be due to invalid IL or missing references)
-		//IL_009e: Unknown result type (might be due to invalid IL or missing references)
-		//IL_00ac: Expected O, but got Unknown
-		//IL_00ac: Expected O, but got Unknown
-		s.AddPlayerLine("autobuild_enable", "hero_main_options", "autobuild_menu_enable", LanguageTranslater.L.S("autobuild_enable", "I would like you to start auto-building in your settlement."), (OnConditionDelegate)(() => HasGov() && !autoBuildTowns.Contains(GovSettlement())), (OnConsequenceDelegate)delegate
+		s.AddPlayerLine("autobuild_enable", "hero_main_options", "autobuild_menu_enable", LanguageTranslater.L.S("autobuild_enable", "I would like you to start auto-building in your settlement."), () => HasGov() && !autoBuildTowns.Contains(GovSettlement()), delegate
 		{
 			Town town2 = GovSettlement();
 			Enable(town2);
-		}, 100, (OnClickableConditionDelegate)null, (OnPersuasionOptionDelegate)null);
-		s.AddDialogLine("autobuild_menu_enable", "autobuild_menu_enable", "hero_main_options", LanguageTranslater.L.S("autobuild_enable_response", "Understood. I will begin auto-building projects."), (OnConditionDelegate)null, (OnConsequenceDelegate)null, 100, (OnClickableConditionDelegate)null);
-		s.AddPlayerLine("autobuild_disable", "hero_main_options", "autobuild_menu_disable", LanguageTranslater.L.S("autobuild_disable", "Stop auto-building in your settlement."), (OnConditionDelegate)(() => HasGov() && autoBuildTowns.Contains(GovSettlement())), (OnConsequenceDelegate)delegate
+		}, 100, null, null);
+		s.AddDialogLine("autobuild_menu_enable", "autobuild_menu_enable", "hero_main_options", LanguageTranslater.L.S("autobuild_enable_response", "Understood. I will begin auto-building projects."), null, null, 100, null);
+		s.AddPlayerLine("autobuild_disable", "hero_main_options", "autobuild_menu_disable", LanguageTranslater.L.S("autobuild_disable", "Stop auto-building in your settlement."), () => HasGov() && autoBuildTowns.Contains(GovSettlement()), delegate
 		{
 			Town town = GovSettlement();
 			Disable(town);
-		}, 100, (OnClickableConditionDelegate)null, (OnPersuasionOptionDelegate)null);
-		s.AddDialogLine("autobuild_menu_disable", "autobuild_menu_disable", "hero_main_options", LanguageTranslater.L.S("autobuild_disable_response", "Understood. I will stop auto-building projects."), (OnConditionDelegate)null, (OnConsequenceDelegate)null, 100, (OnClickableConditionDelegate)null);
+		}, 100, null, null);
+		s.AddDialogLine("autobuild_menu_disable", "autobuild_menu_disable", "hero_main_options", LanguageTranslater.L.S("autobuild_disable_response", "Understood. I will stop auto-building projects."), null, null, 100, null);
 	}
 
 	private void DailyTickSettlementEvent(Settlement settlement)
@@ -75,11 +67,6 @@ public sealed class AutoBuildBehavior : CampaignBehaviorBase
 
 	private void TryQueueOneBuilding(Town town)
 	{
-		//IL_01b9: Unknown result type (might be due to invalid IL or missing references)
-		//IL_01be: Unknown result type (might be due to invalid IL or missing references)
-		//IL_01c8: Expected O, but got Unknown
-		//IL_00b6: Unknown result type (might be due to invalid IL or missing references)
-		//IL_00bc: Invalid comparison between Unknown and I4
 		if (town.BuildingsInProgress.Count >= 1)
 		{
 			return;
@@ -94,7 +81,7 @@ public sealed class AutoBuildBehavior : CampaignBehaviorBase
 		{
 			foreach (Building item in (List<Building>)(object)town.Buildings)
 			{
-				if (item == null || item.CurrentLevel >= 3 || town.BuildingsInProgress.Contains(item) || (int)item.BuildingType.BuildingLocation == 2)
+				if (item == null || item.CurrentLevel >= 3 || town.BuildingsInProgress.Contains(item))
 				{
 					continue;
 				}
@@ -158,8 +145,6 @@ public sealed class AutoBuildBehavior : CampaignBehaviorBase
 
 	private static void Log(string msg)
 	{
-		//IL_000b: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0015: Expected O, but got Unknown
 		InformationManager.DisplayMessage(new InformationMessage(msg ?? ""));
 	}
 }

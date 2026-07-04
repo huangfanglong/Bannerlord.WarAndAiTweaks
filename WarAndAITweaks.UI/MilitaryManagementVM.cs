@@ -47,6 +47,9 @@ public class MilitaryManagementVM : ViewModel
 	public string ArmyStatusHeader => LanguageTranslater.L.S("military_army_status_header", "Army Status");
 
 	[DataSourceProperty]
+	public string ArmyCreationHeader => LanguageTranslater.L.S("military_army_creation_header", "Army Creation");
+
+	[DataSourceProperty]
 	public bool IsAnyFactionSelected
 	{
 		get
@@ -58,7 +61,7 @@ public class MilitaryManagementVM : ViewModel
 			if (value != _isAnyFactionSelected)
 			{
 				_isAnyFactionSelected = value;
-				((ViewModel)this).OnPropertyChangedWithValue(value, "IsAnyFactionSelected");
+				base.OnPropertyChangedWithValue(value, "IsAnyFactionSelected");
 			}
 		}
 	}
@@ -119,17 +122,11 @@ public class MilitaryManagementVM : ViewModel
 
 	public MilitaryManagementVM()
 	{
-		ValidateGlobalAttackTarget();
-		Settlement globalAttackTarget = _globalAttackTarget;
-		SelectedAttackTarget = ((globalAttackTarget == null) ? null : ((object)globalAttackTarget.Name)?.ToString()) ?? LanguageTranslater.L.S("None", "None");
-		RefreshData();
+		SelectedAttackTarget = LanguageTranslater.L.S("None", "None");
 	}
 
 	public void RefreshData()
 	{
-		//IL_011e: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0123: Unknown result type (might be due to invalid IL or missing references)
-		//IL_012d: Expected O, but got Unknown
 		AiLords = new MBBindingList<AiLordItemVM>();
 		try
 		{
@@ -167,12 +164,6 @@ public class MilitaryManagementVM : ViewModel
 
 	public void ExecuteSelectGlobalTarget()
 	{
-		//IL_0049: Unknown result type (might be due to invalid IL or missing references)
-		//IL_004e: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0058: Expected O, but got Unknown
-		//IL_0080: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0085: Unknown result type (might be due to invalid IL or missing references)
-		//IL_008f: Expected O, but got Unknown
 		Hero mainHero = Hero.MainHero;
 		object obj;
 		if (mainHero == null)
@@ -212,12 +203,6 @@ public class MilitaryManagementVM : ViewModel
 
 	private void ShowGlobalTargetSelection(List<Settlement> settlements)
 	{
-		//IL_0029: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0033: Expected O, but got Unknown
-		//IL_015b: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0167: Expected O, but got Unknown
-		//IL_00c1: Unknown result type (might be due to invalid IL or missing references)
-		//IL_00cb: Expected O, but got Unknown
 		List<InquiryElement> list = new List<InquiryElement>();
 		list.Add(new InquiryElement((object)null, LanguageTranslater.L.S("none_clear_target_label", "None - Clear Target"), (ImageIdentifier)null, true, LanguageTranslater.L.S("none_clear_target_hint", "Clear the current attack target")));
 		foreach (Settlement settlement in settlements)
@@ -230,12 +215,6 @@ public class MilitaryManagementVM : ViewModel
 		}
 		MBInformationManager.ShowMultiSelectionInquiry(new MultiSelectionInquiryData(LanguageTranslater.L.S("select_global_attack_target_title", "Select Global Attack Target"), LanguageTranslater.L.S("select_global_attack_target_body", "Choose a target for your AI lords to attack:"), list, true, 1, 1, LanguageTranslater.L.S("select_button", "Select"), LanguageTranslater.L.S("cancel_button", "Cancel"), (Action<List<InquiryElement>>)delegate(List<InquiryElement> elements)
 		{
-			//IL_00b7: Unknown result type (might be due to invalid IL or missing references)
-			//IL_00bc: Unknown result type (might be due to invalid IL or missing references)
-			//IL_00c6: Expected O, but got Unknown
-			//IL_0094: Unknown result type (might be due to invalid IL or missing references)
-			//IL_0099: Unknown result type (might be due to invalid IL or missing references)
-			//IL_00a3: Expected O, but got Unknown
 			if (elements != null && elements.Any())
 			{
 				object obj = elements.FirstOrDefault()?.Identifier;

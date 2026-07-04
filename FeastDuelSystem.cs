@@ -83,8 +83,6 @@ public class FeastDuelSystem
 
 	private static bool IsOnDuelCooldown(Hero hero1, Hero hero2, Settlement settlement)
 	{
-		//IL_0077: Unknown result type (might be due to invalid IL or missing references)
-		//IL_007c: Unknown result type (might be due to invalid IL or missing references)
 		Settlement settlement2 = settlement;
 		FeastData feastByAttribute = FeastBehavior.GetFeastByAttribute((FeastData f) => f.Settlement == settlement2);
 		if (feastByAttribute == null)
@@ -98,7 +96,7 @@ public class FeastDuelSystem
 				RewardData.RewardInfo value2 = reward.Value;
 				double nextDuelRewardTime = value2.nextDuelRewardTime;
 				CampaignTime now = CampaignTime.Now;
-				if (nextDuelRewardTime - ((CampaignTime)(ref now)).ToDays > 0.0)
+				if (nextDuelRewardTime - now.ToDays > 0.0)
 				{
 					return true;
 				}
@@ -109,8 +107,6 @@ public class FeastDuelSystem
 
 	public static void RecordDuel(Hero hero1, Hero hero2, Settlement settlement)
 	{
-		//IL_0067: Unknown result type (might be due to invalid IL or missing references)
-		//IL_006c: Unknown result type (might be due to invalid IL or missing references)
 		Settlement settlement2 = settlement;
 		FeastData feastByAttribute = FeastBehavior.GetFeastByAttribute((FeastData f) => f.Settlement == settlement2);
 		if (feastByAttribute != null)
@@ -122,7 +118,8 @@ public class FeastDuelSystem
 			}
 			RewardData.RewardInfo orCreate = value.GetOrCreate(hero1, hero2);
 			CampaignTime now = CampaignTime.Now;
-			orCreate.nextDuelRewardTime = ((CampaignTime)(ref now)).ToDays + 5.0;
+			orCreate.nextDuelRewardTime = now.ToDays + 5.0;
 		}
 	}
 }
+

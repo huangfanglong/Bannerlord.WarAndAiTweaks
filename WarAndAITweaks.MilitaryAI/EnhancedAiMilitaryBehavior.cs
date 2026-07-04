@@ -32,7 +32,7 @@ public class EnhancedAiMilitaryBehavior : CampaignBehaviorBase
 
 	private static Dictionary<MobileParty, raidType> RaidTargets = new Dictionary<MobileParty, raidType>();
 
-	private static Dictionary<MobileParty, AIBehaviorTuple> SavedBehaviors = new Dictionary<MobileParty, AIBehaviorTuple>();
+	private static Dictionary<MobileParty, AIBehaviorData> SavedBehaviors = new Dictionary<MobileParty, AIBehaviorData>();
 
 	public const float behaviorScore = 10000f;
 
@@ -115,23 +115,17 @@ public class EnhancedAiMilitaryBehavior : CampaignBehaviorBase
 
 	public static bool PartyHasDefensiveObjective(MobileParty party)
 	{
-		//IL_0004: Unknown result type (might be due to invalid IL or missing references)
-		//IL_000a: Invalid comparison between Unknown and I4
-		return party != null && (int)party.Objective == 1;
+		return party != null && party.Objective == MobileParty.PartyObjective.Defensive;
 	}
 
 	public static bool PartyHasAggressiveObjective(MobileParty party)
 	{
-		//IL_0004: Unknown result type (might be due to invalid IL or missing references)
-		//IL_000a: Invalid comparison between Unknown and I4
-		return party != null && (int)party.Objective == 2;
+		return party != null && party.Objective == MobileParty.PartyObjective.Aggressive;
 	}
 
 	public static bool PartyHasBalancedObjective(MobileParty party)
 	{
-		//IL_0004: Unknown result type (might be due to invalid IL or missing references)
-		//IL_000a: Invalid comparison between Unknown and I4
-		return party != null && (int)party.Objective == 0;
+		return party != null && party.Objective == MobileParty.PartyObjective.Neutral;
 	}
 
 	public static bool PartyIsArmyLeader(MobileParty party)
@@ -141,7 +135,7 @@ public class EnhancedAiMilitaryBehavior : CampaignBehaviorBase
 
 	public static bool PartyIsReadyForMilitaryAction(MobileParty party)
 	{
-		return party != null && !party.IsDisbanding && (float)party.Party.NumberOfAllMembers / (float)party.LimitedPartySize > 0.6f && party.Party.NumberOfAllMembers > 0 && (float)party.Party.NumberOfRegularMembers / (float)party.Party.NumberOfAllMembers > 0.6f && party.GetNumDaysForFoodToLast() >= 3;
+		return party != null && !party.IsDisbanding && (float)party.Party.NumberOfAllMembers / (float)party.Party.PartySizeLimit > 0.6f && party.Party.NumberOfAllMembers > 0 && (float)party.Party.NumberOfRegularMembers / (float)party.Party.NumberOfAllMembers > 0.6f && party.GetNumDaysForFoodToLast() >= 3;
 	}
 
 	public static bool IsReadyForPersonalDefense(MobileParty party)
@@ -188,7 +182,7 @@ public class EnhancedAiMilitaryBehavior : CampaignBehaviorBase
 		{
 			return false;
 		}
-		if (Campaign.Current.Models.MapDistanceModel.GetDistance(party2, village2) > ReasonableDistanceForRaid)
+		if (party2.GetPosition2D.Distance(village2.GetPosition2D) > ReasonableDistanceForRaid)
 		{
 			return false;
 		}
@@ -233,11 +227,12 @@ public class EnhancedAiMilitaryBehavior : CampaignBehaviorBase
 
 	private void OnGameLoadFinishedEvent()
 	{
-		ReasonableDistanceForVillageDefense = (80f + 1.42f * Campaign.AverageDistanceBetweenTwoFortifications) / 2f;
-		ReasonableDistanceForFortDefense = (160f + 2.84f * Campaign.AverageDistanceBetweenTwoFortifications) / 2f;
-		ReasonableDistanceForTownAttack = (127f + 2.27f * Campaign.AverageDistanceBetweenTwoFortifications) / 2f;
-		ReasonableDistanceForCastleAttack = (106f + 1.89f * Campaign.AverageDistanceBetweenTwoFortifications) / 2f;
-		ReasonableDistanceForRaid = (106f + 1.89f * Campaign.AverageDistanceBetweenTwoFortifications) / 2f;
+		float avgFortDistance = 56f;
+		ReasonableDistanceForVillageDefense = (80f + 1.42f * avgFortDistance) / 2f;
+		ReasonableDistanceForFortDefense = (160f + 2.84f * avgFortDistance) / 2f;
+		ReasonableDistanceForTownAttack = (127f + 2.27f * avgFortDistance) / 2f;
+		ReasonableDistanceForCastleAttack = (106f + 1.89f * avgFortDistance) / 2f;
+		ReasonableDistanceForRaid = (106f + 1.89f * avgFortDistance) / 2f;
 		MilitaryAIHelpers.ResetTargetCaches();
 	}
 
@@ -276,11 +271,6 @@ public class EnhancedAiMilitaryBehavior : CampaignBehaviorBase
 
 	public static void SendToDefendWorkAround(MobileParty party, PartyThinkParams p, Settlement settlement)
 	{
-		//IL_0018: Unknown result type (might be due to invalid IL or missing references)
-		//IL_00d3: Unknown result type (might be due to invalid IL or missing references)
-		//IL_00d5: Unknown result type (might be due to invalid IL or missing references)
-		//IL_00e2: Unknown result type (might be due to invalid IL or missing references)
-		//IL_00e4: Unknown result type (might be due to invalid IL or missing references)
 		if (party == null || p == null || settlement == null)
 		{
 			return;
@@ -367,17 +357,14 @@ public class EnhancedAiMilitaryBehavior : CampaignBehaviorBase
 		}
 		if (val2 != null)
 		{
-			SavedBehaviors[party] = new AIBehaviorTuple((IMapPoint)(object)val2, val, false);
-			(AIBehaviorTuple, float) tuple = (new AIBehaviorTuple((IMapPoint)(object)val2, val, false), 10000f);
-			p.AddBehaviorScore(ref tuple);
+			SavedBehaviors[party] = new AIBehaviorData((IMapPoint)(object)val2, val, MobileParty.NavigationType.Default, false, false, false);
+			(AIBehaviorData, float) tuple = (new AIBehaviorData((IMapPoint)(object)val2, val, MobileParty.NavigationType.Default, false, false, false), 10000f);
+			p.AddBehaviorScore(in tuple);
 		}
 	}
 
 	private void AiHourlyTickEvent(MobileParty mobileParty, PartyThinkParams p)
 	{
-		//IL_00bf: Unknown result type (might be due to invalid IL or missing references)
-		//IL_00c4: Unknown result type (might be due to invalid IL or missing references)
-		//IL_00c7: Unknown result type (might be due to invalid IL or missing references)
 		if (mobileParty.IsDisbanding)
 		{
 			return;
@@ -403,9 +390,9 @@ public class EnhancedAiMilitaryBehavior : CampaignBehaviorBase
 		}
 		if (SavedBehaviors.ContainsKey(mobileParty) && !HasArmyButNotLeader(mobileParty))
 		{
-			AIBehaviorTuple item = SavedBehaviors[mobileParty];
-			(AIBehaviorTuple, float) tuple = (item, float.MaxValue);
-			p.AddBehaviorScore(ref tuple);
+			AIBehaviorData item = SavedBehaviors[mobileParty];
+			(AIBehaviorData, float) tuple = (item, float.MaxValue);
+			p.AddBehaviorScore(in tuple);
 			SavedBehaviors.Remove(mobileParty);
 			return;
 		}
@@ -498,7 +485,7 @@ public class EnhancedAiMilitaryBehavior : CampaignBehaviorBase
 			{
 				continue;
 			}
-			float distance = Campaign.Current.Models.MapDistanceModel.GetDistance(item, val3);
+			float distance = item.GetPosition2D.Distance(val3.GetPosition2D);
 			if (distance < num)
 			{
 				num = distance;
@@ -517,8 +504,9 @@ public class EnhancedAiMilitaryBehavior : CampaignBehaviorBase
 				val5 = (MobileParty)obj2;
 			}
 		}
-		List<Settlement> list = ((IEnumerable<Settlement>)val2).OrderBy((Settlement s) => Campaign.Current.Models.MapDistanceModel.GetDistance(party2, s)).ToList();
-		float num2 = (flag ? party2.GetTotalStrengthWithFollowers(true) : (party2.Party.TotalStrength + MilitaryAIHelpers.GetCallMobilePartiesForArmy(party2).Sum((MobileParty x) => x.Party.TotalStrength)));
+		List<Settlement> list = ((IEnumerable<Settlement>)val2).OrderBy((Settlement s) => party2.GetPosition2D.Distance(s.GetPosition2D)).ToList();
+		List<MobileParty> armyMembers = MilitaryAIHelpers.GetCallMobilePartiesForArmy(party2);
+		float num2 = (flag ? party2.GetTotalLandStrengthWithFollowers(true) : (party2.Party.EstimatedStrength + armyMembers.Sum((MobileParty x) => x.Party.EstimatedStrength)));
 		foreach (Settlement item2 in list)
 		{
 			Hero owner = item2.Owner;
@@ -564,7 +552,7 @@ public class EnhancedAiMilitaryBehavior : CampaignBehaviorBase
 				{
 					if (!flag && !partyClan.IsUnderMercenaryService)
 					{
-						val.CreateArmy(party2.LeaderHero, item2, (ArmyTypes)2);
+						val.CreateArmy(party2.LeaderHero, item2, Army.ArmyTypes.Defender, new MBReadOnlyList<MobileParty>(armyMembers));
 						HandleArmyCreation(party2);
 					}
 					SendToDefendWorkAround(party2, p, item2);
@@ -579,7 +567,7 @@ public class EnhancedAiMilitaryBehavior : CampaignBehaviorBase
 			}
 			if (!flag && !partyClan.IsUnderMercenaryService)
 			{
-				val.CreateArmy(party2.LeaderHero, item2, (ArmyTypes)2);
+				val.CreateArmy(party2.LeaderHero, item2, Army.ArmyTypes.Defender, new MBReadOnlyList<MobileParty>(armyMembers));
 				HandleArmyCreation(party2);
 			}
 			SendToDefendWorkAround(party2, p, item2);
@@ -590,8 +578,6 @@ public class EnhancedAiMilitaryBehavior : CampaignBehaviorBase
 
 	public bool FindMakeArmyAttackPlans(MobileParty party, PartyThinkParams p, bool kingdomUnderSiege, HashSet<IFaction> AtWarKingdoms)
 	{
-		//IL_0102: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0112: Unknown result type (might be due to invalid IL or missing references)
 		if (kingdomUnderSiege)
 		{
 			return false;
@@ -619,12 +605,12 @@ public class EnhancedAiMilitaryBehavior : CampaignBehaviorBase
 			if (PartyIsArmyLeader(party))
 			{
 				float totalStrengthOfArmiesTargetSameSettlement = MilitaryAIHelpers.GetTotalStrengthOfArmiesTargetSameSettlement(item, party);
-				totalStrengthOfArmiesTargetSameSettlement += party.GetTotalStrengthWithFollowers(true);
+				totalStrengthOfArmiesTargetSameSettlement += party.GetTotalLandStrengthWithFollowers(true);
 				if ((double)totalStrengthOfArmiesTargetSameSettlement >= (double)num * 0.7)
 				{
-					SavedBehaviors[party] = new AIBehaviorTuple((IMapPoint)(object)item, (AiBehavior)5, false);
-					(AIBehaviorTuple, float) tuple = (new AIBehaviorTuple((IMapPoint)(object)item, (AiBehavior)5, false), 10000f);
-					p.AddBehaviorScore(ref tuple);
+					SavedBehaviors[party] = new AIBehaviorData((IMapPoint)(object)item, (AiBehavior)5, MobileParty.NavigationType.Default, false, false, false);
+					(AIBehaviorData, float) tuple = (new AIBehaviorData((IMapPoint)(object)item, (AiBehavior)5, MobileParty.NavigationType.Default, false, false, false), 10000f);
+					p.AddBehaviorScore(in tuple);
 					return true;
 				}
 				continue;
@@ -632,10 +618,11 @@ public class EnhancedAiMilitaryBehavior : CampaignBehaviorBase
 			float totalSpendableInfluenceFromClan = MilitaryAIHelpers.GetTotalSpendableInfluenceFromClan(val);
 			if (!(totalSpendableInfluenceFromClan < 50f) && (val != Hero.MainHero.Clan || GlobalSettings<WarAndAiTweaksSettings>.Instance.EnablePlayerClanArmyCreation))
 			{
-				float num2 = MilitaryAIHelpers.GetCallMobilePartiesForArmy(party).Sum((MobileParty x) => x.Party.TotalStrength);
+				List<MobileParty> armyMembers = MilitaryAIHelpers.GetCallMobilePartiesForArmy(party);
+				float num2 = armyMembers.Sum((MobileParty x) => x.Party.EstimatedStrength);
 				if ((double)num2 >= (double)num * 1.5 && num2 > 600f && !val.IsUnderMercenaryService)
 				{
-					val2.CreateArmy(party.LeaderHero, item, (ArmyTypes)0);
+					val2.CreateArmy(party.LeaderHero, item, Army.ArmyTypes.Besieger, new MBReadOnlyList<MobileParty>(armyMembers));
 					HandleArmyCreation(party);
 					return true;
 				}
@@ -646,10 +633,6 @@ public class EnhancedAiMilitaryBehavior : CampaignBehaviorBase
 
 	private void FindPersonalRaid(MobileParty party, PartyThinkParams p, HashSet<IFaction> AtWarFactions)
 	{
-		//IL_00d8: Unknown result type (might be due to invalid IL or missing references)
-		//IL_00ec: Unknown result type (might be due to invalid IL or missing references)
-		//IL_03bf: Unknown result type (might be due to invalid IL or missing references)
-		//IL_03cf: Unknown result type (might be due to invalid IL or missing references)
 		Hero leaderHero = party.LeaderHero;
 		object obj;
 		if (leaderHero == null)
@@ -668,7 +651,7 @@ public class EnhancedAiMilitaryBehavior : CampaignBehaviorBase
 		}
 		raidType raidType = (RaidTargets.ContainsKey(party) ? RaidTargets[party] : null);
 		bool flag = IsPlayerLeadKingdom(val);
-		float totalStrength = party.Party.TotalStrength;
+		float totalStrength = party.Party.EstimatedStrength;
 		if (raidType != null && raidType.target != null && raidType.target.IsUnderRaid && raidType.defending)
 		{
 			SendToDefendWorkAround(party, p, raidType.target);
@@ -676,9 +659,9 @@ public class EnhancedAiMilitaryBehavior : CampaignBehaviorBase
 		}
 		if (raidType != null && raidType.target != null && raidType.attacking && IsValidRaidSettlement(party, raidType.target, val, flag, totalStrength))
 		{
-			SavedBehaviors[party] = new AIBehaviorTuple((IMapPoint)(object)raidType.target, (AiBehavior)4, false);
-			(AIBehaviorTuple, float) tuple = (new AIBehaviorTuple((IMapPoint)(object)raidType.target, (AiBehavior)4, false), 10000f);
-			p.AddBehaviorScore(ref tuple);
+			SavedBehaviors[party] = new AIBehaviorData((IMapPoint)(object)raidType.target, (AiBehavior)4, MobileParty.NavigationType.Default, false, false, false);
+			(AIBehaviorData, float) tuple = (new AIBehaviorData((IMapPoint)(object)raidType.target, (AiBehavior)4, MobileParty.NavigationType.Default, false, false, false), 10000f);
+			p.AddBehaviorScore(in tuple);
 			return;
 		}
 		RaidTargets.Remove(party);
@@ -717,7 +700,7 @@ public class EnhancedAiMilitaryBehavior : CampaignBehaviorBase
 				obj3 = ((clan3 != null) ? clan3.Kingdom : null);
 			}
 			Kingdom val3 = (Kingdom)obj3;
-			if (val3 != null && item.IsUnderRaid && Campaign.Current.Models.MapDistanceModel.GetDistance(party, item) > ReasonableDistanceForRaid)
+			if (val3 != null && item.IsUnderRaid && party.GetPosition2D.Distance(item.GetPosition2D) > ReasonableDistanceForRaid)
 			{
 				MobileParty lastAttackerParty = item.LastAttackerParty;
 				if (lastAttackerParty != null)
@@ -777,9 +760,9 @@ public class EnhancedAiMilitaryBehavior : CampaignBehaviorBase
 						attacking = true
 					};
 					RaidTargets[party] = raidType;
-					SavedBehaviors[party] = new AIBehaviorTuple((IMapPoint)(object)item2, (AiBehavior)4, false);
-					(AIBehaviorTuple, float) tuple = (new AIBehaviorTuple((IMapPoint)(object)item2, (AiBehavior)4, false), 10000f);
-					p.AddBehaviorScore(ref tuple);
+					SavedBehaviors[party] = new AIBehaviorData((IMapPoint)(object)item2, (AiBehavior)4, MobileParty.NavigationType.Default, false, false, false);
+					(AIBehaviorData, float) tuple = (new AIBehaviorData((IMapPoint)(object)item2, (AiBehavior)4, MobileParty.NavigationType.Default, false, false, false), 10000f);
+					p.AddBehaviorScore(in tuple);
 					break;
 				}
 			}
@@ -788,8 +771,6 @@ public class EnhancedAiMilitaryBehavior : CampaignBehaviorBase
 
 	private void HandleArmyDisband(MobileParty mobileParty, bool isAtWar)
 	{
-		//IL_0048: Unknown result type (might be due to invalid IL or missing references)
-		//IL_004d: Unknown result type (might be due to invalid IL or missing references)
 		if (mobileParty.Army != null && mobileParty.Army.LeaderParty == MobileParty.MainParty)
 		{
 			return;
@@ -802,7 +783,7 @@ public class EnhancedAiMilitaryBehavior : CampaignBehaviorBase
 		if (ArmyCreationDate.TryGetValue(mobileParty, out var value) && isAtWar)
 		{
 			CampaignTime now = CampaignTime.Now;
-			if (!(((CampaignTime)(ref now)).ToDays - ((CampaignTime)(ref value)).ToDays >= 3.0))
+			if (!(now.ToDays - value.ToDays >= 3.0))
 			{
 				return;
 			}
@@ -813,8 +794,6 @@ public class EnhancedAiMilitaryBehavior : CampaignBehaviorBase
 
 	private void HandleArmyCreation(MobileParty party)
 	{
-		//IL_0029: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0016: Unknown result type (might be due to invalid IL or missing references)
 		if (ArmyCreationDate.ContainsKey(party))
 		{
 			ArmyCreationDate[party] = CampaignTime.Now;
@@ -825,3 +804,8 @@ public class EnhancedAiMilitaryBehavior : CampaignBehaviorBase
 		}
 	}
 }
+
+
+
+
+

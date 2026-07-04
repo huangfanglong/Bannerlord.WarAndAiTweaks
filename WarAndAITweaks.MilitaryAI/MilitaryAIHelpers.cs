@@ -30,8 +30,8 @@ public class MilitaryAIHelpers
 
 	public static bool HasGatheredEnough(MobileParty party, float percentage)
 	{
-		float totalStrengthWithFollowers = party.GetTotalStrengthWithFollowers(true);
-		float totalStrengthWithFollowers2 = party.GetTotalStrengthWithFollowers(false);
+		float totalStrengthWithFollowers = party.GetTotalLandStrengthWithFollowers(true);
+		float totalStrengthWithFollowers2 = party.GetTotalLandStrengthWithFollowers(false);
 		if (totalStrengthWithFollowers2 >= totalStrengthWithFollowers * percentage)
 		{
 			return true;
@@ -47,9 +47,6 @@ public class MilitaryAIHelpers
 
 	public static bool FoundStrongerHostilePartyNearSettlement(Settlement x, MobileParty party, float radius)
 	{
-		//IL_0046: Unknown result type (might be due to invalid IL or missing references)
-		//IL_004c: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0051: Unknown result type (might be due to invalid IL or missing references)
 		Hero leaderHero = party.LeaderHero;
 		object obj;
 		if (leaderHero == null)
@@ -66,8 +63,8 @@ public class MilitaryAIHelpers
 		{
 			return false;
 		}
-		float totalStrength = party.Party.TotalStrength;
-		LocatableSearchData<MobileParty> val2 = MobileParty.StartFindingLocatablesAroundPosition(x.Position2D, radius);
+		float totalStrength = party.Party.EstimatedStrength;
+		LocatableSearchData<MobileParty> val2 = MobileParty.StartFindingLocatablesAroundPosition(x.GetPosition2D, radius);
 		for (MobileParty val3 = MobileParty.FindNextLocatable(ref val2); val3 != null; val3 = MobileParty.FindNextLocatable(ref val2))
 		{
 			if (val3.IsLordParty)
@@ -87,7 +84,7 @@ public class MilitaryAIHelpers
 				if (val4 != null && val.IsAtWarWith((IFaction)(object)val4))
 				{
 					PartyBase party2 = val3.Party;
-					if (((party2 != null) ? party2.TotalStrength : 0f) > totalStrength * 1.2f)
+					if (((party2 != null) ? party2.EstimatedStrength : 0f) > totalStrength * 1.2f)
 					{
 						return true;
 					}
@@ -99,8 +96,6 @@ public class MilitaryAIHelpers
 
 	public static bool IsVillageTargetedForRaid(Settlement village, MobileParty self)
 	{
-		//IL_00d8: Unknown result type (might be due to invalid IL or missing references)
-		//IL_00de: Invalid comparison between Unknown and I4
 		Kingdom kingdom = self.LeaderHero.Clan.Kingdom;
 		object obj;
 		if (self == null)
@@ -131,7 +126,7 @@ public class MilitaryAIHelpers
 		}
 		foreach (MobileParty item in allParties)
 		{
-			if (item == null || item == self || !item.IsLordParty || !item.IsActive || item.IsDisbanding || item.MapEvent != null || item.Ai == null || item.TargetSettlement != village || (int)item.DefaultBehavior != 4)
+			if (item == null || item == self || !item.IsLordParty || !item.IsActive || item.IsDisbanding || item.MapEvent != null || item.Ai == null || item.TargetSettlement != village || item.DefaultBehavior != AiBehavior.RaidSettlement)
 			{
 				continue;
 			}
@@ -155,7 +150,7 @@ public class MilitaryAIHelpers
 		{
 			if (((item != null) ? item.MapEvent : null) != null && item.MapEvent.IsRaid && item.TargetSettlement == village)
 			{
-				return item.GetTotalStrengthWithFollowers(true);
+				return item.GetTotalLandStrengthWithFollowers(true);
 			}
 		}
 		return 0f;
@@ -163,14 +158,11 @@ public class MilitaryAIHelpers
 
 	public static (Settlement settlement, bool isFriendly) GetFirstNearbyTownOrCastle(MobileParty party, float radius)
 	{
-		//IL_0017: Unknown result type (might be due to invalid IL or missing references)
-		//IL_001d: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0022: Unknown result type (might be due to invalid IL or missing references)
 		if (party == null)
 		{
 			return (settlement: null, isFriendly: false);
 		}
-		LocatableSearchData<Settlement> val = Settlement.StartFindingLocatablesAroundPosition(party.Position2D, radius);
+		LocatableSearchData<Settlement> val = Settlement.StartFindingLocatablesAroundPosition(party.GetPosition2D, radius);
 		for (Settlement val2 = Settlement.FindNextLocatable(ref val); val2 != null; val2 = Settlement.FindNextLocatable(ref val))
 		{
 			if (val2.IsTown || val2.IsCastle)
@@ -190,8 +182,6 @@ public class MilitaryAIHelpers
 
 	public static float GetTotalStrengthOfArmiesTargetSameSettlement(Settlement settlement, MobileParty party)
 	{
-		//IL_0088: Unknown result type (might be due to invalid IL or missing references)
-		//IL_008e: Invalid comparison between Unknown and I4
 		object obj;
 		if (party == null)
 		{
@@ -219,9 +209,9 @@ public class MilitaryAIHelpers
 		foreach (Army item in (List<Army>)(object)val.Armies)
 		{
 			MobileParty leaderParty = item.LeaderParty;
-			if (leaderParty != null && leaderParty != party && leaderParty.TargetSettlement == settlement && (int)leaderParty.DefaultBehavior == 5)
+			if (leaderParty != null && leaderParty != party && leaderParty.TargetSettlement == settlement && leaderParty.DefaultBehavior == AiBehavior.BesiegeSettlement)
 			{
-				num += leaderParty.GetTotalStrengthWithFollowers(true);
+				num += leaderParty.GetTotalLandStrengthWithFollowers(true);
 			}
 		}
 		return num;
@@ -269,7 +259,7 @@ public class MilitaryAIHelpers
 			{
 				if (item.IsTown || item.IsCastle)
 				{
-					float distance = Campaign.Current.Models.MapDistanceModel.GetDistance(item, val3);
+					float distance = item.GetPosition2D.Distance(val3.GetPosition2D);
 					((List<(Settlement, float)>)(object)val2).Add((item, distance));
 				}
 			}
@@ -402,7 +392,18 @@ public class MilitaryAIHelpers
 			return 0f;
 		}
 		float num = 0f;
-		return ((settlement == null) ? null : settlement.SiegeEvent.BesiegerCamp.GetInvolvedPartiesForEventType((BattleTypes)5)?.Sum((PartyBase x) => x.TotalStrength)).GetValueOrDefault();
+		var involvedParties = val.GetInvolvedPartiesForEventType(MapEvent.BattleTypes.Siege);
+		if (involvedParties != null)
+		{
+			foreach (PartyBase partyBase in involvedParties)
+			{
+				if (partyBase != null)
+				{
+					num += partyBase.EstimatedStrength;
+				}
+			}
+		}
+		return num;
 	}
 
 	public static float GetTotalStrengthOfDefenseForSettlement(Settlement settlement)
@@ -411,7 +412,7 @@ public class MilitaryAIHelpers
 		{
 			return 0f;
 		}
-		return ((IEnumerable<MobileParty>)settlement.Parties).Where((MobileParty x) => x.IsGarrison || x.IsMilitia).Sum((MobileParty x) => x.Party.TotalStrength);
+		return ((IEnumerable<MobileParty>)settlement.Parties).Where((MobileParty x) => x.IsGarrison || x.IsMilitia).Sum((MobileParty x) => x.Party.EstimatedStrength);
 	}
 
 	public static List<MobileParty> GetCallMobilePartiesForArmy(MobileParty leaderParty)
@@ -501,7 +502,7 @@ public class MilitaryAIHelpers
 			int num2 = Campaign.Current.Models.ArmyManagementCalculationModel.CalculatePartyInfluenceCost(leaderParty, mobileParty);
 			if (!((float)num2 > num))
 			{
-				float totalStrength = mobileParty.Party.TotalStrength;
+				float totalStrength = mobileParty.Party.EstimatedStrength;
 				float num3 = 1f - (float)mobileParty.Party.MemberRoster.TotalWounded / MathF.Max(1f, (float)mobileParty.Party.MemberRoster.TotalManCount);
 				float num4 = totalStrength / ((float)num2 + 0.1f) * num3;
 				if (num4 > 0f)
@@ -539,3 +540,4 @@ public class MilitaryAIHelpers
 		return null;
 	}
 }
+

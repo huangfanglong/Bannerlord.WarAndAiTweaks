@@ -5,7 +5,9 @@ using MCM.Abstractions.Base.Global;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.ComponentInterfaces;
 using TaleWorlds.CampaignSystem.GameComponents;
+using TaleWorlds.CampaignSystem.Naval;
 using TaleWorlds.CampaignSystem.Party;
+using TaleWorlds.CampaignSystem.Roster;
 using TaleWorlds.CampaignSystem.Settlements;
 using TaleWorlds.Core;
 using TaleWorlds.Library;
@@ -22,9 +24,6 @@ internal sealed class DelegatingPartySizeLimitModel : PartySizeLimitModel
 	{
 		get
 		{
-			//IL_0042: Unknown result type (might be due to invalid IL or missing references)
-			//IL_0048: Expected O, but got Unknown
-			//IL_0095: Unknown result type (might be due to invalid IL or missing references)
 			if (_cachedInner != null)
 			{
 				return _cachedInner;
@@ -43,7 +42,7 @@ internal sealed class DelegatingPartySizeLimitModel : PartySizeLimitModel
 			MBReadOnlyList<GameModel> val = (MBReadOnlyList<GameModel>)obj;
 			if (val == null)
 			{
-				return (PartySizeLimitModel)new DefaultPartySizeLimitModel();
+				return new DefaultPartySizeLimitModel();
 			}
 			PartySizeLimitModel val2 = null;
 			foreach (PartySizeLimitModel item in ((IEnumerable)val).OfType<PartySizeLimitModel>())
@@ -54,41 +53,56 @@ internal sealed class DelegatingPartySizeLimitModel : PartySizeLimitModel
 				}
 				val2 = item;
 			}
-			_cachedInner = (PartySizeLimitModel)(((object)val2) ?? ((object)new DefaultPartySizeLimitModel()));
+			_cachedInner = val2 ?? new DefaultPartySizeLimitModel();
 			return _cachedInner;
 		}
 	}
 
-	public override int GetTierPartySizeEffect(int tier)
-	{
-		return Inner.GetTierPartySizeEffect(tier);
-	}
+	public override int MinimumNumberOfVillagersAtVillagerParty => Inner.MinimumNumberOfVillagersAtVillagerParty;
 
 	public override int GetAssumedPartySizeForLordParty(Hero hero, IFaction targetFaction, Clan forClan)
 	{
 		return Inner.GetAssumedPartySizeForLordParty(hero, targetFaction, forClan);
 	}
 
-	public override ExplainedNumber GetPartyPrisonerSizeLimit(PartyBase party, bool True)
+	public override int GetClanTierPartySizeEffectForHero(Hero hero)
 	{
-		//IL_0008: Unknown result type (might be due to invalid IL or missing references)
-		return Inner.GetPartyPrisonerSizeLimit(party, True);
+		return Inner.GetClanTierPartySizeEffectForHero(hero);
+	}
+
+	public override int GetNextClanTierPartySizeEffectChangeForHero(Hero hero)
+	{
+		return Inner.GetNextClanTierPartySizeEffectChangeForHero(hero);
+	}
+
+	public override int GetIdealVillagerPartySize(Village village)
+	{
+		return Inner.GetIdealVillagerPartySize(village);
+	}
+
+	public override TroopRoster FindAppropriateInitialRosterForMobileParty(MobileParty party, PartyTemplateObject partyTemplate)
+	{
+		return Inner.FindAppropriateInitialRosterForMobileParty(party, partyTemplate);
+	}
+
+	public override List<Ship> FindAppropriateInitialShipsForMobileParty(MobileParty party, PartyTemplateObject partyTemplate)
+	{
+		return Inner.FindAppropriateInitialShipsForMobileParty(party, partyTemplate);
+	}
+
+	public override ExplainedNumber CalculateGarrisonPartySizeLimit(Settlement settlement, bool includeDescriptions = false)
+	{
+		return Inner.CalculateGarrisonPartySizeLimit(settlement, includeDescriptions);
+	}
+
+	public override ExplainedNumber GetPartyPrisonerSizeLimit(PartyBase party, bool includeDescriptions = false)
+	{
+		return Inner.GetPartyPrisonerSizeLimit(party, includeDescriptions);
 	}
 
 	public override ExplainedNumber GetPartyMemberSizeLimit(PartyBase party, bool includeDescriptions = true)
 	{
-		//IL_0009: Unknown result type (might be due to invalid IL or missing references)
-		//IL_000e: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0022: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0023: Unknown result type (might be due to invalid IL or missing references)
-		//IL_01b5: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0066: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0067: Unknown result type (might be due to invalid IL or missing references)
-		//IL_008c: Unknown result type (might be due to invalid IL or missing references)
-		//IL_008d: Unknown result type (might be due to invalid IL or missing references)
-		//IL_01b0: Unknown result type (might be due to invalid IL or missing references)
-		//IL_01b1: Unknown result type (might be due to invalid IL or missing references)
-		ExplainedNumber partyMemberSizeLimit = Inner.GetPartyMemberSizeLimit(party, true);
+		ExplainedNumber partyMemberSizeLimit = Inner.GetPartyMemberSizeLimit(party, includeDescriptions);
 		if (!GlobalSettings<WarAndAiTweaksSettings>.Instance.EnablePartySizeBoost)
 		{
 			return partyMemberSizeLimit;
@@ -123,15 +137,15 @@ internal sealed class DelegatingPartySizeLimitModel : PartySizeLimitModel
 				}
 				if (num3 > 0f)
 				{
-					((ExplainedNumber)(ref partyMemberSizeLimit)).Add(num3, LanguageTranslater.L.T("[WAI] Villages bonus", "[WAI] Villages bonus"), (TextObject)null);
+					partyMemberSizeLimit.Add(num3, LanguageTranslater.L.T("[WAI] Villages bonus", "[WAI] Villages bonus"), (TextObject)null);
 				}
 				if (num2 > 0f)
 				{
-					((ExplainedNumber)(ref partyMemberSizeLimit)).Add(num2, LanguageTranslater.L.T("[WAI] Castles bonus", "[WAI] Castles bonus"), (TextObject)null);
+					partyMemberSizeLimit.Add(num2, LanguageTranslater.L.T("[WAI] Castles bonus", "[WAI] Castles bonus"), (TextObject)null);
 				}
 				if (num > 0f)
 				{
-					((ExplainedNumber)(ref partyMemberSizeLimit)).Add(num, LanguageTranslater.L.T("[WAI] Towns bonus", "[WAI] Towns bonus"), (TextObject)null);
+					partyMemberSizeLimit.Add(num, LanguageTranslater.L.T("[WAI] Towns bonus", "[WAI] Towns bonus"), (TextObject)null);
 				}
 				return partyMemberSizeLimit;
 			}

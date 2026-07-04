@@ -8,6 +8,7 @@ using TaleWorlds.CampaignSystem.GameComponents;
 using TaleWorlds.CampaignSystem.Settlements;
 using TaleWorlds.Core;
 using TaleWorlds.Library;
+using TaleWorlds.Localization;
 using WarAndAiTweaks;
 
 namespace WarAndAITweaks.ModelOverrides;
@@ -20,9 +21,6 @@ internal sealed class DelegatingSettlementTaxModel : SettlementTaxModel
 	{
 		get
 		{
-			//IL_0042: Unknown result type (might be due to invalid IL or missing references)
-			//IL_0048: Expected O, but got Unknown
-			//IL_0095: Unknown result type (might be due to invalid IL or missing references)
 			if (_cachedInner != null)
 			{
 				return _cachedInner;
@@ -41,7 +39,7 @@ internal sealed class DelegatingSettlementTaxModel : SettlementTaxModel
 			MBReadOnlyList<GameModel> val = (MBReadOnlyList<GameModel>)obj;
 			if (val == null)
 			{
-				return (SettlementTaxModel)new DefaultSettlementTaxModel();
+				return new DefaultSettlementTaxModel();
 			}
 			SettlementTaxModel val2 = null;
 			foreach (SettlementTaxModel item in ((IEnumerable)val).OfType<SettlementTaxModel>())
@@ -52,7 +50,7 @@ internal sealed class DelegatingSettlementTaxModel : SettlementTaxModel
 				}
 				val2 = item;
 			}
-			_cachedInner = (SettlementTaxModel)(((object)val2) ?? ((object)new DefaultSettlementTaxModel()));
+			_cachedInner = val2 ?? new DefaultSettlementTaxModel();
 			return _cachedInner;
 		}
 	}
@@ -70,9 +68,9 @@ internal sealed class DelegatingSettlementTaxModel : SettlementTaxModel
 		return Inner.GetTownTaxRatio(town);
 	}
 
-	public override float GetVillageTaxRatio()
+	public override float GetVillageTaxRatio(Village village)
 	{
-		return Inner.GetVillageTaxRatio();
+		return Inner.GetVillageTaxRatio(village);
 	}
 
 	public override int CalculateVillageTaxFromIncome(Village village, int marketIncome)
@@ -87,13 +85,6 @@ internal sealed class DelegatingSettlementTaxModel : SettlementTaxModel
 
 	public override ExplainedNumber CalculateTownTax(Town town, bool includeDescriptions = false)
 	{
-		//IL_0009: Unknown result type (might be due to invalid IL or missing references)
-		//IL_000e: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0020: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0021: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0068: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0069: Unknown result type (might be due to invalid IL or missing references)
-		//IL_006c: Unknown result type (might be due to invalid IL or missing references)
 		ExplainedNumber result = Inner.CalculateTownTax(town, includeDescriptions);
 		if (!GlobalSettings<WarAndAiTweaksSettings>.Instance.EnableSettlementTax)
 		{
@@ -102,7 +93,7 @@ internal sealed class DelegatingSettlementTaxModel : SettlementTaxModel
 		float settlementTaxMultiplier = GlobalSettings<WarAndAiTweaksSettings>.Instance.SettlementTaxMultiplier;
 		if (Math.Abs(settlementTaxMultiplier - 1f) > 1E-06f)
 		{
-			((ExplainedNumber)(ref result)).AddFactor(settlementTaxMultiplier - 1f, LanguageTranslater.L.T("[WarAI] Tax multiplier", "[WarAI] Tax multiplier"));
+			result.AddFactor(settlementTaxMultiplier - 1f, LanguageTranslater.L.T("[WarAI] Tax multiplier", "[WarAI] Tax multiplier"));
 		}
 		return result;
 	}

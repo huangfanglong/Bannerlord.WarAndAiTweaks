@@ -21,9 +21,6 @@ internal sealed class DelegatingPartySpeedModel : PartySpeedModel
 	{
 		get
 		{
-			//IL_0042: Unknown result type (might be due to invalid IL or missing references)
-			//IL_0048: Expected O, but got Unknown
-			//IL_0095: Unknown result type (might be due to invalid IL or missing references)
 			if (_cachedInner != null)
 			{
 				return _cachedInner;
@@ -64,26 +61,11 @@ internal sealed class DelegatingPartySpeedModel : PartySpeedModel
 
 	public override ExplainedNumber CalculateBaseSpeed(MobileParty party, bool includeDescriptions = false, int additionalTroopOnFootCount = 0, int additionalTroopOnHorseCount = 0)
 	{
-		//IL_000b: Unknown result type (might be due to invalid IL or missing references)
 		return Inner.CalculateBaseSpeed(party, includeDescriptions, additionalTroopOnFootCount, additionalTroopOnHorseCount);
 	}
 
 	public override ExplainedNumber CalculateFinalSpeed(MobileParty party, ExplainedNumber finalSpeed)
 	{
-		//IL_0018: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0019: Unknown result type (might be due to invalid IL or missing references)
-		//IL_001e: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0009: Unknown result type (might be due to invalid IL or missing references)
-		//IL_000a: Unknown result type (might be due to invalid IL or missing references)
-		//IL_002e: Unknown result type (might be due to invalid IL or missing references)
-		//IL_002f: Unknown result type (might be due to invalid IL or missing references)
-		//IL_00ee: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0058: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0059: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0073: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0074: Unknown result type (might be due to invalid IL or missing references)
-		//IL_00e9: Unknown result type (might be due to invalid IL or missing references)
-		//IL_00ea: Unknown result type (might be due to invalid IL or missing references)
 		if (party == null)
 		{
 			return finalSpeed;
@@ -106,13 +88,14 @@ internal sealed class DelegatingPartySpeedModel : PartySpeedModel
 		{
 			if (flag)
 			{
-				((ExplainedNumber)(ref result)).Add(GlobalSettings<WarAndAiTweaksSettings>.Instance.SpeedBuffModifier, LanguageTranslater.L.T("near_friendly_infrastructure", "Near Friendly Infrastructure"), (TextObject)null);
+				result.Add(GlobalSettings<WarAndAiTweaksSettings>.Instance.SpeedBuffModifier, LanguageTranslater.L.T("near_friendly_infrastructure", "Near Friendly Infrastructure"), (TextObject)null);
 			}
 			else
 			{
-				((ExplainedNumber)(ref result)).Add(GlobalSettings<WarAndAiTweaksSettings>.Instance.SpeedDebuffModifier, LanguageTranslater.L.T("near_hostile_infrastructure", "Near Hostile Infrastructure"), (TextObject)null);
+				result.Add(GlobalSettings<WarAndAiTweaksSettings>.Instance.SpeedDebuffModifier, LanguageTranslater.L.T("near_hostile_infrastructure", "Near Hostile Infrastructure"), (TextObject)null);
 			}
 		}
 		return result;
 	}
 }
+

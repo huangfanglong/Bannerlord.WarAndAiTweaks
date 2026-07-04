@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -18,8 +18,8 @@ internal class StrategicX4AIHelpers
 	{
 		Kingdom i = k;
 		float num = 0f;
-		num += i.TotalStrength;
-		return num + ((IEnumerable<Kingdom>)Strategic4XDiplomacyBehavior.MajorKingdoms).Where((Kingdom x) => x != i && FactionManager.IsAlliedWithFaction((IFaction)(object)x, (IFaction)(object)i)).Sum((Kingdom p) => p.TotalStrength);
+		num += i.CurrentTotalStrength;
+		return num + ((IEnumerable<Kingdom>)Strategic4XDiplomacyBehavior.MajorKingdoms).Where((Kingdom x) => x != i && !FactionManager.IsAtWarAgainstFaction((IFaction)(object)x, (IFaction)(object)i)).Sum((Kingdom p) => p.CurrentTotalStrength);
 	}
 
 	public static HashSet<Kingdom> GetNeighbors(Kingdom kingdom)
@@ -51,7 +51,7 @@ internal class StrategicX4AIHelpers
 				}
 				foreach (Settlement item3 in list2)
 				{
-					float distance = Campaign.Current.Models.MapDistanceModel.GetDistance(item, item3);
+					float distance = item.GetPosition2D.Distance(item3.GetPosition2D);
 					if (distance < num)
 					{
 						num = distance;
@@ -96,7 +96,7 @@ internal class StrategicX4AIHelpers
 		{
 			foreach (Settlement item2 in list2)
 			{
-				float distance = Campaign.Current.Models.MapDistanceModel.GetDistance(item, item2);
+				float distance = item.GetPosition2D.Distance(item2.GetPosition2D);
 				if (distance <= reasonableDistanceForBesiegingTown)
 				{
 					return true;
@@ -110,9 +110,6 @@ internal class StrategicX4AIHelpers
 	{
 		string text = ((us == null) ? null : ((object)us.Name)?.ToString()) ?? LanguageTranslater.L.S("Unknown", "Unknown");
 		string text2 = ((them == null) ? null : ((object)them.Name)?.ToString()) ?? LanguageTranslater.L.S("Unknown", "Unknown");
-		if (1 == 0)
-		{
-		}
 		string text3 = tag switch
 		{
 			"prevent_snowball_war" => "narrative_prevent_snowball_war", 
@@ -123,9 +120,6 @@ internal class StrategicX4AIHelpers
 			"war_fatigue_peace" => "narrative_war_fatigue_peace", 
 			_ => string.Empty, 
 		};
-		if (1 == 0)
-		{
-		}
 		string text4 = text3;
 		if (!string.IsNullOrEmpty(text4))
 		{
@@ -142,9 +136,6 @@ internal class StrategicX4AIHelpers
 
 	private static string GetXmlTextForKey(string key)
 	{
-		if (1 == 0)
-		{
-		}
 		string result = key switch
 		{
 			"narrative_prevent_snowball_war" => "Our council reports that {US} moves to contain {THEM}'s unchecked expansion.", 
@@ -157,17 +148,11 @@ internal class StrategicX4AIHelpers
 			"Unknown" => "Unknown", 
 			_ => string.Empty, 
 		};
-		if (1 == 0)
-		{
-		}
 		return result;
 	}
 
 	private static string GetFallbackText(string tag, string usName, string themName)
 	{
-		if (1 == 0)
-		{
-		}
 		string result = tag switch
 		{
 			"prevent_snowball_war" => "Our council reports that " + usName + " moves to contain " + themName + "'s unchecked expansion.", 
@@ -178,9 +163,6 @@ internal class StrategicX4AIHelpers
 			"war_fatigue_peace" => "After a gruelling campaign, " + usName + " requests " + themName + " to end hostilities.", 
 			_ => "Councillors discuss shifting allegiances across the realm.", 
 		};
-		if (1 == 0)
-		{
-		}
 		return result;
 	}
 
@@ -219,3 +201,4 @@ internal class StrategicX4AIHelpers
 		return typeof(KingdomDecisionProposalBehavior).GetField("_kingdomDecisionsList", BindingFlags.Instance | BindingFlags.NonPublic)?.GetValue(val) as List<KingdomDecision>;
 	}
 }
+

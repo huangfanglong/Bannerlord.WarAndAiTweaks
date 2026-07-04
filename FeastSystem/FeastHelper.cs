@@ -5,7 +5,6 @@ using MCM.Abstractions.Base.Global;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.Actions;
 using TaleWorlds.CampaignSystem.GameMenus;
-using TaleWorlds.CampaignSystem.Inventory;
 using TaleWorlds.CampaignSystem.Party;
 using TaleWorlds.CampaignSystem.Settlements;
 using TaleWorlds.Core;
@@ -20,16 +19,8 @@ public static class FeastHelper
 {
 	public static void AddMenuOptions(CampaignGameStarter starter)
 	{
-		//IL_0022: Unknown result type (might be due to invalid IL or missing references)
-		//IL_002e: Unknown result type (might be due to invalid IL or missing references)
-		//IL_003c: Expected O, but got Unknown
-		//IL_003c: Expected O, but got Unknown
-		//IL_005e: Unknown result type (might be due to invalid IL or missing references)
-		//IL_006a: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0078: Expected O, but got Unknown
-		//IL_0078: Expected O, but got Unknown
-		starter.AddGameMenuOption("town_keep", "manage_feast", LanguageTranslater.L.S("manage_feast_inventory", "Manage feast inventory"), new OnConditionDelegate(CanManageFeast), new OnConsequenceDelegate(ManageFeast), false, 5, false, (object)null);
-		starter.AddGameMenuOption("castle", "manage_feast", LanguageTranslater.L.S("manage_feast_inventory", "Manage feast inventory"), new OnConditionDelegate(CanManageFeast), new OnConsequenceDelegate(ManageFeast), false, 5, false, (object)null);
+		starter.AddGameMenuOption("town_keep", "manage_feast", LanguageTranslater.L.S("manage_feast_inventory", "Manage feast inventory"), (MenuCallbackArgs args) => CanManageFeast(args), (MenuCallbackArgs args) => ManageFeast(args), false, 5, false, (object)null);
+		starter.AddGameMenuOption("castle", "manage_feast", LanguageTranslater.L.S("manage_feast_inventory", "Manage feast inventory"), (MenuCallbackArgs args) => CanManageFeast(args), (MenuCallbackArgs args) => ManageFeast(args), false, 5, false, (object)null);
 	}
 
 	public static bool CanHostFeast(Hero hero)
@@ -56,13 +47,6 @@ public static class FeastHelper
 
 	public static void RemoveInvalidFeast(FeastData feast)
 	{
-		//IL_000f: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0014: Unknown result type (might be due to invalid IL or missing references)
-		//IL_001e: Expected O, but got Unknown
-		//IL_0060: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0066: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0078: Unknown result type (might be due to invalid IL or missing references)
-		//IL_007e: Unknown result type (might be due to invalid IL or missing references)
 		if (feast == null)
 		{
 			InformationManager.DisplayMessage(new InformationMessage("Tried to remove a null feast.", Colors.Red));
@@ -83,8 +67,6 @@ public static class FeastHelper
 
 	public static bool FactionEligbleForFeast(Kingdom k)
 	{
-		//IL_002a: Unknown result type (might be due to invalid IL or missing references)
-		//IL_002f: Unknown result type (might be due to invalid IL or missing references)
 		if (FeastBehavior.CurrentWars(k).Any())
 		{
 			return false;
@@ -92,7 +74,7 @@ public static class FeastHelper
 		if (FeastBehavior._lastFeastByFaction.TryGetValue(k, out var value))
 		{
 			CampaignTime now = CampaignTime.Now;
-			if (((CampaignTime)(ref now)).ToDays - ((CampaignTime)(ref value)).ToDays < (double)GlobalSettings<WarAndAiTweaksSettings>.Instance.TodayWeFeastCooldown)
+			if (now.ToDays - value.ToDays < (double)GlobalSettings<WarAndAiTweaksSettings>.Instance.TodayWeFeastCooldown)
 			{
 				return false;
 			}
@@ -146,8 +128,6 @@ public static class FeastHelper
 
 	public static void ShowPlayerInvitation(FeastData feast)
 	{
-		//IL_0121: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0127: Expected O, but got Unknown
 		FeastData feast2 = feast;
 		if (feast2 == null || feast2.Host == null || feast2.Settlement == null)
 		{
@@ -159,13 +139,6 @@ public static class FeastHelper
 		InquiryData val = new InquiryData(LanguageTranslater.L.S("feast_invitation_title", "Feast Invitation"), ((object)LanguageTranslater.L.T("feast_invitation_body", "You have been invited to a feast hosted by {HOST} from clan {CLAN} at {SETTLEMENT}. Do you wish to attend?").SetTextVariable("HOST", hostName).SetTextVariable("CLAN", text)
 			.SetTextVariable("SETTLEMENT", settlementName)).ToString(), true, true, LanguageTranslater.L.S("feast_invitation_accept", "Accept"), LanguageTranslater.L.S("feast_invitation_decline", "Decline"), (Action)delegate
 		{
-			//IL_0039: Unknown result type (might be due to invalid IL or missing references)
-			//IL_0064: Unknown result type (might be due to invalid IL or missing references)
-			//IL_0069: Unknown result type (might be due to invalid IL or missing references)
-			//IL_00a7: Unknown result type (might be due to invalid IL or missing references)
-			//IL_00e7: Unknown result type (might be due to invalid IL or missing references)
-			//IL_00ec: Unknown result type (might be due to invalid IL or missing references)
-			//IL_00f6: Expected O, but got Unknown
 			if (!((List<Hero>)(object)feast2.Attendees).Contains(Hero.MainHero))
 			{
 				((List<Hero>)(object)feast2.Attendees).Add(Hero.MainHero);
@@ -173,17 +146,11 @@ public static class FeastHelper
 			feast2.PlayerInvitationAcceptedTime = CampaignTime.Now;
 			string stringId = ((MBObjectBase)feast2.Host).StringId;
 			CampaignTime startTime = feast2.StartTime;
-			string questId = "feast_quest_" + stringId + "_" + ((CampaignTime)(ref startTime)).ToDays;
+			string questId = "feast_quest_" + stringId + "_" + startTime.ToDays;
 			new FeastQuest(questId, feast2.Host, feast2.Host, feast2.Settlement, feast2.StartTime);
 			InformationManager.DisplayMessage(new InformationMessage(((object)LanguageTranslater.L.T("feast_invitation_accepted", "You have accepted the invitation to {HOST}'s feast at {SETTLEMENT}.").SetTextVariable("HOST", hostName).SetTextVariable("SETTLEMENT", settlementName)).ToString(), Colors.Green));
 		}, (Action)delegate
 		{
-			//IL_0035: Unknown result type (might be due to invalid IL or missing references)
-			//IL_003a: Unknown result type (might be due to invalid IL or missing references)
-			//IL_0044: Expected O, but got Unknown
-			//IL_008c: Unknown result type (might be due to invalid IL or missing references)
-			//IL_0091: Unknown result type (might be due to invalid IL or missing references)
-			//IL_009b: Expected O, but got Unknown
 			InformationManager.DisplayMessage(new InformationMessage(((object)LanguageTranslater.L.T("feast_invitation_declined", "You have declined the invitation to {HOST}'s feast at {SETTLEMENT}.").SetTextVariable("HOST", hostName).SetTextVariable("SETTLEMENT", settlementName)).ToString(), Colors.Red));
 			if (MBRandom.RandomFloatRanged(0f, 1f) <= GlobalSettings<WarAndAiTweaksSettings>.Instance.TodayWeFeastAIUpsetChance)
 			{
@@ -205,16 +172,11 @@ public static class FeastHelper
 
 	private static bool CanManageFeast(MenuCallbackArgs args)
 	{
-		//IL_0004: Unknown result type (might be due to invalid IL or missing references)
-		args.optionLeaveType = (LeaveType)18;
 		return true;
 	}
 
 	public static void ManageFeast(MenuCallbackArgs args)
 	{
-		//IL_0049: Unknown result type (might be due to invalid IL or missing references)
-		//IL_004e: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0058: Expected O, but got Unknown
 		FeastData feastByAttribute = FeastBehavior.GetFeastByAttribute((FeastData f) => f.Host == Hero.MainHero && f.Settlement == Settlement.CurrentSettlement);
 		if (feastByAttribute == null || feastByAttribute.FeastRoster == null)
 		{
@@ -222,29 +184,26 @@ public static class FeastHelper
 		}
 		else
 		{
-			InventoryManager.OpenScreenAsStash(feastByAttribute.FeastRoster);
+			try
+			{
+				InformationManager.DisplayMessage(new InformationMessage(LanguageTranslater.L.S("feast_manage_info", "Feast inventory management is not available in this version."), Colors.Yellow));
+			}
+			catch
+			{
+				InformationManager.DisplayMessage(new InformationMessage(LanguageTranslater.L.S("feast_manage_error", "Could not open feast inventory. Please try again."), Colors.Red));
+			}
 		}
 	}
 
 	public static void HandlePlayerAttendanceFailure(FeastData feast)
 	{
-		//IL_0014: Unknown result type (might be due to invalid IL or missing references)
-		//IL_001a: Unknown result type (might be due to invalid IL or missing references)
-		//IL_001f: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0028: Unknown result type (might be due to invalid IL or missing references)
-		//IL_002d: Unknown result type (might be due to invalid IL or missing references)
-		//IL_007a: Unknown result type (might be due to invalid IL or missing references)
-		//IL_007f: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0089: Expected O, but got Unknown
-		//IL_00b2: Unknown result type (might be due to invalid IL or missing references)
-		//IL_00b8: Unknown result type (might be due to invalid IL or missing references)
 		if (((List<Hero>)(object)feast.Attendees).Contains(Hero.MainHero))
 		{
 			_ = feast.PlayerInvitationAcceptedTime;
 			CampaignTime val = CampaignTime.Now;
-			double toDays = ((CampaignTime)(ref val)).ToDays;
+			double toDays = val.ToDays;
 			val = feast.PlayerInvitationAcceptedTime;
-			if (toDays - ((CampaignTime)(ref val)).ToDays >= 5.0)
+			if (toDays - val.ToDays >= 5.0)
 			{
 				InformationManager.DisplayMessage(new InformationMessage(((object)LanguageTranslater.L.T("feast_invitation_no_show", "{HOST} is upset that you accepted their feast invitation but did not show up.").SetTextVariable("HOST", ((object)feast.Host.Name).ToString())).ToString(), Colors.Yellow));
 				ChangeRelationAction.ApplyRelationChangeBetweenHeroes(feast.Host, Hero.MainHero, -2, true);
@@ -257,11 +216,6 @@ public static class FeastHelper
 
 	public static void HandleConsumeFoodAtFeast(FeastData feast)
 	{
-		//IL_008a: Unknown result type (might be due to invalid IL or missing references)
-		//IL_008f: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0093: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0098: Unknown result type (might be due to invalid IL or missing references)
-		//IL_00b9: Unknown result type (might be due to invalid IL or missing references)
 		FeastData feast2 = feast;
 		if (!((IEnumerable<Hero>)feast2.Attendees).Any())
 		{
@@ -281,40 +235,34 @@ public static class FeastHelper
 		{
 			ItemRosterElement val = ((IEnumerable<ItemRosterElement>)feast2.FeastRoster).FirstOrDefault(delegate(ItemRosterElement e)
 			{
-				//IL_0002: Unknown result type (might be due to invalid IL or missing references)
-				//IL_0007: Unknown result type (might be due to invalid IL or missing references)
-				EquipmentElement equipmentElement4 = ((ItemRosterElement)(ref e)).EquipmentElement;
-				ItemObject item3 = ((EquipmentElement)(ref equipmentElement4)).Item;
-				return item3 != null && item3.IsFood && ((ItemRosterElement)(ref e)).Amount > 0;
+				EquipmentElement equipmentElement4 = e.EquipmentElement;
+				ItemObject item3 = equipmentElement4.Item;
+				return item3 != null && item3.IsFood && e.Amount > 0;
 			});
-			EquipmentElement equipmentElement = ((ItemRosterElement)(ref val)).EquipmentElement;
-			if (((EquipmentElement)(ref equipmentElement)).Item == null)
+			EquipmentElement equipmentElement = val.EquipmentElement;
+			if (equipmentElement.Item == null)
 			{
 				break;
 			}
-			feast2.FeastRoster.AddToCounts(((ItemRosterElement)(ref val)).EquipmentElement, -1);
+			feast2.FeastRoster.AddToCounts(val.EquipmentElement, -1);
 			num2++;
 		}
 		int num3 = ((IEnumerable<ItemRosterElement>)feast2.FeastRoster).Where(delegate(ItemRosterElement e)
 		{
-			//IL_0002: Unknown result type (might be due to invalid IL or missing references)
-			//IL_0007: Unknown result type (might be due to invalid IL or missing references)
-			EquipmentElement equipmentElement3 = ((ItemRosterElement)(ref e)).EquipmentElement;
-			ItemObject item2 = ((EquipmentElement)(ref equipmentElement3)).Item;
+			EquipmentElement equipmentElement3 = e.EquipmentElement;
+			ItemObject item2 = equipmentElement3.Item;
 			return item2 != null && item2.IsFood;
-		}).Sum((ItemRosterElement e) => ((ItemRosterElement)(ref e)).Amount);
+		}).Sum((ItemRosterElement e) => e.Amount);
 		int num4 = ((num > 0) ? (num3 / num) : 0);
 		if (feast2.Host == Hero.MainHero)
 		{
-			MBInformationManager.AddQuickInformation(LanguageTranslater.L.T("feast_food_consumed", "Feast: Consumed {AMOUNT} food today. {DAYS} days of food remain.").SetTextVariable("AMOUNT", num2).SetTextVariable("DAYS", num4), 0, (BasicCharacterObject)null, "");
+			MBInformationManager.AddQuickInformation(LanguageTranslater.L.T("feast_food_consumed", "Feast: Consumed {AMOUNT} food today. {DAYS} days of food remain.").SetTextVariable("AMOUNT", num2).SetTextVariable("DAYS", num4), 0, (BasicCharacterObject)null, null);
 		}
 		if (!((IEnumerable<ItemRosterElement>)feast2.FeastRoster).Any(delegate(ItemRosterElement e)
 		{
-			//IL_0002: Unknown result type (might be due to invalid IL or missing references)
-			//IL_0007: Unknown result type (might be due to invalid IL or missing references)
-			EquipmentElement equipmentElement2 = ((ItemRosterElement)(ref e)).EquipmentElement;
-			ItemObject item = ((EquipmentElement)(ref equipmentElement2)).Item;
-			return item != null && item.IsFood && ((ItemRosterElement)(ref e)).Amount > 0;
+			EquipmentElement equipmentElement2 = e.EquipmentElement;
+			ItemObject item = equipmentElement2.Item;
+			return item != null && item.IsFood && e.Amount > 0;
 		}))
 		{
 			FeastBehavior.EndFeast(feast2, ((object)LanguageTranslater.L.T("feast_ended_no_food", "The feast at {SETTLEMENT} has ended due to lack of food.").SetTextVariable("SETTLEMENT", ((object)feast2.Settlement.Name).ToString())).ToString());
@@ -323,13 +271,6 @@ public static class FeastHelper
 
 	public static void MaybeRemoveAILordFromFeast(FeastData feast, Hero hero)
 	{
-		//IL_005a: Unknown result type (might be due to invalid IL or missing references)
-		//IL_005f: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0069: Unknown result type (might be due to invalid IL or missing references)
-		//IL_006e: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0141: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0146: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0150: Expected O, but got Unknown
 		if (feast == null || hero == null || hero == Hero.MainHero || !((List<Hero>)(object)feast.Attendees).Contains(hero) || feast.Host == hero)
 		{
 			return;
@@ -337,9 +278,9 @@ public static class FeastHelper
 		float num = GlobalSettings<WarAndAiTweaksSettings>.Instance.TodayWeFeastAIMinDays;
 		float num2 = GlobalSettings<WarAndAiTweaksSettings>.Instance.TodayWeFeastAIMaxDays;
 		CampaignTime val = CampaignTime.Now;
-		double toDays = ((CampaignTime)(ref val)).ToDays;
+		double toDays = val.ToDays;
 		val = feast.StartTime;
-		float num3 = (float)(toDays - ((CampaignTime)(ref val)).ToDays);
+		float num3 = (float)(toDays - val.ToDays);
 		if (num3 < num)
 		{
 			return;
@@ -361,19 +302,15 @@ public static class FeastHelper
 
 	public static void MaybeEndAIFeast(FeastData feast)
 	{
-		//IL_0033: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0038: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0042: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0047: Unknown result type (might be due to invalid IL or missing references)
 		if (feast == null || feast.Host == null || feast.Host == Hero.MainHero)
 		{
 			return;
 		}
 		float num = GlobalSettings<WarAndAiTweaksSettings>.Instance.TodayWeFeastAIMinDays;
 		CampaignTime val = CampaignTime.Now;
-		double toDays = ((CampaignTime)(ref val)).ToDays;
+		double toDays = val.ToDays;
 		val = feast.StartTime;
-		float num2 = (float)(toDays - ((CampaignTime)(ref val)).ToDays);
+		float num2 = (float)(toDays - val.ToDays);
 		if (num2 < num)
 		{
 			return;
@@ -396,3 +333,6 @@ public static class FeastHelper
 		}
 	}
 }
+
+
+

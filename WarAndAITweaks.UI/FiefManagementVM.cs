@@ -40,18 +40,9 @@ public class FiefManagementVM : ViewModel
 	{
 		get
 		{
-			Hero mainHero = Hero.MainHero;
-			object obj;
-			if (mainHero == null)
-			{
-				obj = null;
-			}
-			else
-			{
-				Clan clan = mainHero.Clan;
-				obj = ((clan != null) ? clan.Kingdom : null);
-			}
-			return obj != null && Hero.MainHero == Hero.MainHero.Clan.Kingdom.Leader;
+			if (Hero.MainHero?.Clan?.Kingdom == null)
+				return false;
+			return Hero.MainHero == Hero.MainHero.Clan.Kingdom.Leader;
 		}
 	}
 
@@ -74,14 +65,11 @@ public class FiefManagementVM : ViewModel
 
 	public FiefManagementVM()
 	{
-		RefreshData();
+		FiefClans = new MBBindingList<FiefItemVM>();
 	}
 
 	public void RefreshData()
 	{
-		//IL_00e9: Unknown result type (might be due to invalid IL or missing references)
-		//IL_00ee: Unknown result type (might be due to invalid IL or missing references)
-		//IL_00f8: Expected O, but got Unknown
 		FiefClans = new MBBindingList<FiefItemVM>();
 		try
 		{
@@ -99,39 +87,27 @@ public class FiefManagementVM : ViewModel
 			Kingdom val = (Kingdom)obj;
 			if (val == null)
 			{
-				return;
+						return;
 			}
+				int count = 0;
 			foreach (Clan item in from c in (IEnumerable<Clan>)val.Clans
 				where !c.IsEliminated
 				orderby ((object)c.Name).ToString()
 				select c)
 			{
 				((Collection<FiefItemVM>)(object)FiefClans).Add(new FiefItemVM(item));
+				count++;
 			}
-		}
+			}
 		catch (Exception ex)
 		{
-			InformationManager.DisplayMessage(new InformationMessage(((object)LanguageTranslater.L.T("error_loading_fief_data", "Error loading fief data: {EX}").SetTextVariable("EX", ex.Message)).ToString(), Colors.Red));
+				InformationManager.DisplayMessage(new InformationMessage(((object)LanguageTranslater.L.T("error_loading_fief_data", "Error loading fief data: {EX}").SetTextVariable("EX", ex.Message)).ToString(), Colors.Red));
 		}
 	}
 
+
 	public void ExecuteGrantFiefTitle()
 	{
-		//IL_0187: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0191: Expected O, but got Unknown
-		//IL_004e: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0053: Unknown result type (might be due to invalid IL or missing references)
-		//IL_005d: Expected O, but got Unknown
-		//IL_008e: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0093: Unknown result type (might be due to invalid IL or missing references)
-		//IL_009d: Expected O, but got Unknown
-		//IL_0166: Unknown result type (might be due to invalid IL or missing references)
-		//IL_016d: Expected O, but got Unknown
-		//IL_020a: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0216: Expected O, but got Unknown
-		//IL_011b: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0120: Unknown result type (might be due to invalid IL or missing references)
-		//IL_012a: Expected O, but got Unknown
 		Hero mainHero = Hero.MainHero;
 		object obj;
 		if (mainHero == null)
@@ -171,7 +147,7 @@ public class FiefManagementVM : ViewModel
 			{
 				if (item.Banner != null)
 				{
-					val = new ImageIdentifier(item.Banner);
+					val = new BannerImageIdentifier(item.Banner);
 				}
 			}
 			catch
@@ -181,13 +157,6 @@ public class FiefManagementVM : ViewModel
 		}
 		MBInformationManager.ShowMultiSelectionInquiry(new MultiSelectionInquiryData(LanguageTranslater.L.S("grant_fief_title", "Grant Fief Title"), LanguageTranslater.L.S("select_clan_to_grant_fief", "Select a clan to grant a fief to:"), list2, true, 1, 1, "Next", "Cancel", (Action<List<InquiryElement>>)delegate(List<InquiryElement> elements)
 		{
-			//IL_00b2: Unknown result type (might be due to invalid IL or missing references)
-			//IL_00b7: Unknown result type (might be due to invalid IL or missing references)
-			//IL_00c1: Expected O, but got Unknown
-			//IL_01f0: Unknown result type (might be due to invalid IL or missing references)
-			//IL_01fc: Expected O, but got Unknown
-			//IL_014b: Unknown result type (might be due to invalid IL or missing references)
-			//IL_0155: Expected O, but got Unknown
 			Clan selectedClan = default(Clan);
 			ref Clan reference = ref selectedClan;
 			object obj3 = elements?.FirstOrDefault()?.Identifier;
@@ -215,15 +184,6 @@ public class FiefManagementVM : ViewModel
 					}
 					MBInformationManager.ShowMultiSelectionInquiry(new MultiSelectionInquiryData(LanguageTranslater.L.S("grant_fief_title", "Grant Fief Title"), ((object)LanguageTranslater.L.T("select_fief_to_grant", "Select a fief to grant to {CLAN}:").SetTextVariable("CLAN", ((object)selectedClan.Name).ToString())).ToString(), list4, true, 1, 1, "Grant", "Cancel", (Action<List<InquiryElement>>)delegate(List<InquiryElement> fes)
 					{
-						//IL_0184: Unknown result type (might be due to invalid IL or missing references)
-						//IL_0189: Unknown result type (might be due to invalid IL or missing references)
-						//IL_0193: Expected O, but got Unknown
-						//IL_0089: Unknown result type (might be due to invalid IL or missing references)
-						//IL_008e: Unknown result type (might be due to invalid IL or missing references)
-						//IL_0098: Expected O, but got Unknown
-						//IL_0137: Unknown result type (might be due to invalid IL or missing references)
-						//IL_013c: Unknown result type (might be due to invalid IL or missing references)
-						//IL_0146: Expected O, but got Unknown
 						object obj4 = fes?.FirstOrDefault()?.Identifier;
 						Settlement val2 = (Settlement)((obj4 is Settlement) ? obj4 : null);
 						if (val2 == null)
@@ -262,21 +222,6 @@ public class FiefManagementVM : ViewModel
 
 	public void ExecuteRevokeFiefTitle()
 	{
-		//IL_0187: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0191: Expected O, but got Unknown
-		//IL_004e: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0053: Unknown result type (might be due to invalid IL or missing references)
-		//IL_005d: Expected O, but got Unknown
-		//IL_008e: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0093: Unknown result type (might be due to invalid IL or missing references)
-		//IL_009d: Expected O, but got Unknown
-		//IL_0166: Unknown result type (might be due to invalid IL or missing references)
-		//IL_016d: Expected O, but got Unknown
-		//IL_020a: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0216: Expected O, but got Unknown
-		//IL_011b: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0120: Unknown result type (might be due to invalid IL or missing references)
-		//IL_012a: Expected O, but got Unknown
 		Hero mainHero = Hero.MainHero;
 		object obj;
 		if (mainHero == null)
@@ -316,7 +261,7 @@ public class FiefManagementVM : ViewModel
 			{
 				if (item.Banner != null)
 				{
-					val = new ImageIdentifier(item.Banner);
+					val = new BannerImageIdentifier(item.Banner);
 				}
 			}
 			catch
@@ -326,13 +271,6 @@ public class FiefManagementVM : ViewModel
 		}
 		MBInformationManager.ShowMultiSelectionInquiry(new MultiSelectionInquiryData(LanguageTranslater.L.S("revoke_fief_title", "Revoke Fief Title"), LanguageTranslater.L.S("select_clan_to_revoke_fief", "Select a clan to revoke a fief from:"), list2, true, 1, 1, "Next", "Cancel", (Action<List<InquiryElement>>)delegate(List<InquiryElement> elements)
 		{
-			//IL_00a2: Unknown result type (might be due to invalid IL or missing references)
-			//IL_00a7: Unknown result type (might be due to invalid IL or missing references)
-			//IL_00b1: Expected O, but got Unknown
-			//IL_01b8: Unknown result type (might be due to invalid IL or missing references)
-			//IL_01c4: Expected O, but got Unknown
-			//IL_0116: Unknown result type (might be due to invalid IL or missing references)
-			//IL_0120: Expected O, but got Unknown
 			Clan selectedClan = default(Clan);
 			ref Clan reference = ref selectedClan;
 			object obj3 = elements?.FirstOrDefault()?.Identifier;
@@ -357,12 +295,6 @@ public class FiefManagementVM : ViewModel
 					}
 					MBInformationManager.ShowMultiSelectionInquiry(new MultiSelectionInquiryData(LanguageTranslater.L.S("revoke_fief_title", "Revoke Fief Title"), ((object)LanguageTranslater.L.T("select_fief_to_revoke", "Select a fief to revoke from {CLAN}:").SetTextVariable("CLAN", ((object)selectedClan.Name).ToString())).ToString(), list4, true, 1, 1, "Revoke", "Cancel", (Action<List<InquiryElement>>)delegate(List<InquiryElement> fes)
 					{
-						//IL_00c9: Unknown result type (might be due to invalid IL or missing references)
-						//IL_00ce: Unknown result type (might be due to invalid IL or missing references)
-						//IL_00d8: Expected O, but got Unknown
-						//IL_0063: Unknown result type (might be due to invalid IL or missing references)
-						//IL_0068: Unknown result type (might be due to invalid IL or missing references)
-						//IL_0072: Expected O, but got Unknown
 						object obj4 = fes?.FirstOrDefault()?.Identifier;
 						Settlement val2 = (Settlement)((obj4 is Settlement) ? obj4 : null);
 						if (val2 == null)
@@ -425,9 +357,6 @@ public class FiefManagementVM : ViewModel
 
 	private void ApplyFiefLossPenalty(Clan losingClan, string context)
 	{
-		//IL_0066: Unknown result type (might be due to invalid IL or missing references)
-		//IL_006b: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0075: Expected O, but got Unknown
 		try
 		{
 			Hero val = ((losingClan != null) ? losingClan.Leader : null);
