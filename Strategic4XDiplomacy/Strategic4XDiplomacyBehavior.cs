@@ -6,6 +6,7 @@ using Helpers;
 using MCM.Abstractions.Base.Global;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.Actions;
+using TaleWorlds.CampaignSystem.Party;
 using TaleWorlds.CampaignSystem.BarterSystem.Barterables;
 using TaleWorlds.CampaignSystem.Election;
 using TaleWorlds.CampaignSystem.Settlements;
@@ -43,6 +44,33 @@ public class Strategic4XDiplomacyBehavior : CampaignBehaviorBase
 	private static FeastBehavior _cachedFeastBehavior;
 
 	public static float ReasonableDistanceForBesiegingTown { get; set; }
+
+	private static float? _cachedFortificationDistance;
+
+	public static float CalculateAverageDistanceBetweenFortifications()
+	{
+		if (_cachedFortificationDistance.HasValue) return _cachedFortificationDistance.Value;
+		var fortifications = new List<Settlement>();
+		if (Campaign.Current != null)
+		{
+			fortifications.AddRange(Campaign.Current.Settlements.Where(s => s.IsTown || s.IsCastle).Select(s => s));
+		}
+		float totalDistance = 0f;
+		int count = 0;
+		foreach (var settlement in fortifications)
+		{
+			float nearest = float.MaxValue;
+			foreach (var other in fortifications)
+			{
+				if (settlement == other) continue;
+				float dist = Campaign.Current.Models.MapDistanceModel.GetDistance(settlement, other, false, false, MobileParty.NavigationType.Default);
+				if (dist < nearest) nearest = dist;
+			}
+			if (nearest < float.MaxValue) { totalDistance += nearest; count++; }
+		}
+		_cachedFortificationDistance = count > 0 ? totalDistance / count : 56f;
+		return _cachedFortificationDistance.Value;
+	}
 
 	public static float GetWarFatigue(Kingdom k)
 	{
@@ -125,7 +153,7 @@ public class Strategic4XDiplomacyBehavior : CampaignBehaviorBase
 		{
 			updateKingdomTargetsCache(item2);
 		}
-		ReasonableDistanceForBesiegingTown = (127f + 2.27f * 56f) / 2f;
+		ReasonableDistanceForBesiegingTown = (127f + 2.27f * CalculateAverageDistanceBetweenFortifications()) / 2f;
 		if (GlobalSettings<WarAndAiTweaksSettings>.Instance.EnableBaseGameTributes)
 		{
 			return;
