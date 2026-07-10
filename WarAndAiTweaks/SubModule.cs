@@ -25,6 +25,7 @@ using WarAndAITweaks.ModelOverrides;
 using WarAndAITweaks.TodayWeFeast;
 using WarAndAITweaks.UI;
 using WarAndAiTweaks.Companion;
+using WarAndAITweaks.War_Peace_AI_Overhaul;
 
 namespace WarAndAiTweaks;
 
@@ -95,7 +96,7 @@ public class SubModule : MBSubModuleBase
 			{
 				val2.AddBehavior((CampaignBehaviorBase)(object)new MarshalSystemBehavior());
 			}
-			if (GlobalSettings<WarAndAiTweaksSettings>.Instance.EnableWarPeaceAIOverhaul)
+			if (GlobalSettings<WarAndAiTweaksSettings>.Instance.EnableWarPeaceAIOverhaul && !DiplomacyPlugin.IsAIInfluenceModLoaded())
 			{
 				val2.AddBehavior((CampaignBehaviorBase)(object)new Strategic4XDiplomacyBehavior());
 			}

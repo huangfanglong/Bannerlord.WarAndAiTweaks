@@ -412,6 +412,35 @@ internal class DiplomacyPlugin
 		}
 	}
 
+	private static Type _cachedAIInfluenceSettingsType = null;
+
+	public static bool IsAIInfluenceModLoaded()
+	{
+		try
+		{
+			if (_cachedAIInfluenceSettingsType != null)
+			{
+				return true;
+			}
+			Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
+			foreach (Assembly assembly in assemblies)
+			{
+				Type type = assembly.GetType("AIInfluence.ModSettings");
+				if (type != null)
+				{
+					_cachedAIInfluenceSettingsType = type;
+					InformationManager.DisplayMessage(new InformationMessage("[W&AI] AI Influence mod detected — Diplomacy features disabled.", Colors.Yellow));
+					return true;
+				}
+			}
+			return false;
+		}
+		catch
+		{
+			return false;
+		}
+	}
+
 	public static List<DiplomaticAgreementInfo> GetAllDiplomaticAgreements()
 	{
 		_ = CampaignTime.Now;
