@@ -8,6 +8,8 @@ public static class DiplomacySettingsCache
 
 	private static bool _isDiplomacyModLoaded;
 
+	private static bool _isAIInfluenceModLoaded;
+
 	private static bool? _noWarBetweenFriends;
 
 	private static bool? _noWarOnGoodRelations;
@@ -20,6 +22,8 @@ public static class DiplomacySettingsCache
 
 	public static bool IsDiplomacyModLoaded => _isDiplomacyModLoaded;
 
+	public static bool IsAIInfluenceModLoaded => _isAIInfluenceModLoaded;
+
 	public static bool? NoWarBetweenFriends => _noWarBetweenFriends;
 
 	public static bool? NoWarOnGoodRelations => _noWarOnGoodRelations;
@@ -31,6 +35,7 @@ public static class DiplomacySettingsCache
 	public static void Initialize()
 	{
 		_isDiplomacyModLoaded = DiplomacyPlugin.IsDiplomacyModLoaded();
+		_isAIInfluenceModLoaded = DiplomacyPlugin.IsAIInfluenceModLoaded();
 		_isInitialized = true;
 		if (_isDiplomacyModLoaded)
 		{
